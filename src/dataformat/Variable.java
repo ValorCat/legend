@@ -19,6 +19,11 @@ public class Variable implements Expression {
     }
 
     @Override
+    public boolean matches(String pattern) {
+        return name.equals(pattern);
+    }
+
+    @Override
     public String getIdentifier() {
         return name;
     }

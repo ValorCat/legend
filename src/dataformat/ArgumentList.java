@@ -18,9 +18,9 @@ public class ArgumentList {
     public ArgumentList(Expression root, Environment env) {
         List<Value> argsList = new ArrayList<>();
         keywords = new HashMap<>();
-        if (root.isOperation(",")) {
+        if (root.matches(",")) {
             for (Expression child : root.getChildren()) {
-                if (child.isOperation(":")) {
+                if (child.matches(":")) {
                     handleKeyword(child, env);
                 } else if (keywords.isEmpty()) {
                     handleArgument(child, env, argsList);
@@ -28,7 +28,7 @@ public class ArgumentList {
                     throw new RuntimeException("Sequential args must precede keyword args");
                 }
             }
-        } else if (root.isOperation(":")) {
+        } else if (root.matches(":")) {
             handleKeyword(root, env);
         } else {
             handleArgument(root, env, argsList);

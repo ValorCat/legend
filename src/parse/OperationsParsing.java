@@ -28,7 +28,7 @@ public final class OperationsParsing {
     public static void callFunction(int pos, List<Token> tokens) {
         binaryOperation(pos, tokens,
                 Token::isValue, "Expected function object",
-                right -> right.TYPE == OPERATION, "Expected function arguments");
+                Token::isValue, "Expected function arguments");
     }
 
     public static void getAttribute(int pos, List<Token> tokens) {

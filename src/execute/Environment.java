@@ -52,6 +52,7 @@ public class Environment {
     public void assign(String name, Value value) {
         namespace.put(name, store(value));
         if (value.type() == TYPE_TYPE) {
+            // todo deanonymize functions
             ((Type) value).deanonymize(name);
         }
     }

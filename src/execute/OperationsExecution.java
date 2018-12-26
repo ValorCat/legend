@@ -57,9 +57,12 @@ public final class OperationsExecution {
     }
 
     private static Value getAttribute(List<Expression> operands, Environment env) {
-        Value object = operands.get(0).evaluate(env);
         String attribute = operands.get(1).getIdentifier();
-        return object.getAttribute(attribute);
+        if (operands.get(0).matches("_")) {
+            return new FunctionValue((args, _env) -> args.args()[0].getAttribute(attribute));
+        } else {
+            return operands.get(0).evaluate(env).getAttribute(attribute);
+        }
     }
 
 }

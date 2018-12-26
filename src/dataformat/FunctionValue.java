@@ -14,6 +14,10 @@ public class FunctionValue extends Value {
     private String name;
     private FunctionBody body;
 
+    public FunctionValue(FunctionBody body) {
+        this("(anonymous function)", body);
+    }
+
     public FunctionValue(String name, FunctionBody body) {
         super(Environment.FUNC_TYPE);
         this.name = name;

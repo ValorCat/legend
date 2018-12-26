@@ -1,2 +1,6 @@
-x = read()
+person = type(name: str, age: int)
+name_getter = _.name
+howard = person('howard', 25)
+name = name_getter(howard)
+
 showenv()

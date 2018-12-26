@@ -14,6 +14,11 @@ public class IntValue extends Value {
         this.value = value;
     }
 
+    @Override
+    public boolean matches(String pattern) {
+        return String.valueOf(value).equals(pattern);
+    }
+
     public int getValue() {
         return value;
     }

@@ -38,6 +38,11 @@ public class Type extends Value {
         this.anonymous = false;
     }
 
+    @Override
+    public boolean matches(String pattern) {
+        return getName().equals(pattern);
+    }
+
     public String getName() {
         return name;
     }

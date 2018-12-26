@@ -30,8 +30,8 @@ public class Operation implements Expression {
     }
 
     @Override
-    public boolean isOperation(String operator) {
-        return this.operator.equals(operator);
+    public boolean matches(String pattern) {
+        return this.operator.equals(pattern);
     }
 
     @Override

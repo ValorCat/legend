@@ -11,7 +11,7 @@ public interface Expression {
 
     Value evaluate(Environment env);
 
-    default boolean isOperation(String operator) {
+    default boolean matches(String pattern) {
         return false;
     }
 
