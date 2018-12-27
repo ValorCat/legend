@@ -1,6 +1,5 @@
 person = type(name: str, age: int)
-name_getter = _.name
-howard = person('howard', 25)
-name = name_getter(howard)
+roster = list(person('bob', 25), person('joe', 20), person('tony', 23))
+m = roster.max(_.age)
 
 showenv()

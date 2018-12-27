@@ -42,16 +42,20 @@ public final class OperationsExecution {
     }
 
     private static Value call(List<Expression> operands, Environment env) {
-        Value target = operands.get(0).evaluate(env);
+        Value executable = operands.get(0).evaluate(env);
         ArgumentList arguments = new ArgumentList(operands.get(1), env);
-        if (target.type().matches("func")) {
-            FunctionValue funcObject = ((FunctionValue) target);
-            // todo check if args match params
-            return funcObject.call(arguments, env);
-        } else if (target.type().matches("type")) {
-            return ((Type) target).instantiate(arguments, env);
+        if (executable.hasOwner()) {
+            arguments.setTarget(executable.getOwner());
+            executable = ((Attribute) executable).getValue();
         }
-        throw new RuntimeException("Cannot execute object of type '" + target.type().getName() + "'");
+        if (executable.type().matches("func")) {
+            FunctionValue func = ((FunctionValue) executable);
+            // todo check if args match params
+            return func.call(arguments, env);
+        } else if (executable.type().matches("type")) {
+            return ((Type) executable).instantiate(arguments, env);
+        }
+        throw new RuntimeException("Cannot execute object of type '" + executable.type().getName() + "'");
     }
 
     private static Value getAttribute(List<Expression> operands, Environment env) {
@@ -59,7 +63,8 @@ public final class OperationsExecution {
         if (operands.get(0).matches("_")) {
             return new FunctionValue((args, _env) -> args.args()[0].getAttribute(attribute));
         } else {
-            return operands.get(0).evaluate(env).getAttribute(attribute);
+            Value target = operands.get(0).evaluate(env);
+            return new Attribute(target, target.getAttribute(attribute));
         }
     }
 

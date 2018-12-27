@@ -27,6 +27,10 @@ public class Value implements Expression {
         return this;
     }
 
+    public int asInt() {
+        throw new RuntimeException("Type '" + type().getName() + "' cannot be converted to an integer");
+    }
+
     public Type type() {
         if (type == null) type = StandardLibrary.type("type");
         return type;
@@ -42,6 +46,14 @@ public class Value implements Expression {
 
     public Value[] getAttributes() {
         return attributes;
+    }
+
+    public boolean hasOwner() {
+        return false;
+    }
+
+    public Value getOwner() {
+        throw new UnsupportedOperationException("Cannot get owner of non-attribute");
     }
 
     @Override

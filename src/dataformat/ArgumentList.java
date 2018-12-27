@@ -14,6 +14,12 @@ public class ArgumentList {
 
     private Value[] args;
     private Map<String, Value> keywords;
+    private Value target;
+
+    public ArgumentList(Value... args) {
+        this.args = args;
+        this.keywords = Map.of();
+    }
 
     public ArgumentList(Expression root, Environment env) {
         List<Value> argsList = new ArrayList<>();
@@ -51,6 +57,14 @@ public class ArgumentList {
 
     public Map<String, Value> keywords() {
         return keywords;
+    }
+
+    public Value target() {
+        return target;
+    }
+
+    public void setTarget(Value target) {
+        this.target = target;
     }
 
 }

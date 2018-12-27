@@ -2,8 +2,10 @@ package execute;
 
 import dataformat.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.function.ToIntFunction;
 
 import static dataformat.FunctionValue.FunctionBody;
 
@@ -14,18 +16,40 @@ public final class StandardLibrary {
 
     private static Scanner input;
 
-    public static final Map<String, Type> TYPES = Map.of(
-            "func", TypeBuilder.create("func").build(),
-            "int", TypeBuilder.create("int").build(),
-            "list", TypeBuilder.create("list").build(),
-            "range", TypeBuilder.create("range").personal("left", "right").build(),
-            "str", TypeBuilder.create("str").build(),
-            "type", TypeBuilder.create("type").initializer((args, env) -> {
-                String[] attributes = args.keywords().keySet().toArray(new String[0]);
-                // todo use attribute types/bounds
-                return new Type(attributes);
-            }).build()
-    );
+    public static final Map<String, Type> TYPES = new HashMap<>();
+
+    static {
+        TYPES.put("func", TypeBuilder.create("func").build());
+        TYPES.put("int", TypeBuilder.create("int").build());
+        TYPES.put("list", TypeBuilder.create("list")
+                .shared("max", (args, env) -> {
+                    Value[] list = args.target().getAttributes();
+                    if (list.length == 0) {
+                        throw new RuntimeException("Cannot compute maximum of empty list");
+                    }
+                    ToIntFunction<Value> comparator = Value::asInt;
+                    if (args.args().length >= 1) {
+                        FunctionValue keyExtractor = ((FunctionValue) args.args()[0]);
+                        comparator = e -> keyExtractor.call(env, e).asInt();
+                    }
+                    Value max = list[0];
+                    int maxComparison = comparator.applyAsInt(max);
+                    for (Value element : list) {
+                        if (comparator.applyAsInt(element) > maxComparison) {
+                            max = element;
+                        }
+                    }
+                    return max;
+                })
+                .build());
+        TYPES.put("range", TypeBuilder.create("range").personal("left", "right").build());
+        TYPES.put("str", TypeBuilder.create("str").build());
+        TYPES.put("type", TypeBuilder.create("type").initializer((args, env) -> {
+            String[] attributes = args.keywords().keySet().toArray(new String[0]);
+            // todo use attribute types/bounds
+            return new Type(attributes);
+        }).build());
+    }
 
     public static Type type(String type) {
         if (TYPES.containsKey(type)) {

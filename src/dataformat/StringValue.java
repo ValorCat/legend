@@ -19,6 +19,15 @@ public class StringValue extends Value {
         return value.equals(pattern);
     }
 
+    @Override
+    public int asInt() {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("String " + value + " cannot be converted to an integer");
+        }
+    }
+
     public String getValue() {
         return value;
     }

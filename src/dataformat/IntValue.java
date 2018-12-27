@@ -19,6 +19,11 @@ public class IntValue extends Value {
         return String.valueOf(value).equals(pattern);
     }
 
+    @Override
+    public int asInt() {
+        return value;
+    }
+
     public int getValue() {
         return value;
     }

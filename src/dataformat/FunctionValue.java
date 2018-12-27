@@ -34,6 +34,10 @@ public class FunctionValue extends Value {
         return body.apply(args, env);
     }
 
+    public Value call(Environment env, Value... args) {
+        return body.apply(new ArgumentList(args), env);
+    }
+
     @Override
     public String toString() {
         return "func[" + Integer.toHexString(System.identityHashCode(body)) + "]";
