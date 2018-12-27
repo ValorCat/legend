@@ -1,6 +1,7 @@
 package dataformat;
 
 import execute.Environment;
+import execute.StandardLibrary;
 
 import java.util.function.BiFunction;
 
@@ -9,6 +10,7 @@ import java.util.function.BiFunction;
  */
 public class FunctionValue extends Value {
 
+    @FunctionalInterface
     public interface FunctionBody extends BiFunction<ArgumentList, Environment, Value> {}
 
     private String name;
@@ -19,7 +21,7 @@ public class FunctionValue extends Value {
     }
 
     public FunctionValue(String name, FunctionBody body) {
-        super(Environment.FUNC_TYPE);
+        super(StandardLibrary.type("func"));
         this.name = name;
         this.body = body;
     }

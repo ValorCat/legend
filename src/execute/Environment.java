@@ -13,30 +13,14 @@ import java.util.Map;
 public class Environment {
 
     public static final Environment GLOBAL = new Environment(null);
-    public static final Type FUNC_TYPE, INT_TYPE, LIST_TYPE, RANGE_TYPE, STR_TYPE, TYPE_TYPE;
-
     private static List<Value> memory = new ArrayList<>();
 
     static {
-        FUNC_TYPE = new Type("func");
-        INT_TYPE = new Type("int");
-        LIST_TYPE = new Type("list");
-        RANGE_TYPE = new Type("range", "left", "right");
-        STR_TYPE = new Type("str");
-        TYPE_TYPE = new Type("type", (args, env) -> {
-            String[] attributes = args.keywords().keySet().toArray(new String[0]);
-            // todo use attribute types/bounds
-            return new Type(attributes);
-        });
-
-        Type[] builtinTypes = {FUNC_TYPE, INT_TYPE, LIST_TYPE, RANGE_TYPE, STR_TYPE, TYPE_TYPE};
-        FunctionValue[] builtinFunctions = StandardLibrary.getFunctions();
-
-        for (Type type : builtinTypes) {
-            GLOBAL.assign(type.getName(), type);
+        for (Map.Entry<String, Type> type : StandardLibrary.TYPES.entrySet()) {
+            GLOBAL.assign(type.getKey(), type.getValue());
         }
 
-        for (FunctionValue func : builtinFunctions) {
+        for (FunctionValue func : StandardLibrary.FUNCTIONS) {
             GLOBAL.assign(func.getName(), func);
         }
     }
@@ -51,15 +35,10 @@ public class Environment {
 
     public void assign(String name, Value value) {
         namespace.put(name, store(value));
-        if (value.type() == TYPE_TYPE) {
+        if (value.type() == StandardLibrary.type("type")) {
             // todo deanonymize functions
             ((Type) value).deanonymize(name);
         }
-    }
-
-    public int store(Value value) {
-        memory.add(value);
-        return memory.size() - 1;
     }
 
     public Value fetch(String name) {
@@ -82,6 +61,11 @@ public class Environment {
 
     public Map<String, Integer> getNamespace() {
         return namespace;
+    }
+
+    private static int store(Value value) {
+        memory.add(value);
+        return memory.size() - 1;
     }
 
 }

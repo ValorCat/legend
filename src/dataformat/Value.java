@@ -1,6 +1,7 @@
 package dataformat;
 
 import execute.Environment;
+import execute.StandardLibrary;
 
 import java.util.Arrays;
 
@@ -27,11 +28,8 @@ public class Value implements Expression {
     }
 
     public Type type() {
-        return type == null ? Environment.TYPE_TYPE : type;
-    }
-
-    public boolean isType(Type type) {
-        return type() == type;
+        if (type == null) type = StandardLibrary.type("type");
+        return type;
     }
 
     public void setType(Type type) {
@@ -39,7 +37,11 @@ public class Value implements Expression {
     }
 
     public Value getAttribute(String name) {
-        return this.attributes[type().getAttrIndex(name)];
+        return type().getAttribute(name, this);
+    }
+
+    public Value[] getAttributes() {
+        return attributes;
     }
 
     @Override

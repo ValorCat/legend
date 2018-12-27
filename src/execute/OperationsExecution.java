@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import static execute.Environment.*;
-
 /**
  * @since 12/23/2018
  */
@@ -36,21 +34,21 @@ public final class OperationsExecution {
     private static Value buildRange(List<Expression> operands, Environment env) {
         Value left = operands.get(0).evaluate(env);
         Value right = operands.get(1).evaluate(env);
-        if (!left.isType(INT_TYPE) || !right.isType(INT_TYPE)) {
+        if (!left.type().matches("int") || !right.type().matches("int")) {
             throw new RuntimeException("Operator 'to' expected (int, int) but got (" + left.type() + ", "
                     + right.type() + "' instead");
         }
-        return RANGE_TYPE.create(left, right);
+        return StandardLibrary.type("range").create(left, right);
     }
 
     private static Value call(List<Expression> operands, Environment env) {
         Value target = operands.get(0).evaluate(env);
         ArgumentList arguments = new ArgumentList(operands.get(1), env);
-        if (target.isType(FUNC_TYPE)) {
+        if (target.type().matches("func")) {
             FunctionValue funcObject = ((FunctionValue) target);
             // todo check if args match params
             return funcObject.call(arguments, env);
-        } else if (target.isType(TYPE_TYPE)) {
+        } else if (target.type().matches("type")) {
             return ((Type) target).instantiate(arguments, env);
         }
         throw new RuntimeException("Cannot execute object of type '" + target.type().getName() + "'");

@@ -1,46 +1,42 @@
 package dataformat;
 
+import dataformat.FunctionValue.FunctionBody;
 import execute.Environment;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 /**
  * @since 12/23/2018
  */
 public class Type extends Value {
 
-    public interface TypeInitializer extends BiFunction<ArgumentList, Environment, Value> {}
-
     private String name;
-    private Map<String, Integer> attributes; // todo avoid Integer -> int unboxing
-    private TypeInitializer initializer;
+    private Map<String, Integer> personalAttributes; // todo avoid Integer -> int unboxing
+    private Map<String, Value> sharedAttributes;
+    private FunctionBody initializer;
     private boolean anonymous;
 
     public Type(String[] attrNames) {
-        this("(anonymous type)", attrNames);
+        this("(anonymous type)", null, attrNames, Map.of());
         this.anonymous = true;
     }
 
-    public Type(String name, String... attrNames) {
-        this(name, null, attrNames);
-    }
-
-    public Type(String name, TypeInitializer init, String... attrNames) {
+    public Type(String name, FunctionBody init, String[] personal, Map<String, Value> shared) {
         super(null);
         this.name = name;
-        this.attributes = new HashMap<>(attrNames.length);
-        for (int i = 0; i < attrNames.length; i++) {
-            this.attributes.put(attrNames[i], i);
-        }
         this.initializer = init;
+        this.personalAttributes = new HashMap<>(personal.length);
+        for (int i = 0; i < personal.length; i++) {
+            this.personalAttributes.put(personal[i], i);
+        }
+        this.sharedAttributes = shared;
         this.anonymous = false;
     }
 
     @Override
-    public boolean matches(String pattern) {
-        return getName().equals(pattern);
+    public boolean matches(String name) {
+        return getName().equals(name);
     }
 
     public String getName() {
@@ -54,12 +50,16 @@ public class Type extends Value {
         }
     }
 
-    public int getAttrIndex(String attrName) {
-        Integer index = attributes.get(attrName);
-        if (index == null) {
-            throw new RuntimeException("Type '" + name + "' has no attribute '" + attrName + "'");
+    public Value getAttribute(String attribute, Value object) {
+        Integer index = personalAttributes.get(attribute);
+        if (index != null) {
+            return object.getAttributes()[index];
         }
-        return index;
+        Value value = sharedAttributes.get(attribute);
+        if (value != null) {
+            return value;
+        }
+        throw new RuntimeException("Type '" + name + "' has no attribute '" + attribute + "'");
     }
 
     public Value create(Value... attributes) {
@@ -84,4 +84,5 @@ public class Type extends Value {
     public String toString() {
         return "type[" + getName() + "]";
     }
+
 }

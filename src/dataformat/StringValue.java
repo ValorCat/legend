@@ -1,6 +1,6 @@
 package dataformat;
 
-import execute.Environment;
+import execute.StandardLibrary;
 
 /**
  * @since 12/24/2018
@@ -10,7 +10,7 @@ public class StringValue extends Value {
     private String value;
 
     public StringValue(String value) {
-        super(Environment.STR_TYPE);
+        super(StandardLibrary.type("str"));
         this.value = value;
     }
 
