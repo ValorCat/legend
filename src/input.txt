@@ -1,5 +1,5 @@
-person = type(name: str, age: int)
-roster = list(person('bob', 25), person('joe', 20), person('tony', 23))
-m = roster.max(_.age)
-
+w = 10 == 10
+x = 10 == 5
+y = '10' == 10
+z = 'true' != true
 showenv()

@@ -1,5 +1,6 @@
 package tokenize;
 
+import parse.OperatorTable;
 import tokenize.Token.TokenType;
 
 import java.io.IOException;
@@ -82,12 +83,12 @@ public class Tokenizer {
 
         if (stringType == curr) {
             type = LITERAL;
-            currToken.append(curr);
+            currToken.deleteCharAt(0);
         } else if (stringType == 0) {
             if (isValue(prev) && !isValue(curr)) {
                 if (isKeyword(currToken)) {
                     type = OPERATOR;
-                } else if (currToken.toString().matches("\\d+")) {
+                } else if (isLiteral(currToken)) {
                     type = LITERAL;
                 } else {
                     type = IDENTIFIER;
@@ -125,13 +126,18 @@ public class Tokenizer {
                 .contains(token.toString());
     }
 
+    private static boolean isLiteral(StringBuilder token) {
+        String str = token.toString();
+        return str.matches("\\d+") || str.equals("true") || str.equals("false");
+    }
+
     private static boolean isSymbol(char c) {
-        return "().,=:+-*/".indexOf(c) >= 0;
+        return "!@#$%^&*()-=+[]{};:,.<>/?".indexOf(c) >= 0;
     }
 
     private static boolean isLongSymbol(char first, char second) {
         String symbol = new String(new char[] {first, second});
-        return List.of("+=", "-=").contains(symbol);
+        return OperatorTable.LONG_SYMBOLS.contains(symbol);
     }
 
     private static void aggregateGroups(List<Token> tokens) {

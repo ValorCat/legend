@@ -17,13 +17,18 @@ public class FunctionValue extends Value {
     private FunctionBody body;
 
     public FunctionValue(FunctionBody body) {
-        this("(anonymous function)", body);
+        this("anonymous function", body);
     }
 
     public FunctionValue(String name, FunctionBody body) {
         super(StandardLibrary.type("func"));
         this.name = name;
         this.body = body;
+    }
+
+    @Override
+    public String asStr() {
+        return "func[" + name + "]";
     }
 
     public String getName() {
@@ -36,6 +41,12 @@ public class FunctionValue extends Value {
 
     public Value call(Environment env, Value... args) {
         return body.apply(new ArgumentList(args), env);
+    }
+
+    @Override
+    public boolean equals(Value other) {
+        return type() == other.type()
+                && body == ((FunctionValue) other).body;
     }
 
     @Override

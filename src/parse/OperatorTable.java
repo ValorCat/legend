@@ -3,10 +3,7 @@ package parse;
 import javafx.util.Pair;
 import tokenize.Token;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 /**
@@ -18,7 +15,18 @@ public final class OperatorTable {
     public static final OperatorTable OPERATORS = defineOperations(
             List.of(new Pair<>(".",     OperationsParsing::getAttribute),
                     new Pair<>("call",  OperationsParsing::callFunction)),
-            List.of(new Pair<>("to",    OperationsParsing::buildRange)),
+            List.of(new Pair<>("^",     OperationsParsing::binaryOperation)),
+            List.of(new Pair<>("*",     OperationsParsing::binaryOperation),
+                    new Pair<>("/",     OperationsParsing::binaryOperation)),
+            List.of(new Pair<>("+",     OperationsParsing::binaryOperation),
+                    new Pair<>("-",     OperationsParsing::binaryOperation)),
+            List.of(new Pair<>("to",    OperationsParsing::binaryOperation)),
+            List.of(new Pair<>("<",     OperationsParsing::binaryOperation),
+                    new Pair<>("<=",    OperationsParsing::binaryOperation),
+                    new Pair<>(">",     OperationsParsing::binaryOperation),
+                    new Pair<>(">=",    OperationsParsing::binaryOperation)),
+            List.of(new Pair<>("==",    OperationsParsing::binaryOperation),
+                    new Pair<>("!=",    OperationsParsing::binaryOperation)),
             List.of(new Pair<>("else",  OperationsParsing::handleElse)),
             List.of(new Pair<>(":",     OperationsParsing::mapKeyToValue)),
             List.of(new Pair<>(",",     OperationsParsing::separateByCommas)),
@@ -27,6 +35,8 @@ public final class OperatorTable {
                     new Pair<>("match", OperationsParsing::matchExpression),
                     new Pair<>("repeat", OperationsParsing::handleStandaloneKeyword))
     );
+
+    public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=");
 
     public interface OperationHandler extends BiConsumer<Integer, List<Token>> {}
 

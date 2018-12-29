@@ -20,6 +20,12 @@ public class Executor {
 
         Tokenizer t = new Tokenizer();
         List<List<Token>> tokens = t.tokenize(input);
+        for (List<Token> statement : tokens) {
+            for (Token token : statement) {
+                System.out.print(token + "  ");
+            }
+            System.out.println();
+        }
 
         Parser p = new Parser();
         List<Expression> trees = p.parse(tokens);

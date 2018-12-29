@@ -31,9 +31,21 @@ public class Value implements Expression {
         throw new RuntimeException("Type '" + type().getName() + "' cannot be converted to an integer");
     }
 
+    public String asStr() {
+        throw new RuntimeException("Type '" + type().getName() + "' cannot be converted to a string");
+    }
+
+    public boolean asBool() {
+        throw new RuntimeException("Type '" + type().getName() + "' cannot be converted to a boolean");
+    }
+
     public Type type() {
         if (type == null) type = StandardLibrary.type("type");
         return type;
+    }
+
+    public boolean isType(String type) {
+        return type().matches(type);
     }
 
     public void setType(Type type) {
@@ -54,6 +66,10 @@ public class Value implements Expression {
 
     public Value getOwner() {
         throw new UnsupportedOperationException("Cannot get owner of non-attribute");
+    }
+
+    public boolean equals(Value other) {
+        return (this == other) || ((type == other.type) && Arrays.equals(attributes, other.attributes));
     }
 
     @Override

@@ -21,10 +21,6 @@ public final class OperationsParsing {
                 Token::isValue, "Expected variable value for assignment");
     }
 
-    public static void buildRange(int pos, List<Token> tokens) {
-        binaryOperation(pos, tokens);
-    }
-
     public static void callFunction(int pos, List<Token> tokens) {
         binaryOperation(pos, tokens,
                 Token::isValue, "Expected function object",
@@ -87,7 +83,7 @@ public final class OperationsParsing {
         }
     }
 
-    private static void binaryOperation(int pos, List<Token> tokens) {
+    public static void binaryOperation(int pos, List<Token> tokens) {
         String operator = tokens.get(pos).VALUE;
         binaryOperation(pos, tokens,
                 Token::isValue, "Expected left operand for '" + operator + "'",

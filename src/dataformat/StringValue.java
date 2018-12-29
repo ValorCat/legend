@@ -24,12 +24,32 @@ public class StringValue extends Value {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            throw new RuntimeException("String " + value + " cannot be converted to an integer");
+            throw new RuntimeException("String '" + value + "' cannot be converted to an integer");
+        }
+    }
+
+    @Override
+    public String asStr() {
+        return value;
+    }
+
+    @Override
+    public boolean asBool() {
+        switch (value) {
+            case "true": return true;
+            case "false": return false;
+            default: throw new RuntimeException("String '" + value + "' cannot be converted to a boolean");
         }
     }
 
     public String getValue() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Value other) {
+        return type() == other.type()
+                && ((StringValue) other).value.equals(value);
     }
 
     @Override

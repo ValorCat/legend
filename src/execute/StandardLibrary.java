@@ -20,6 +20,7 @@ public final class StandardLibrary {
 
     static {
         TYPES.put("func", TypeBuilder.create("func").build());
+        TYPES.put("bool", TypeBuilder.create("bool").build());
         TYPES.put("int", TypeBuilder.create("int").build());
         TYPES.put("list", TypeBuilder.create("list")
                 .shared("max", (args, env) -> {
@@ -76,7 +77,9 @@ public final class StandardLibrary {
             func("showenv", (args, env) -> {
                 System.out.println("==[ Environment ]==================================");
                 for (Map.Entry<String, Integer> pair : env.getNamespace().entrySet()) {
-                    System.out.printf("\t%-8s %-4d %s\n", pair.getKey(), pair.getValue(), env.fetch(pair.getKey()));
+                    Value value = env.fetch(pair.getKey());
+                    System.out.printf("\t%-8s 0x%04X  %-6s  %s\n", pair.getKey(), pair.getValue(),
+                            value.type().getName(), value);
                 }
                 System.out.println("===================================================");
                 return new IntValue(0);

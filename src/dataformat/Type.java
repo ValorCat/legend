@@ -23,7 +23,7 @@ public class Type extends Value {
     }
 
     public Type(String name, FunctionBody init, String[] personal, Map<String, Value> shared) {
-        super(null);
+        super(new Value[0]);
         this.name = name;
         this.initializer = init;
         this.personalAttributes = new HashMap<>(personal.length);
@@ -37,6 +37,11 @@ public class Type extends Value {
     @Override
     public boolean matches(String name) {
         return getName().equals(name);
+    }
+
+    @Override
+    public String asStr() {
+        return "type[" + getName() + "]";
     }
 
     public String getName() {
@@ -78,6 +83,11 @@ public class Type extends Value {
             instance.setType(this);
             return instance;
         }
+    }
+
+    @Override
+    public boolean equals(Value other) {
+        return this == other;
     }
 
     @Override

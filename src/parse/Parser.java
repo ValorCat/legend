@@ -96,6 +96,8 @@ public class Parser {
             return new StringValue(literal);
         } else if (Character.isDigit(literal.charAt(0))) {
             return new IntValue(Integer.parseInt(literal));
+        } else if (literal.equals("true") || literal.equals("false")) {
+            return BoolValue.resolve(literal.equals("true"));
         }
         throw new RuntimeException("Invalid literal type: " + literal);
     }

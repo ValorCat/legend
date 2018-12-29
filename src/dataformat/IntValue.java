@@ -16,7 +16,7 @@ public class IntValue extends Value {
 
     @Override
     public boolean matches(String pattern) {
-        return String.valueOf(value).equals(pattern);
+        return asStr().equals(pattern);
     }
 
     @Override
@@ -24,8 +24,19 @@ public class IntValue extends Value {
         return value;
     }
 
+    @Override
+    public String asStr() {
+        return String.valueOf(value);
+    }
+
     public int getValue() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Value other) {
+        return type() == other.type()
+                && value == ((IntValue) other).value;
     }
 
     @Override
