@@ -1,9 +1,13 @@
 package parse;
 
-import dataformat.*;
-import tokenize.Token;
-import tokenize.Token.TokenType;
-import tokenize.Tokenizer;
+import dataformat.Expression;
+import dataformat.Operation;
+import dataformat.Variable;
+import dataformat.value.BoolValue;
+import dataformat.value.IntValue;
+import dataformat.value.StringValue;
+import dataformat.value.Value;
+import parse.Token.TokenType;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static parse.OperatorTable.OPERATORS;
-import static tokenize.Token.TokenType.OPERATOR;
-import static tokenize.Token.TokenType.PARENS;
+import static parse.Token.TokenType.OPERATOR;
+import static parse.Token.TokenType.PARENS;
 
 /**
  * @since 12/22/2018

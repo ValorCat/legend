@@ -1,4 +1,4 @@
-package dataformat;
+package dataformat.value;
 
 import execute.StandardLibrary;
 

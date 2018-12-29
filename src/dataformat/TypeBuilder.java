@@ -1,6 +1,9 @@
 package dataformat;
 
-import dataformat.FunctionValue.FunctionBody;
+import dataformat.value.FunctionValue;
+import dataformat.value.FunctionValue.FunctionBody;
+import dataformat.value.Type;
+import dataformat.value.Value;
 
 import java.util.HashMap;
 import java.util.Map;

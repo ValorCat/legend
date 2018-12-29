@@ -1,7 +1,6 @@
 package parse;
 
 import javafx.util.Pair;
-import tokenize.Token;
 
 import java.util.*;
 import java.util.function.BiConsumer;

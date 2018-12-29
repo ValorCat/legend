@@ -1,12 +1,10 @@
 package parse;
 
-import tokenize.Token;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static tokenize.Token.TokenType.*;
+import static parse.Token.TokenType.*;
 
 /**
  * @since 12/22/2018

@@ -2,8 +2,8 @@ package execute;
 
 import dataformat.Expression;
 import parse.Parser;
-import tokenize.Token;
-import tokenize.Tokenizer;
+import parse.Token;
+import parse.Tokenizer;
 
 import java.io.IOException;
 import java.nio.file.Files;

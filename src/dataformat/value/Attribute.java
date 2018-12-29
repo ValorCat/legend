@@ -1,4 +1,4 @@
-package dataformat;
+package dataformat.value;
 
 /**
  * @since 12/27/2018

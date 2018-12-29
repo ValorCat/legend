@@ -1,13 +1,14 @@
 package execute;
 
-import dataformat.*;
+import dataformat.TypeBuilder;
+import dataformat.value.*;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.function.ToIntFunction;
 
-import static dataformat.FunctionValue.FunctionBody;
+import static dataformat.value.FunctionValue.FunctionBody;
 
 /**
  * @since 12/24/2018

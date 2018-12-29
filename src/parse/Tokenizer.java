@@ -1,7 +1,6 @@
-package tokenize;
+package parse;
 
-import parse.OperatorTable;
-import tokenize.Token.TokenType;
+import parse.Token.TokenType;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,7 +11,7 @@ import java.util.Stack;
 
 import static java.lang.Character.isLetterOrDigit;
 import static java.lang.Character.isWhitespace;
-import static tokenize.Token.TokenType.*;
+import static parse.Token.TokenType.*;
 
 /**
  * @since 12/21/2018

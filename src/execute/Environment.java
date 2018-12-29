@@ -1,6 +1,8 @@
 package execute;
 
-import dataformat.*;
+import dataformat.value.FunctionValue;
+import dataformat.value.Type;
+import dataformat.value.Value;
 
 import java.util.ArrayList;
 import java.util.HashMap;
