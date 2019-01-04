@@ -1,13 +1,11 @@
 package execute;
 
+import dataformat.flow.FlowController;
 import dataformat.value.FunctionValue;
 import dataformat.value.Type;
 import dataformat.value.Value;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @since 12/23/2018
@@ -28,11 +26,15 @@ public class Environment {
     }
 
     private Map<String, Integer> namespace;
+    private Stack<FlowController> scopeStack;
     private Environment parent;
+    private int programCounter;
 
     public Environment(Environment parent) {
         this.namespace = new HashMap<>();
+        this.scopeStack = new Stack<>();
         this.parent = parent;
+        this.programCounter = 0;
     }
 
     public void assign(String name, Value value) {
@@ -63,6 +65,22 @@ public class Environment {
 
     public Map<String, Integer> getNamespace() {
         return namespace;
+    }
+
+    public Stack<FlowController> getScopeStack() {
+        return scopeStack;
+    }
+
+    public int getCounter() {
+        return programCounter;
+    }
+
+    public void incrementCounter() {
+        this.programCounter++;
+    }
+
+    public void setCounter(int counter) {
+        this.programCounter = counter;
     }
 
     private static int store(Value value) {

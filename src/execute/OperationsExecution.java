@@ -2,11 +2,14 @@ package execute;
 
 import dataformat.ArgumentList;
 import dataformat.Expression;
+import dataformat.flow.FlowController;
+import dataformat.flow.RepeatControl;
 import dataformat.value.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.function.BiFunction;
 
 /**
@@ -35,6 +38,8 @@ public final class OperationsExecution {
         OPERATIONS.put("==", OperationsExecution::equals);
         OPERATIONS.put("!=", OperationsExecution::notEquals);
         OPERATIONS.put("=", OperationsExecution::assign);
+        OPERATIONS.put("end", OperationsExecution::end);
+        OPERATIONS.put("repeat", OperationsExecution::repeat);
     }
 
     private static Value add(List<Expression> operands, Environment env) {
@@ -83,6 +88,16 @@ public final class OperationsExecution {
         return new IntValue(Math.round((float) left / right));
     }
 
+    private static Value end(List<Expression> operands, Environment env) {
+        Stack<FlowController> stack = env.getScopeStack();
+        if (stack.isEmpty()) {
+            throw new RuntimeException("Unexpected 'end'");
+        } else if (stack.peek().onEnd(env)) {
+            stack.pop();
+        }
+        return new IntValue(0);
+    }
+
     private static Value equals(List<Expression> operands, Environment env) {
         Value left = operands.get(0).evaluate(env);
         Value right = operands.get(1).evaluate(env);
@@ -92,17 +107,6 @@ public final class OperationsExecution {
             return BoolValue.resolve(left.asStr().equals(right.asStr()));
         }
         return BoolValue.FALSE;
-    }
-
-    private static Value notEquals(List<Expression> operands, Environment env) {
-        Value left = operands.get(0).evaluate(env);
-        Value right = operands.get(1).evaluate(env);
-        if (left.equals(right)) return BoolValue.FALSE;
-        List<String> types = List.of(left.type().getName(), right.type().getName());
-        if (types.contains("str") && (types.contains("bool") || types.contains("int"))) {
-            return BoolValue.resolve(!left.asStr().equals(right.asStr()));
-        }
-        return BoolValue.TRUE;
     }
 
     private static Value exponentiate(List<Expression> operands, Environment env) {
@@ -149,6 +153,22 @@ public final class OperationsExecution {
         int left = operands.get(0).evaluate(env).asInt();
         int right = operands.get(1).evaluate(env).asInt();
         return new IntValue(left * right);
+    }
+
+    private static Value notEquals(List<Expression> operands, Environment env) {
+        Value left = operands.get(0).evaluate(env);
+        Value right = operands.get(1).evaluate(env);
+        if (left.equals(right)) return BoolValue.FALSE;
+        List<String> types = List.of(left.type().getName(), right.type().getName());
+        if (types.contains("str") && (types.contains("bool") || types.contains("int"))) {
+            return BoolValue.resolve(!left.asStr().equals(right.asStr()));
+        }
+        return BoolValue.TRUE;
+    }
+
+    private static Value repeat(List<Expression> operands, Environment env) {
+        env.getScopeStack().push(new RepeatControl(env));
+        return new IntValue(0);
     }
 
     private static Value subtract(List<Expression> operands, Environment env) {

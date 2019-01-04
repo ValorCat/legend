@@ -1,5 +1,6 @@
-w = 10 == 10
-x = 10 == 5
-y = '10' == 10
-z = 'true' != true
-showenv()
+i = 0
+repeat
+    show(i)
+    i = i + 1
+    exitif(i == 8)   ~ temporary syntax
+end

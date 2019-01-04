@@ -68,11 +68,24 @@ public final class StandardLibrary {
                 return new IntValue(0);
             }),
 
+            func("exitif", (args, env) -> {
+                if (args.args()[0].asBool()) {
+                    System.exit(0);
+
+                }
+                return new IntValue(0);
+            }),
+
             func("read", (args, env) -> {
                 if (args.args().length > 0) {
                     System.out.print(((StringValue) args.args()[0]).getValue());
                 }
                 return new StringValue(input().nextLine());
+            }),
+
+            func("show", (args, env) -> {
+                System.out.println(args.args()[0].asStr());
+                return new IntValue(0);
             }),
 
             func("showenv", (args, env) -> {
