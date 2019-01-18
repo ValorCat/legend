@@ -65,6 +65,7 @@ public class Type extends Value {
         if (value != null) {
             return value;
         }
+        // todo handle inherited attributes
         throw new RuntimeException("Type '" + name + "' has no attribute '" + attribute + "'");
     }
 

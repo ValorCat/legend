@@ -7,6 +7,9 @@ import java.util.function.Predicate;
 import static parse.Token.TokenType.*;
 
 /**
+ * Each static method in this utility class corresponds to one or more Legend
+ * operations. During parsing, these methods check the environmental constraints
+ * of an operator and throw an exception if a constraint is not met.
  * @since 12/22/2018
  */
 public final class OperationsParsing {
@@ -14,6 +17,7 @@ public final class OperationsParsing {
     private OperationsParsing() {}
 
     public static void assignVariable(int pos, List<Token> tokens) {
+        // todo handle expressions in assignment lhs (eg x.y = z)
         binaryOperation(pos, tokens,
                 left -> left.TYPE == IDENTIFIER, "Expected variable name for assignment",
                 Token::isValue, "Expected variable value for assignment");

@@ -89,7 +89,7 @@ public final class OperationsExecution {
     }
 
     private static Value end(List<Expression> operands, Environment env) {
-        Stack<FlowController> stack = env.getScopeStack();
+        Stack<FlowController> stack = env.getControlStack();
         if (stack.isEmpty()) {
             throw new RuntimeException("Unexpected 'end'");
         } else if (stack.peek().onEnd(env)) {
@@ -167,7 +167,7 @@ public final class OperationsExecution {
     }
 
     private static Value repeat(List<Expression> operands, Environment env) {
-        env.getScopeStack().push(new RepeatControl(env));
+        env.getControlStack().push(new RepeatControl(env));
         return new IntValue(0);
     }
 

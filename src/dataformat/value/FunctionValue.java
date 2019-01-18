@@ -41,7 +41,7 @@ public class FunctionValue extends Value {
     }
 
     public Value call(Environment env, Value... args) {
-        return body.apply(new ArgumentList(args), env);
+        return call(new ArgumentList(args), env);
     }
 
     @Override

@@ -11,6 +11,9 @@ import java.util.function.ToIntFunction;
 import static dataformat.value.FunctionValue.FunctionBody;
 
 /**
+ * Maintains a list of built-in types and functions. These values are
+ * inserted into the global environment before user source code is
+ * executed.
  * @since 12/24/2018
  */
 public final class StandardLibrary {

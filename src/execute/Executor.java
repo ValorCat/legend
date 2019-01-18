@@ -1,43 +1,14 @@
 package execute;
 
 import dataformat.Expression;
-import parse.Parser;
-import parse.Token;
-import parse.Tokenizer;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 /**
+ * Execute a sequence of parsed syntax trees.
  * @since 12/24/2018
  */
 public class Executor {
-
-    public static void main(String[] args) throws IOException {
-        String input = new String(Files.readAllBytes(Paths.get("src/input.txt")));
-
-        Tokenizer t = new Tokenizer();
-        List<List<Token>> tokens = t.tokenize(input);
-//        for (List<Token> statement : tokens) {
-//            for (Token token : statement) {
-//                System.out.print(token + "  ");
-//            }
-//            System.out.println();
-//        }
-
-        Parser p = new Parser();
-        List<Expression> trees = p.parse(tokens);
-
-        for (Expression tree : trees) {
-            System.out.println(tree);
-        }
-        System.out.println("\n-------------------------------------------------------------\n");
-
-        Executor e = new Executor();
-        e.execute(trees);
-    }
 
     public void execute(List<Expression> statements) {
         Environment env = new Environment(Environment.GLOBAL);

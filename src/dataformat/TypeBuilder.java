@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A convenience builder class for creating new built-in types.
  * @since 12/27/2018
  */
 public class TypeBuilder {

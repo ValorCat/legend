@@ -3,6 +3,12 @@ package parse;
 import java.util.List;
 
 /**
+ * A token is a fundamental symbol in the source code, such as an operator,
+ * variable, or literal value. A token is represented by a type, value, and
+ * sometimes a token sublist (in the case of grouping tokens like parentheses).
+ * Tokens are created by the {@link Tokenizer} class and consumed by the {@link Parser}
+ * class, which uses them to build a syntax tree.
+ * @see Tokenizer
  * @since 12/21/2018
  */
 public class Token {
@@ -31,6 +37,10 @@ public class Token {
         this(type, null, tokens);
     }
 
+    /**
+     * Determine if this token has already been parsed.
+     * @return whether this token has been parsed
+     */
     public boolean isValue() {
         return TYPE == TokenType.IDENTIFIER
                 || TYPE == TokenType.LITERAL
@@ -49,6 +59,14 @@ public class Token {
         }
     }
 
+    /**
+     * Replace all the tokens in {@code list} between indices {@code start} and {@code start + length}
+     * with {@code result}.
+     * @param list the list to modify
+     * @param result the replacement token
+     * @param start the first index to remove
+     * @param length the number of elements to remove after {@code start}
+     */
     public static void consolidate(List<Token> list, Token result, int start, int length) {
         for (int i = 0; i < length; i++) {
             list.remove(start);

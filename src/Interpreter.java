@@ -10,14 +10,29 @@ import java.nio.file.Files;
 import java.util.List;
 
 /**
+ * This class is the public interface of the interpreter. You can execute a Legend file
+ * by calling {@link #interpret(File)} and passing in the file object.
+ * <p>
+ * Interpretation is a three-step process:
+ * <ol><li>The source code is divided into tokens and statements by the {@link parse.Tokenizer} class.
+ * <li>The statements are parsed into syntax trees by the {@link parse.Parser} class.
+ * <li>The syntax trees are traversed and executed by the {@link execute.Executor} class.</ol>
  * @since 1/15/2019
  */
 public class Interpreter {
 
+    /*
+    This main method executes the provided source file in {@code input.txt}. If you don't want
+    to make a new source file, you can simply edit the provided file and run this method.
+     */
     public static void main(String[] args) {
-        interpret(new File("src/input.txt"));
+        interpret(new File("input.txt"));
     }
 
+    /**
+     * Execute a Legend source file.
+     * @param sourceFile the file to execute
+     */
     public static void interpret(File sourceFile) {
         if (Files.notExists(sourceFile.toPath())) {
             throw new RuntimeException("Couldn't locate source file: " + sourceFile.getAbsolutePath());

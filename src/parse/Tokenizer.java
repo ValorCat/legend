@@ -2,32 +2,20 @@ package parse;
 
 import parse.Token.TokenType;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import static java.lang.Character.isLetterOrDigit;
-import static java.lang.Character.isWhitespace;
 import static parse.Token.TokenType.*;
 
 /**
+ * Convert raw Legend code into a list of tokens. A token is a fundamental symbol in the
+ * source code, such as an operator, variable, or literal value. Tokenization ensures that
+ * a statement can be parsed regardless of its whitespace or internal line breaks.
+ * @see Token
  * @since 12/21/2018
  */
 public class Tokenizer {
-
-    public static void main(String[] args) throws IOException {
-        String input = new String(Files.readAllBytes(Paths.get("src/input.txt")));
-        Tokenizer t = new Tokenizer();
-        for (List<Token> line : t.tokenize(input)) {
-            for (Token token : line) {
-                System.out.print(token + "  ");
-            }
-            System.out.println();
-        }
-    }
 
     private List<List<Token>> tokenized;
     private List<Token> currStatement;
@@ -35,16 +23,30 @@ public class Tokenizer {
     private char prev;
     private char stringType;
 
+    /**
+     * Convert source code into a 2-dimensional list of tokens, where the rows represent
+     * statements and the columns represent the tokens in each statement. The output of
+     * this method is intended to be passed to the {@link Parser} class.
+     * @param input the raw source code
+     * @return a 2-dimensional list of tokens
+     */
     public List<List<Token>> tokenize(String input) {
         initialize();
+
+        // add a final newline if it's missing
         if (!input.endsWith("\n")) {
             input += "\n";
         }
+
+        // go through each token
         for (int i = 0; i < input.length(); i++) {
             char curr = input.charAt(i);
             breakToken(curr);
             breakStatement(curr);
+
+            // check for comments
             if (curr == '~') {
+                // jump to end of comment
                 int lineEnd = input.indexOf('\n', i);
                 i = lineEnd < 0 ? input.length() : lineEnd;
                 curr = '\n';
@@ -64,27 +66,40 @@ public class Tokenizer {
         stringType = 0;
     }
 
-    private void buildToken(char curr) {
-        if (curr == '\'' || curr == '"') {
+    /**
+     * Add a character to the current token.
+     * @param c the character to add
+     */
+    private void buildToken(char c) {
+        // check if the character is the start or end of a string
+        if (c == '\'' || c == '"') {
             if (stringType == 0) {
-                stringType = curr;
-                currToken.append(curr);
+                // we are now inside a string
+                stringType = c;
+                currToken.append(c);
             } else {
+                // we are now outside a string
                 stringType = 0;
             }
-        } else if (stringType != 0 || !isWhitespace(curr)) {
-            currToken.append(curr);
+        } else if (stringType != 0 || !Character.isWhitespace(c)) {
+            currToken.append(c);
         }
     }
 
-    private void breakToken(char curr) {
+    /**
+     * Determine if a character is part of the current token. If it isn't, the
+     * current token is completed and added to the final token list.
+     * @param c the character to check with
+     */
+    private void breakToken(char c) {
         TokenType type = null;
-
-        if (stringType == curr) {
+        if (stringType == c) {
+            // we are at the end of a string
             type = LITERAL;
             currToken.deleteCharAt(0);
         } else if (stringType == 0) {
-            if (isValue(prev) && !isValue(curr)) {
+            // we are not in a string
+            if (isValue(prev) && !isValue(c)) {
                 if (isKeyword(currToken)) {
                     type = OPERATOR;
                 } else if (isLiteral(currToken)) {
@@ -92,19 +107,25 @@ public class Tokenizer {
                 } else {
                     type = IDENTIFIER;
                 }
-            } else if (isSymbol(prev) && !isLongSymbol(prev, curr)) {
+            } else if (isSymbol(prev) && !isLongSymbol(prev, c)) {
                 type = OPERATOR;
             }
         }
 
+        // check if the current token is finished
         if (type != null) {
             currStatement.add(new Token(type, currToken.toString()));
             currToken.setLength(0);
         }
     }
 
-    private void breakStatement(char curr) {
-        if (curr == '\n' || curr == '~') {
+    /**
+     * Determine if a character marks the end of the current statement. If it
+     * does, the statement is added to the final list of statements.
+     * @param c the character to check with
+     */
+    private void breakStatement(char c) {
+        if (c == '\n' || c == '~') {
             if (stringType != 0) {
                 throw new RuntimeException("Unterminated string literal");
             }
@@ -116,42 +137,76 @@ public class Tokenizer {
         }
     }
 
+    /**
+     * Determine if a character is a valid part of an identifier, i.e. it
+     * is a letter, digit, or underscore.
+     * @param c the character to check
+     * @return whether the character is a valid part of an identifier
+     */
     private static boolean isValue(char c) {
-        return isLetterOrDigit(c) || c == '_';
+        return Character.isLetterOrDigit(c) || c == '_';
     }
 
+    /**
+     * Determine if a token is a valid keyword, like 'if' or 'while'.
+     * @param token the token to check
+     * @return whether the token is a valid keyword
+     */
     private static boolean isKeyword(CharSequence token) {
-        return List.of("else", "end", "match", "repeat", "to")
-                .contains(token.toString());
+        return OperatorTable.KEYWORDS.contains(token.toString());
     }
 
-    private static boolean isLiteral(StringBuilder token) {
+    /**
+     * Determine if a token is a literal integer or boolean. This method does not
+     * handle string literals.
+     * @param token the token to check
+     * @return whether the token is a valid literal
+     */
+    private static boolean isLiteral(CharSequence token) {
         String str = token.toString();
         return str.matches("\\d+") || str.equals("true") || str.equals("false");
     }
 
+    /**
+     * Determine if a character is punctuation.
+     * @param c the character to check
+     * @return whether the character is punctuation
+     */
     private static boolean isSymbol(char c) {
         return "!@#$%^&*()-=+[]{};:,.<>/?".indexOf(c) >= 0;
     }
 
+    /**
+     * Determine if two characters form a valid token, like '!=' and '<='.
+     * @param first the first character in the symbol
+     * @param second the second character in the symbol
+     * @return whether the two characters form a valid token
+     */
     private static boolean isLongSymbol(char first, char second) {
         String symbol = new String(new char[] {first, second});
         return OperatorTable.LONG_SYMBOLS.contains(symbol);
     }
 
+    /**
+     * Search a finished statement for matching pairs of (), [], or {}, and
+     * combine all the tokens inbetween into a single aggregate token.
+     * @param tokens the statement to search
+     */
     private static void aggregateGroups(List<Token> tokens) {
         Stack<TokenType> delimiters = new Stack<>();
         Stack<Integer> starts = new Stack<>();
         for (int i = 0; i < tokens.size(); i++) {
-            String value = tokens.get(i).VALUE;
-            if (value.equals("(")) {
+            String token = tokens.get(i).VALUE;
+            if (token.equals("(")) {
+                // if there's an identifier immediately before parentheses,
+                // then mark it as a function call
                 if (i > 0 && tokens.get(i - 1).TYPE != LITERAL && tokens.get(i - 1).TYPE != OPERATOR) {
                     tokens.add(i, new Token(OPERATOR, "call"));
                     i++;
                 }
                 delimiters.push(PARENS);
                 starts.push(i);
-            } else if (value.equals(")")) {
+            } else if (token.equals(")")) {
                 if (delimiters.isEmpty() || delimiters.pop() != PARENS) {
                     throw new RuntimeException("Unexpected ')'");
                 }
