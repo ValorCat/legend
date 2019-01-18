@@ -1,4 +1,4 @@
-#Legend
+# Legend
 Legend is a WIP multi-purpose programming language that is intended to be intuitive and easy to learn.
 
 Here's an example of a program that reads and stores movie ratings across sessions:
