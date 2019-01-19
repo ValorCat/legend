@@ -1,5 +1,8 @@
 package parse;
 
+import dataformat.Expression;
+import dataformat.Operation;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -30,13 +33,6 @@ public final class OperationsParsing {
     }
 
     public static void getAttribute(int pos, List<Token> tokens) {
-        boolean leftValue = pos > 0 && tokens.get(pos - 1).isValue();
-        boolean rightValue = pos != tokens.size() - 1 && tokens.get(pos + 1).isValue();
-        if (leftValue && !rightValue) {
-            tokens.add(pos + 1, new Token(LITERAL, "0"));
-        } else if (!leftValue && rightValue) {
-            tokens.add(pos, new Token(LITERAL, "0"));
-        }
         binaryOperation(pos, tokens);
     }
 
@@ -58,30 +54,22 @@ public final class OperationsParsing {
         } else if (tokens.size() > 1) {
             throw new RuntimeException("Unexpected symbol after '" + keyword + "'");
         }
-        tokens.set(pos, new Token(OPERATION, tokens.get(pos).VALUE));
+        tokens.set(pos, new Token(EXPRESSION, keyword, new Operation(keyword)));
     }
 
     public static void mapKeyToValue(int pos, List<Token> tokens) {
         binaryOperation(pos, tokens);
     }
 
-    public static void matchExpression(int pos, List<Token> tokens) {
-        if (pos == tokens.size() - 1 || !tokens.get(pos + 1).isValue()) {
-            throw new RuntimeException("Expected value after 'match'");
-        }
-        tokens.set(pos, new Token(OPERATION, "match", tokens.get(pos + 1)));
-        tokens.remove(pos + 1);
-    }
-
     public static void separateByCommas(int pos, List<Token> tokens) {
         binaryOperation(pos, tokens,
                 Token::isValue, "Expected value before comma",
                 Token::isValue, "Expected value after comma");
-        List<Token> children = tokens.get(pos - 1).CHILDREN;
-        if (children.get(0).VALUE.equals(",")) {
-            List<Token> newChildren = new ArrayList<>(children.get(0).CHILDREN);
+        List<Expression> children = tokens.get(pos - 1).EXPRESSION.getChildren();
+        if (children.get(0).matches(",")) {
+            List<Expression> newChildren = new ArrayList<>(children.get(0).getChildren());
             newChildren.add(children.get(1));
-            tokens.get(pos - 1).CHILDREN = newChildren;
+            tokens.set(pos - 1, new Token(EXPRESSION, ",", new Operation(",", newChildren)));
         }
     }
 
@@ -94,6 +82,7 @@ public final class OperationsParsing {
 
     private static void binaryOperation(int pos, List<Token> tokens, Predicate<Token> leftCheck, String leftError,
                                         Predicate<Token> rightCheck, String rightError) {
+        String operator = tokens.get(pos).VALUE;
         Token left = null;
         Token right = null;
         if (pos > 0) left = tokens.get(pos - 1);
@@ -105,7 +94,8 @@ public final class OperationsParsing {
             throw new RuntimeException(rightError);
         }
 
-        Token operation = new Token(OPERATION, tokens.get(pos).VALUE, left, right);
+        Operation expression = new Operation(operator, left.asExpression(), right.asExpression());
+        Token operation = new Token(EXPRESSION, operator, expression);
         Token.consolidate(tokens, operation, pos - 1, 3);
     }
 

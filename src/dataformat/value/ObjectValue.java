@@ -12,6 +12,11 @@ public class ObjectValue extends Value {
     }
 
     @Override
+    public String asStr() {
+        return toString();
+    }
+
+    @Override
     public boolean equals(Value other) {
         return (this == other)
                 || ((type() == other.type()) && Arrays.equals(getAttributes(), other.getAttributes()));

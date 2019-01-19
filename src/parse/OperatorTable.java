@@ -51,7 +51,6 @@ public final class OperatorTable {
             List.of(new Pair<>(",",     OperationsParsing::separateByCommas)),
             List.of(new Pair<>("=",     OperationsParsing::assignVariable)),
             List.of(new Pair<>("end",   OperationsParsing::handleStandaloneKeyword),
-                    new Pair<>("match", OperationsParsing::matchExpression),
                     new Pair<>("repeat", OperationsParsing::handleStandaloneKeyword))
     );
 

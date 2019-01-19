@@ -2,11 +2,6 @@ package parse;
 
 import dataformat.Expression;
 import dataformat.Operation;
-import dataformat.Variable;
-import dataformat.value.BoolValue;
-import dataformat.value.IntValue;
-import dataformat.value.StringValue;
-import dataformat.value.Value;
 import parse.Token.TokenType;
 
 import java.util.ArrayList;
@@ -35,21 +30,17 @@ public class Parser {
     public List<Expression> parse(List<List<Token>> tokens) {
         List<Expression> trees = new ArrayList<>(tokens.size());
         for (List<Token> statement : tokens) {
-            Token root = parseExpression(statement);
-            trees.add(convertToTree(root));
+            trees.add(parseExpression(statement));
         }
         return trees;
     }
 
     /**
-     * Convert a statement into a tree of tokens, arranged by their precedence levels.
-     * Note that this tree is only an intermediate step in creating the final syntax
-     * tree for a particular statement. The tree returned by this method is intended
-     * to be passed to the {@link #convertToTree(Token)} method.
-     * @param statement the statement to convert; it is not preserved by this method
-     * @return the root of a token tree
+     * Convert a statement into a parsed syntax tree.
+     * @param statement the statement to convert, which will be consumed and destroyed
+     * @return the root of a syntax tree
      */
-    private Token parseExpression(List<Token> statement) {
+    private Expression parseExpression(List<Token> statement) {
         List<Token> precedence = getPrecedence(statement);
         for (Token operator : precedence) {
             int position = statement.indexOf(operator);
@@ -62,52 +53,13 @@ public class Parser {
         if (statement.isEmpty()) {
             // if the expression was empty (such as empty parentheses to a function call),
             // then treat it like a comma with no children
-            statement.add(new Token(TokenType.OPERATION, ",", List.of()));
+            statement.add(new Token(TokenType.EXPRESSION, ",", new Operation(",")));
         } else if (statement.size() > 1) {
             // this happens if an operator is missing from the expression
             // for example: 3 x * 2
             throw new RuntimeException("Expression resolved to multiple values: " + statement);
         }
-        return statement.get(0);
-    }
-
-    /**
-     * Convert a token tree into the final syntax tree.
-     * @param node the root of the token tree
-     * @return a syntax tree representing a single statement
-     */
-    private static Expression convertToTree(Token node) {
-        switch (node.TYPE) {
-            case LITERAL:
-                return parseLiteral(node.VALUE);
-            case IDENTIFIER:
-                return new Variable(node.VALUE);
-            case OPERATION:
-                List<Expression> children = new ArrayList<>(node.CHILDREN.size());
-                for (Token child : node.CHILDREN) {
-                    children.add(convertToTree(child));
-                }
-                return new Operation(node.VALUE, children);
-            default:
-                throw new RuntimeException("Unexpected token: " + node);
-        }
-    }
-
-    /**
-     * Convert a string representing a literal, like "5" or "false", into an
-     * Expression object.
-     * @param literal the string to convert
-     * @return an object that represents the same literal
-     */
-    private static Value parseLiteral(String literal) {
-        if (literal.charAt(0) == '\'') {
-            return new StringValue(literal);
-        } else if (Character.isDigit(literal.charAt(0))) {
-            return new IntValue(Integer.parseInt(literal));
-        } else if (literal.equals("true") || literal.equals("false")) {
-            return BoolValue.resolve(literal.equals("true"));
-        }
-        throw new RuntimeException("Invalid literal type: " + literal);
+        return statement.get(0).EXPRESSION;
     }
 
     /**
@@ -123,6 +75,7 @@ public class Parser {
             if (token.TYPE == OPERATOR) {
                 ordering.add(token);
             } else if (token.TYPE == PARENS) {
+                // todo move paren parsing to another method
                 parseExpression(token.CHILDREN);
                 statement.set(i, token.CHILDREN.get(0));
             }

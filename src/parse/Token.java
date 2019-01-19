@@ -1,5 +1,11 @@
 package parse;
 
+import dataformat.Expression;
+import dataformat.Variable;
+import dataformat.value.BoolValue;
+import dataformat.value.IntValue;
+import dataformat.value.StringValue;
+
 import java.util.List;
 
 /**
@@ -13,38 +19,57 @@ import java.util.List;
  */
 public class Token {
 
-    public enum TokenType { IDENTIFIER, LITERAL, OPERATOR, OPERATION, PARENS }
+    public enum TokenType { EXPRESSION, IDENTIFIER, LITERAL, OPERATOR, PARENS }
 
     public final TokenType TYPE;
     public final String VALUE;
-    public List<Token> CHILDREN;
+    public final Expression EXPRESSION;
+    public final List<Token> CHILDREN;
 
-    public Token(TokenType type, String value, List<Token> tokens) {
+    private Token(TokenType type, String value, Expression expression, List<Token> tokens) {
         TYPE = type;
         VALUE = value;
+        EXPRESSION = expression;
         CHILDREN = tokens;
     }
 
     public Token(TokenType type, String value, Token... tokens) {
-        this(type, value, List.of(tokens));
-    }
-
-    public Token(TokenType type, String value) {
-        this(type, value, List.of());
+        this(type, value, null, List.of(tokens));
     }
 
     public Token(TokenType type, List<Token> tokens) {
-        this(type, null, tokens);
+        this(type, null, null, tokens);
+    }
+
+    public Token(TokenType type, String value, Expression expression) {
+        this(type, value, expression, List.of());
     }
 
     /**
-     * Determine if this token has already been parsed.
-     * @return whether this token has been parsed
+     * Check if this token is not an operator.
+     * @return whether this token is not an operator
      */
     public boolean isValue() {
-        return TYPE == TokenType.IDENTIFIER
-                || TYPE == TokenType.LITERAL
-                || TYPE == TokenType.OPERATION;
+        return TYPE != TokenType.OPERATOR;
+    }
+
+    public Expression asExpression() {
+        switch (TYPE) {
+            case EXPRESSION:
+                return EXPRESSION;
+            case IDENTIFIER:
+                return new Variable(VALUE);
+            case LITERAL:
+                if (Character.isDigit(VALUE.charAt(0))) {
+                    return new IntValue(Integer.parseInt(VALUE));
+                } else if (VALUE.equals("true") || VALUE.equals("false")) {
+                    return BoolValue.resolve(VALUE.equals("true"));
+                } else {
+                    return new StringValue(VALUE);
+                }
+            default:
+                throw new RuntimeException("Unexpected token: " + VALUE);
+        }
     }
 
     @Override
@@ -60,8 +85,7 @@ public class Token {
     }
 
     /**
-     * Replace all the tokens in {@code list} between indices {@code start} and {@code start + length}
-     * with {@code result}.
+     * Replace all the tokens between two indices in a list with a single token.
      * @param list the list to modify
      * @param result the replacement token
      * @param start the first index to remove
