@@ -6,6 +6,7 @@ import dataformat.value.BoolValue;
 import dataformat.value.IntValue;
 import dataformat.value.StringValue;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,6 +16,7 @@ import java.util.List;
  * Tokens are created by the {@link Tokenizer} class and consumed by the {@link Parser}
  * class, which uses them to build a syntax tree.
  * @see Tokenizer
+ * @see Parser
  * @since 12/21/2018
  */
 public class Token {
@@ -41,8 +43,8 @@ public class Token {
         this(type, null, null, tokens);
     }
 
-    public Token(TokenType type, String value, Expression expression) {
-        this(type, value, expression, List.of());
+    public Token(String value, Expression expression) {
+        this(TokenType.EXPRESSION, value, expression, Collections.emptyList());
     }
 
     /**

@@ -1,13 +1,11 @@
 package parse;
 
 import dataformat.Expression;
-import dataformat.Operation;
-import parse.Token.TokenType;
+import dataformat.operation.CommaList;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static parse.OperatorTable.OPERATORS;
 import static parse.Token.TokenType.OPERATOR;
 import static parse.Token.TokenType.PARENS;
 
@@ -48,12 +46,12 @@ public class Parser {
                 throw new RuntimeException("Couldn't find operator '" + operator.VALUE + "';\n  statement="
                         + statement + "\n  precedence=" + precedence);
             }
-            OPERATORS.validate(position, statement);
+            OperatorTable.parseOperation(position, statement);
         }
         if (statement.isEmpty()) {
             // if the expression was empty (such as empty parentheses to a function call),
             // then treat it like a comma with no children
-            statement.add(new Token(TokenType.EXPRESSION, ",", new Operation(",")));
+            statement.add(new Token(",", new CommaList()));
         } else if (statement.size() > 1) {
             // this happens if an operator is missing from the expression
             // for example: 3 x * 2

@@ -3,6 +3,7 @@ package dataformat;
 import dataformat.value.Value;
 import execute.Environment;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public interface Expression {
      * @return this expressions's sub-expressions, if any
      */
     default List<Expression> getChildren() {
-        return List.of();
+        return Collections.emptyList();
     }
 
 }
