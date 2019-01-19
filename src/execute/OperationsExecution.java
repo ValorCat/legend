@@ -62,7 +62,7 @@ public final class OperationsExecution {
             throw new RuntimeException("Operator 'to' expected (int, int) but got (" + left.type() + ", "
                     + right.type() + "' instead");
         }
-        return StandardLibrary.type("range").create(left, right);
+        return StandardLibrary.type("range").instantiate(new ArgumentList(left, right), env);
     }
 
     private static Value call(List<Expression> operands, Environment env) {

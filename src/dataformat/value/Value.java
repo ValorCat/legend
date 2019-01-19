@@ -4,19 +4,13 @@ import dataformat.Expression;
 import execute.Environment;
 import execute.StandardLibrary;
 
-import java.util.Arrays;
-
 /**
  * @since 12/24/2018
  */
-public class Value implements Expression {
+public abstract class Value implements Expression {
 
     private Type type;
     private Value[] attributes;
-
-    public Value(Value[] attributes) {
-        this(null, attributes);
-    }
 
     public Value(Type type, Value... attributes) {
         this.type = type;
@@ -69,13 +63,6 @@ public class Value implements Expression {
         throw new UnsupportedOperationException("Cannot get owner of non-attribute");
     }
 
-    public boolean equals(Value other) {
-        return (this == other) || ((type == other.type) && Arrays.equals(attributes, other.attributes));
-    }
-
-    @Override
-    public String toString() {
-        return type().getName() + Arrays.toString(attributes);
-    }
+    public abstract boolean equals(Value other);
 
 }

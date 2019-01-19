@@ -27,4 +27,10 @@ public class Attribute extends Value {
         return value;
     }
 
+    @Override
+    public boolean equals(Value other) {
+        // this shouldn't be reachable if operator precedence rules are working
+        throw new UnsupportedOperationException("Cannot compare attribute name");
+    }
+
 }

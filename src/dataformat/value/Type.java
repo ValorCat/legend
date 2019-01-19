@@ -24,7 +24,7 @@ public class Type extends Value {
     }
 
     public Type(String name, FunctionBody init, String[] personal, Map<String, Value> shared) {
-        super(new Value[0]);
+        super(null);
         this.name = name;
         this.initializer = init;
         this.personalAttributes = new HashMap<>(personal.length);
@@ -69,17 +69,13 @@ public class Type extends Value {
         throw new RuntimeException("Type '" + name + "' has no attribute '" + attribute + "'");
     }
 
-    public Value create(Value... attributes) {
-        return new Value(this, attributes);
-    }
-
     public Value instantiate(ArgumentList args, Environment env) {
         if (initializer == null) {
             if (!args.keywords().isEmpty()) {
                 throw new RuntimeException("Type '" + getName() + "' does not accept keyword arguments");
             }
             // todo check params = args
-            return new Value(this, args.args());
+            return new ObjectValue(this, args.args());
         } else {
             Value instance = initializer.apply(args, env);
             instance.setType(this);
