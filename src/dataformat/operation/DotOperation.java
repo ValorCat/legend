@@ -1,5 +1,6 @@
 package dataformat.operation;
 
+import dataformat.Expression;
 import dataformat.value.Attribute;
 import dataformat.value.FunctionValue;
 import dataformat.value.Value;
@@ -20,9 +21,10 @@ public class DotOperation extends Operation {
     @Override
     protected void parse(int pos, List<Token> tokens) {
         super.parse(pos, tokens);
-        if (tokens.get(pos + 1).TYPE != Token.TokenType.IDENTIFIER) {
-            throw new RuntimeException("Expected attribute name after '.', got '" + tokens.get(pos + 1).VALUE + "'");
-        }
+
+        // ensure that second operand is an identifier
+        Expression dotOperation = tokens.get(pos - 1).EXPRESSION;
+        dotOperation.getChildren().get(1).getIdentifier();
     }
 
     @Override

@@ -198,12 +198,6 @@ public class Tokenizer {
         for (int i = 0; i < tokens.size(); i++) {
             String token = tokens.get(i).VALUE;
             if (token.equals("(")) {
-                // if there's an identifier immediately before parentheses,
-                // then mark it as a function call
-                if (i > 0 && tokens.get(i - 1).TYPE != LITERAL && tokens.get(i - 1).TYPE != OPERATOR) {
-                    tokens.add(i, new Token(OPERATOR, "call"));
-                    i++;
-                }
                 delimiters.push(PARENS);
                 starts.push(i);
             } else if (token.equals(")")) {

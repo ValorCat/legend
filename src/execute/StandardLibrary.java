@@ -1,8 +1,10 @@
 package execute;
 
+import dataformat.ArgumentList;
 import dataformat.TypeBuilder;
 import dataformat.value.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -25,7 +27,12 @@ public final class StandardLibrary {
     static {
         TYPES.put("func", TypeBuilder.create("func").build());
         TYPES.put("bool", TypeBuilder.create("bool").build());
-        TYPES.put("int", TypeBuilder.create("int").build());
+        TYPES.put("int", TypeBuilder.create("int")
+                .shared("to", (args, env) -> {
+                    ArgumentList bounds = new ArgumentList(args.target(), args.args()[0]);
+                    return TYPES.get("range").instantiate(bounds, env);
+                })
+                .build());
         TYPES.put("list", TypeBuilder.create("list")
                 .shared("max", (args, env) -> {
                     Value[] list = args.target().getAttributes();
@@ -45,6 +52,10 @@ public final class StandardLibrary {
                         }
                     }
                     return max;
+                })
+                .shared("show", (args, env) -> {
+                    System.out.println(Arrays.toString(args.target().getAttributes()));
+                    return new IntValue(0);
                 })
                 .build());
         TYPES.put("range", TypeBuilder.create("range").personal("left", "right").build());

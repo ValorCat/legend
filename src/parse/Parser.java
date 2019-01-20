@@ -6,8 +6,7 @@ import dataformat.operation.CommaList;
 import java.util.ArrayList;
 import java.util.List;
 
-import static parse.Token.TokenType.OPERATOR;
-import static parse.Token.TokenType.PARENS;
+import static parse.Token.TokenType.*;
 
 /**
  * Convert the tokens produced by the {@link Tokenizer} class into a syntax tree.
@@ -39,6 +38,12 @@ public class Parser {
      * @return the root of a syntax tree
      */
     private Expression parseExpression(List<Token> statement) {
+        if (statement.isEmpty()) {
+            // if there are no tokens (such as from empty parens to a function call),
+            // just return an empty list
+            return new CommaList();
+        }
+        injectImplicitOperators(statement);
         List<Token> precedence = getPrecedence(statement);
         for (Token operator : precedence) {
             int position = statement.indexOf(operator);
@@ -48,11 +53,7 @@ public class Parser {
             }
             OperatorTable.parseOperation(position, statement);
         }
-        if (statement.isEmpty()) {
-            // if the expression was empty (such as empty parentheses to a function call),
-            // then treat it like a comma with no children
-            statement.add(new Token(",", new CommaList()));
-        } else if (statement.size() > 1) {
+        if (statement.size() > 1) {
             // this happens if an operator is missing from the expression
             // for example: 3 x * 2
             throw new RuntimeException("Expression resolved to multiple values: " + statement);
@@ -80,6 +81,32 @@ public class Parser {
         }
         ordering.sort(OperatorTable.byPrecedence());
         return ordering;
+    }
+
+    /**
+     * Insert special implict operators into the token list prior to
+     * beginning the main process of parsing. Examples of implicit
+     * operations include function calls and custom operators.
+     * @param tokens the token list to insert into
+     */
+    private static void injectImplicitOperators(List<Token> tokens) {
+        for (int i = 0; i < tokens.size(); i++) {
+            Token current = tokens.get(i);
+            int distanceFromEnd = tokens.size() - i - 1;
+            if (current.isValue() && distanceFromEnd > 0) {
+                Token next = tokens.get(i + 1);
+                if (next.TYPE == PARENS) {
+                    tokens.add(i + 1, new Token(OPERATOR, "call"));
+                } else if (next.TYPE == IDENTIFIER) {
+                    if (distanceFromEnd == 1 || !tokens.get(i + 2).isValue()) {
+                        tokens.add(i + 1, new Token(OPERATOR, "unop"));
+                    } else {
+                        tokens.add(i + 1, new Token(OPERATOR, "."));
+                        tokens.add(i + 3, new Token(OPERATOR, "biop"));
+                    }
+                }
+            }
+        }
     }
 
 }

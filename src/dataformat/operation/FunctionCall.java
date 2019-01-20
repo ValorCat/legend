@@ -27,12 +27,16 @@ public class FunctionCall extends Operation {
             arguments.setTarget(executable.getOwner());
             executable = ((Attribute) executable).getValue();
         }
+        return call(executable, arguments, env);
+    }
+
+    public static Value call(Value executable, ArgumentList args, Environment env) {
         if (executable.isType("func")) {
             FunctionValue func = ((FunctionValue) executable);
             // todo check if args match params
-            return func.call(arguments, env);
+            return func.call(args, env);
         } else if (executable.isType("type")) {
-            return ((Type) executable).instantiate(arguments, env);
+            return ((Type) executable).instantiate(args, env);
         }
         throw new RuntimeException("Cannot execute object of type '" + executable.type().getName() + "'");
     }

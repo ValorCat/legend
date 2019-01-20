@@ -26,8 +26,9 @@ public class CommaList extends Operation {
     protected void parse(int pos, List<Token> tokens) {
         super.parse(pos, tokens);
         if (operands.get(0).matches(",")) {
-            operands = new ArrayList<>(operands.get(0).getChildren());
-            operands.add(operands.get(1));
+            List<Expression> newOperands = new ArrayList<>(operands.get(0).getChildren());
+            newOperands.add(operands.get(1));
+            operands = newOperands;
         }
     }
 

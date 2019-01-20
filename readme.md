@@ -8,10 +8,10 @@ movies = autosave(list())
 repeat
     "Enter command: {input = read()}"
     match input
-        'best': show movies.max(_.rating)
+        'best': movies max(by: _.rating) show
         'exit': exit()
-        'list': movies.show()
-        'rate': movies.read()
+        'list': movies show
+        'rate': movies read
         else: "Commands: best, exit, list, or rate."
     end
 end

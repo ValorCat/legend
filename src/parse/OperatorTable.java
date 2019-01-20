@@ -20,10 +20,10 @@ public final class OperatorTable {
      */
     private static final OperatorTable OPERATORS = defineOperations(new String[][] {
             {".", "call"},          // highest precedence
+            {"unop", "biop"},
             {"^"},
             {"*", "/"},
             {"+", "-"},
-            {"to"},
             {"<", "<=", ">", ">="},
             {"==", "!="},
             {":"},
@@ -37,7 +37,7 @@ public final class OperatorTable {
     to unusual operators.
      */
     public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=");
-    public static final Set<String> KEYWORDS = Set.of("else", "end", "match", "repeat", "to");
+    public static final Set<String> KEYWORDS = Set.of("else", "end", "match", "repeat");
 
     /**
      * Verify an operator's environmental constraints are met (e.g. for the '+'
@@ -54,11 +54,14 @@ public final class OperatorTable {
             case "call":
                 new FunctionCall(pos, statement);
                 break;
+            case "unop":
+                new UnaryOperatorCall(pos, statement);
+                break;
+            case "biop":
+                new BinaryOperatorCall(pos, statement);
+                break;
             case "^": case "*": case "/": case "+": case "-":
                 new ArithmeticOperation(pos, statement);
-                break;
-            case "to":
-                new ToOperation(pos, statement);
                 break;
             case "<": case ">": case "<=": case ">=":
                 new ComparisonOperation(pos, statement);
