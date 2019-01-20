@@ -1,6 +1,7 @@
-package dataformat.operation;
+package dataformat.operation.function;
 
 import dataformat.ArgumentList;
+import dataformat.operation.Operation;
 import dataformat.value.Attribute;
 import dataformat.value.FunctionValue;
 import dataformat.value.Type;

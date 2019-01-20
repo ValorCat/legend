@@ -1,6 +1,7 @@
-package dataformat.operation;
+package dataformat.operation.function;
 
 import dataformat.ArgumentList;
+import dataformat.operation.Operation;
 import dataformat.value.Value;
 import execute.Environment;
 import parse.Token;

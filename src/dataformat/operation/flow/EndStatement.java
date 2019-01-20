@@ -1,6 +1,6 @@
-package dataformat.operation;
+package dataformat.operation.flow;
 
-import dataformat.flow.FlowController;
+import dataformat.operation.Operation;
 import dataformat.value.IntValue;
 import dataformat.value.Value;
 import execute.Environment;
