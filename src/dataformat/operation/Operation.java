@@ -66,7 +66,7 @@ public abstract class Operation implements Expression {
         Token.consolidate(tokens, new Token( operator, this), pos - 1, 3);
     }
 
-    public void parseStandaloneOperation(int pos, List<Token> tokens) {
+    protected void parseStandaloneOperation(int pos, List<Token> tokens) {
         String operator = tokens.get(pos).VALUE;
         if (pos > 0) {
             throw new RuntimeException("Unexpected symbol '" + operator + "'");
