@@ -32,12 +32,12 @@ public class RepeatStatement extends Operation implements FlowController {
     }
 
     @Override
-    public void onBegin(Environment env) {}
-
-    @Override
-    public boolean onEnd(Environment env) {
-        env.setCounter(startIndex);
+    public boolean isDone(Environment env) {
+        env.setCounter(startIndex + 1);
         return false;
     }
+
+    @Override
+    public void setEndIndex(int endIndex) {}
 
 }

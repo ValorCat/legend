@@ -10,7 +10,7 @@ import execute.Environment;
  */
 public interface FlowController {
 
-    void onBegin(Environment env);
-    boolean onEnd(Environment env);
+    boolean isDone(Environment env);
+    void setEndIndex(int endIndex);
 
 }

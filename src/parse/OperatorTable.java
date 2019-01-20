@@ -3,6 +3,7 @@ package parse;
 import dataformat.operation.*;
 import dataformat.operation.flow.EndStatement;
 import dataformat.operation.flow.RepeatStatement;
+import dataformat.operation.flow.WhileStatement;
 import dataformat.operation.function.BinaryOperatorCall;
 import dataformat.operation.function.FunctionCall;
 import dataformat.operation.function.UnaryOperatorCall;
@@ -24,8 +25,8 @@ public final class OperatorTable {
     during tokenization and their corresponding operators are inserted implicitly.
      */
     private static final OperatorTable OPERATORS = defineOperations(new String[][] {
-            {".", "call"},          // highest precedence
-            {"unop", "biop"},
+            {".", "call"},
+            {"unop", "biop"},       // high precedence
             {"^"},
             {"*", "/"},
             {"+", "-"},
@@ -33,8 +34,8 @@ public final class OperatorTable {
             {"==", "!="},
             {":"},
             {","},
-            {"="},
-            {"end", "repeat"}       // lowest precedence
+            {"="},                  // low precedence
+            {"end", "repeat", "while"}
     });
 
     /*
@@ -42,7 +43,7 @@ public final class OperatorTable {
     to unusual operators.
      */
     public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=");
-    public static final Set<String> KEYWORDS = Set.of("else", "end", "match", "repeat");
+    public static final Set<String> KEYWORDS = Set.of("else", "end", "match", "repeat", "while");
 
     /**
      * Verify an operator's environmental constraints are met (e.g. for the '+'
@@ -88,6 +89,9 @@ public final class OperatorTable {
                 break;
             case "repeat":
                 new RepeatStatement(pos, statement);
+                break;
+            case "while":
+                new WhileStatement(pos, statement);
                 break;
             default: throw new RuntimeException("Invalid operator '" + statement.get(pos).VALUE + "'");
         }

@@ -2,9 +2,12 @@ package parse;
 
 import dataformat.Expression;
 import dataformat.operation.CommaList;
+import dataformat.operation.flow.EndStatement;
+import dataformat.operation.flow.FlowController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import static parse.Token.TokenType.*;
 
@@ -26,8 +29,19 @@ public class Parser {
      */
     public List<Expression> parse(List<List<Token>> tokens) {
         List<Expression> trees = new ArrayList<>(tokens.size());
-        for (List<Token> statement : tokens) {
-            trees.add(parseExpression(statement));
+        Stack<FlowController> controlStack = new Stack<>();
+        for (int i = 0; i < tokens.size(); i++) {
+            Expression treeRoot = parseExpression(tokens.get(i));
+            trees.add(treeRoot);
+            if (treeRoot instanceof FlowController) {
+                controlStack.push(((FlowController) treeRoot));
+            } else if (treeRoot instanceof EndStatement) {
+                if (controlStack.isEmpty()) {
+                    throw new RuntimeException("Unexpected 'end'");
+                }
+                FlowController controller = controlStack.pop();
+                controller.setEndIndex(i);
+            }
         }
         return trees;
     }

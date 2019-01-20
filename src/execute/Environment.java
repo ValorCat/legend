@@ -46,6 +46,7 @@ public class Environment {
     private Stack<FlowController> controlStack;
     private Environment parent;
     private int programCounter;
+    private boolean programCounterChanged;
 
     public Environment(Environment parent) {
         this.namespace = new HashMap<>();
@@ -103,11 +104,15 @@ public class Environment {
     }
 
     public void incrementCounter() {
-        this.programCounter++;
+        if (!this.programCounterChanged) {
+            this.programCounter++;
+        }
+        this.programCounterChanged = false;
     }
 
     public void setCounter(int counter) {
         this.programCounter = counter;
+        this.programCounterChanged = true;
     }
 
     /**

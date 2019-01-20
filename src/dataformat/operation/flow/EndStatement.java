@@ -26,9 +26,7 @@ public class EndStatement extends Operation {
     @Override
     public Value evaluate(Environment env) {
         Stack<FlowController> stack = env.getControlStack();
-        if (stack.isEmpty()) {
-            throw new RuntimeException("Unexpected 'end'");
-        } else if (stack.peek().onEnd(env)) {
+        if (stack.peek().isDone(env)) {
             stack.pop();
         }
         return new IntValue(0);
