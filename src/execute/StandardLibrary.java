@@ -59,6 +59,7 @@ public final class StandardLibrary {
                 }));
         define(create("range")
                 .personal("left", "right"));
+        define(create("str"));
         define(create("type")
                 .initializer((args, env) -> {
                     String[] attributes = args.keywords().keySet().toArray(new String[0]);
