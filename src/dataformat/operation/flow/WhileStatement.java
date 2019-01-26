@@ -16,7 +16,6 @@ public class WhileStatement extends Operation implements FlowController {
 
     private int startIndex, endIndex;
     private Expression condition;
-    private boolean done;
 
     public WhileStatement(int position, List<Token> tokens) {
         super(position, tokens);
@@ -37,22 +36,22 @@ public class WhileStatement extends Operation implements FlowController {
 
     @Override
     public Value evaluate(Environment env) {
-        env.getControlStack().push(this);
-        startIndex = env.getCounter();
-        if (!checkCondition(env)) {
-            env.setCounter(endIndex);
-            done = true;
+        if (checkCondition(env)) {
+            env.getControlStack().push(this);
+            startIndex = env.getCounter();
+        } else {
+            env.setCounter(endIndex + 1);
         }
         return new IntValue(0);
     }
 
     @Override
     public boolean isDone(Environment env) {
-        if (done) {
-            return true;
+        if (checkCondition(env)) {
+            env.setCounter(startIndex + 1);
+            return false;
         }
-        env.setCounter(startIndex);
-        return false;
+        return true;
     }
 
     @Override

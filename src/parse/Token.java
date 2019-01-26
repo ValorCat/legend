@@ -55,6 +55,20 @@ public class Token {
         return TYPE != TokenType.OPERATOR;
     }
 
+    /**
+     * Check if this token has a particular value. This is a
+     * convenience method to replace long calls with equals().
+     * @param value the value to check against
+     * @return whether this token's value is the specified value
+     */
+    public boolean matches(String value) {
+        return VALUE.equals(value);
+    }
+
+    /**
+     * Convert this token into an expression object.
+     * @return an expression object
+     */
     public Expression asExpression() {
         switch (TYPE) {
             case EXPRESSION:
@@ -72,6 +86,14 @@ public class Token {
             default:
                 throw new RuntimeException("Unexpected token: " + VALUE);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Token)) return false;
+        Token token = (Token) o;
+        return TYPE == token.TYPE && VALUE.equals(token.VALUE);
     }
 
     @Override

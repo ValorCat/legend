@@ -2,6 +2,7 @@ package parse;
 
 import dataformat.operation.*;
 import dataformat.operation.flow.EndStatement;
+import dataformat.operation.flow.ForStatement;
 import dataformat.operation.flow.RepeatStatement;
 import dataformat.operation.flow.WhileStatement;
 import dataformat.operation.function.BinaryOperatorCall;
@@ -34,8 +35,9 @@ public final class OperatorTable {
             {"==", "!="},
             {":"},
             {","},
-            {"="},                  // low precedence
-            {"end", "repeat", "while"}
+            {"="},
+            {"in"},                 // low precedence
+            {"end", "for", "repeat", "while"}
     });
 
     /*
@@ -43,7 +45,7 @@ public final class OperatorTable {
     to unusual operators.
      */
     public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=");
-    public static final Set<String> KEYWORDS = Set.of("else", "end", "match", "repeat", "while");
+    public static final Set<String> KEYWORDS = Set.of("else", "end", "for", "match", "repeat", "while");
 
     /**
      * Verify an operator's environmental constraints are met (e.g. for the '+'
@@ -84,8 +86,14 @@ public final class OperatorTable {
             case "=":
                 new Assignment(pos, statement);
                 break;
+            case "in":
+                // ignore
+                break;
             case "end":
                 new EndStatement(pos, statement);
+                break;
+            case "for":
+                new ForStatement(pos, statement);
                 break;
             case "repeat":
                 new RepeatStatement(pos, statement);

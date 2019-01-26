@@ -100,7 +100,7 @@ public class Tokenizer {
         } else if (stringType == 0) {
             // we are not in a string
             if (isValue(prev) && !isValue(c)) {
-                if (isKeyword(currToken)) {
+                if (isKeyword(currToken) || isContextKeyword(currToken, currStatement)) {
                     type = OPERATOR;
                 } else if (isLiteral(currToken)) {
                     type = LITERAL;
@@ -185,6 +185,27 @@ public class Tokenizer {
     private static boolean isLongSymbol(char first, char second) {
         String symbol = new String(new char[] {first, second});
         return OperatorTable.LONG_SYMBOLS.contains(symbol);
+    }
+
+    /**
+     * Determine if a token is a "context keyword": a token that acts as
+     * a keyword in certain environments, but is otherwise a normal
+     * identifier. For example, the token "in" can be used as a variable
+     * name, but has special meaning in a for loop (for X in Y).
+     * @param token the token to check
+     * @param statement the part of the statement prior to this token
+     * @return whether this token is a context keyword
+     */
+    private static boolean isContextKeyword(CharSequence token, List<Token> statement) {
+        // in is only a keyword within for loop headers
+        if (token.toString().equals("in")) {
+            int size = statement.size();
+            return size > 1
+                    && statement.get(0).matches("for")
+                    && !statement.contains(new Token(OPERATOR, "in"))
+                    && (size == 2 || !statement.get(size - 1).matches(","));
+        }
+        return false;
     }
 
     /**
