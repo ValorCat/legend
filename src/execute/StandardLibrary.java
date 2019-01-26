@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.function.ToIntFunction;
 
+import static dataformat.TypeBuilder.create;
 import static dataformat.value.FunctionValue.FunctionBody;
 
 /**
@@ -25,15 +26,15 @@ public final class StandardLibrary {
     public static final Map<String, Type> TYPES = new HashMap<>();
 
     static {
-        TYPES.put("func", TypeBuilder.create("func").build());
-        TYPES.put("bool", TypeBuilder.create("bool").build());
-        TYPES.put("int", TypeBuilder.create("int")
+        // create is TypeBuilder.create
+        define(create("bool"));
+        define(create("func"));
+        define(create("int")
                 .shared("to", (args, env) -> {
                     ArgumentList bounds = new ArgumentList(args.target(), args.args()[0]);
                     return TYPES.get("range").instantiate(bounds, env);
-                })
-                .build());
-        TYPES.put("list", TypeBuilder.create("list")
+                }));
+        define(create("list")
                 .shared("max", (args, env) -> {
                     Value[] list = args.target().getAttributes();
                     if (list.length == 0) {
@@ -52,19 +53,18 @@ public final class StandardLibrary {
                         }
                     }
                     return max;
-                })
-                .shared("show", (args, env) -> {
+                }).shared("show", (args, env) -> {
                     System.out.println(Arrays.toString(args.target().getAttributes()));
                     return new IntValue(0);
-                })
-                .build());
-        TYPES.put("range", TypeBuilder.create("range").personal("left", "right").build());
-        TYPES.put("str", TypeBuilder.create("str").build());
-        TYPES.put("type", TypeBuilder.create("type").initializer((args, env) -> {
-            String[] attributes = args.keywords().keySet().toArray(new String[0]);
-            // todo use attribute types/bounds
-            return new Type(attributes);
-        }).build());
+                }));
+        define(create("range")
+                .personal("left", "right"));
+        define(create("type")
+                .initializer((args, env) -> {
+                    String[] attributes = args.keywords().keySet().toArray(new String[0]);
+                    // todo use attribute types/bounds
+                    return new Type(attributes);
+                }));
     }
 
     public static Type type(String type) {
@@ -75,14 +75,14 @@ public final class StandardLibrary {
     }
 
     public static final FunctionValue[] FUNCTIONS = {
-            func("autosave", (args, env) -> args.args()[0]), // todo autosave
+            define("autosave", (args, env) -> args.args()[0]), // todo autosave
 
-            func("exit", (args, env) -> {
+            define("exit", (args, env) -> {
                 System.exit(0);
                 return new IntValue(0);
             }),
 
-            func("exitif", (args, env) -> {
+            define("exitif", (args, env) -> {
                 if (args.args()[0].asBool()) {
                     System.exit(0);
 
@@ -90,19 +90,19 @@ public final class StandardLibrary {
                 return new IntValue(0);
             }),
 
-            func("read", (args, env) -> {
+            define("read", (args, env) -> {
                 if (args.args().length > 0) {
                     System.out.print(((StringValue) args.args()[0]).getValue());
                 }
                 return new StringValue(input().nextLine());
             }),
 
-            func("show", (args, env) -> {
+            define("show", (args, env) -> {
                 System.out.println(args.args()[0].asStr());
                 return new IntValue(0);
             }),
 
-            func("showenv", (args, env) -> {
+            define("showenv", (args, env) -> {
                 System.out.println("==[ Environment ]==================================");
                 for (Map.Entry<String, Integer> pair : env.getNamespace().entrySet()) {
                     Value value = env.fetch(pair.getKey());
@@ -120,7 +120,24 @@ public final class StandardLibrary {
         return input != null ? input : (input = new Scanner(System.in));
     }
 
-    private static FunctionValue func(String name, FunctionBody body) {
+    /**
+     * Add the new built-in type specified by this type builder to the
+     * standard library's type list.
+     * @param builder a type builder
+     */
+    private static void define(TypeBuilder builder) {
+        Type type = builder.build();
+        TYPES.put(type.getName(), type);
+    }
+
+    /**
+     * Construct a new built-in function for the standard library's
+     * function list.
+     * @param name the function's name
+     * @param body the function's body
+     * @return a new function value
+     */
+    private static FunctionValue define(String name, FunctionBody body) {
         return new FunctionValue(name, body);
     }
 
