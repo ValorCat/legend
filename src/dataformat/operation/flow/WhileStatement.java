@@ -8,17 +8,19 @@ import execute.Environment;
 import parse.Token;
 
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @since 1/20/2019
  */
 public class WhileStatement extends Operation implements FlowController {
 
-    private int startIndex, endIndex;
+    private int startAddress, endAddress;
     private Expression condition;
 
-    public WhileStatement(int position, List<Token> tokens) {
+    public WhileStatement(int position, List<Token> tokens, Stack<FlowController> controlStack) {
         super(position, tokens);
+        controlStack.push(this);
     }
 
     @Override
@@ -38,9 +40,9 @@ public class WhileStatement extends Operation implements FlowController {
     public Value evaluate(Environment env) {
         if (checkCondition(env)) {
             env.getControlStack().push(this);
-            startIndex = env.getCounter();
+            startAddress = env.getCounter();
         } else {
-            env.setCounter(endIndex + 1);
+            env.setCounter(endAddress + 1);
         }
         return new IntValue(0);
     }
@@ -48,15 +50,19 @@ public class WhileStatement extends Operation implements FlowController {
     @Override
     public boolean isDone(Environment env) {
         if (checkCondition(env)) {
-            env.setCounter(startIndex + 1);
+            env.setCounter(startAddress + 1);
             return false;
         }
         return true;
     }
 
     @Override
-    public void setEndIndex(int endIndex) {
-        this.endIndex = endIndex;
+    public void setJumpPoint(int address, int tokenPos, List<Token> statement) {
+        if (statement.get(tokenPos).matches("end")) {
+            this.endAddress = address;
+        } else {
+            throw new RuntimeException("Unexpected symbol '" + statement.get(0).VALUE + "'");
+        }
     }
 
     private boolean checkCondition(Environment env) {

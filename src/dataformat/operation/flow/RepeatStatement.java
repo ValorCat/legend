@@ -7,6 +7,7 @@ import execute.Environment;
 import parse.Token;
 
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @since 1/19/2019
@@ -15,8 +16,9 @@ public class RepeatStatement extends Operation implements FlowController {
 
     private int startIndex;
 
-    public RepeatStatement(int position, List<Token> tokens) {
+    public RepeatStatement(int position, List<Token> tokens, Stack<FlowController> controlStack) {
         super(position, tokens);
+        controlStack.push(this);
     }
 
     @Override
@@ -38,6 +40,10 @@ public class RepeatStatement extends Operation implements FlowController {
     }
 
     @Override
-    public void setEndIndex(int endIndex) {}
+    public void setJumpPoint(int address, int tokenPos, List<Token> statement) {
+        if (!statement.get(tokenPos).matches("end")) {
+            throw new RuntimeException("Unexpected symbol '" + statement.get(0).VALUE + "'");
+        }
+    }
 
 }

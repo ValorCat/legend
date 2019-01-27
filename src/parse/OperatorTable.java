@@ -1,10 +1,7 @@
 package parse;
 
 import dataformat.operation.*;
-import dataformat.operation.flow.EndStatement;
-import dataformat.operation.flow.ForStatement;
-import dataformat.operation.flow.RepeatStatement;
-import dataformat.operation.flow.WhileStatement;
+import dataformat.operation.flow.*;
 import dataformat.operation.function.BinaryOperatorCall;
 import dataformat.operation.function.FunctionCall;
 import dataformat.operation.function.UnaryOperatorCall;
@@ -37,7 +34,7 @@ public final class OperatorTable {
             {","},
             {"="},
             {"in"},                 // low precedence
-            {"end", "for", "repeat", "while"}
+            {"else", "elsif", "end", "for", "if", "repeat", "while"}
     });
 
     /*
@@ -45,66 +42,55 @@ public final class OperatorTable {
     to unusual operators.
      */
     public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=");
-    public static final Set<String> KEYWORDS = Set.of("else", "end", "for", "match", "repeat", "while");
+    public static final Set<String> KEYWORDS = Set.of("else", "elsif", "end", "for", "if", "repeat", "while");
 
     /**
      * Verify an operator's environmental constraints are met (e.g. for the '+'
      * operator, there must be a value on either side) and then build a partial
-     * syntax tree around the operator.
-     * @param pos the index of the operator in the list
+     * syntax tree around the operator. If they are met, the operand tokens are
+     * consolidated into this operation's newly created token. Flow control
+     * structures are also pushed on and popped off the stack as they are
+     * encountered.
+     * @param tokenPos the index of the operator in the list
      * @param statement the list of tokens
+     * @param address the address of this statement
+     * @param controlStack the stack of flow control structures
      */
-    public static void parseOperation(int pos, List<Token> statement) {
-        switch (statement.get(pos).VALUE) {
-            case ".":
-                new DotOperation(pos, statement);
-                break;
-            case "call":
-                new FunctionCall(pos, statement);
-                break;
-            case "unop":
-                new UnaryOperatorCall(pos, statement);
-                break;
-            case "biop":
-                new BinaryOperatorCall(pos, statement);
-                break;
+    public static void parseOperation(int tokenPos, List<Token> statement, int address,
+                                      Stack<FlowController> controlStack) {
+        switch (statement.get(tokenPos).VALUE) {
+            case ".":       new DotOperation(tokenPos, statement); break;
+            case "call":    new FunctionCall(tokenPos, statement); break;
+            case "unop":    new UnaryOperatorCall(tokenPos, statement); break;
+            case "biop":    new BinaryOperatorCall(tokenPos, statement); break;
+            case ":":       new Mapping(tokenPos, statement); break;
+            case ",":       new CommaList(tokenPos, statement); break;
+            case "=":       new Assignment(tokenPos, statement); break;
+            case "end":     new EndStatement(tokenPos, statement, address, controlStack); break;
+            case "if":      new IfStatement(tokenPos, statement, address, controlStack); break;
+            case "for":     new ForStatement(tokenPos, statement, controlStack); break;
+            case "repeat":  new RepeatStatement(tokenPos, statement, controlStack); break;
+            case "while":   new WhileStatement(tokenPos, statement, controlStack); break;
             case "^": case "*": case "/": case "+": case "-":
-                new ArithmeticOperation(pos, statement);
-                break;
+                            new ArithmeticOperation(tokenPos, statement); break;
             case "<": case ">": case "<=": case ">=":
-                new ComparisonOperation(pos, statement);
-                break;
+                            new ComparisonOperation(tokenPos, statement); break;
             case "==": case "!=":
-                new EqualsOperation(pos, statement);
-                break;
-            case ":":
-                new Mapping(pos, statement);
-                break;
-            case ",":
-                new CommaList(pos, statement);
-                break;
-            case "=":
-                new Assignment(pos, statement);
-                break;
-            case "in":
-                // ignore
-                break;
-            case "end":
-                new EndStatement(pos, statement);
-                break;
-            case "for":
-                new ForStatement(pos, statement);
-                break;
-            case "repeat":
-                new RepeatStatement(pos, statement);
-                break;
-            case "while":
-                new WhileStatement(pos, statement);
-                break;
-            default: throw new RuntimeException("Invalid operator '" + statement.get(pos).VALUE + "'");
+                            new EqualsOperation(tokenPos, statement); break;
+            case "else": case "elsif":
+                            if (controlStack.isEmpty()) {
+                                throw new RuntimeException("Unexpected symbol '" + statement.get(tokenPos).VALUE + "'");
+                            }
+                            controlStack.peek().setJumpPoint(address, tokenPos, statement); break;
+            case "in":      break; // ignore
+            default: throw new RuntimeException("Invalid operator '" + statement.get(tokenPos).VALUE + "'");
         }
     }
 
+    /**
+     * Operations are internally stored in this map, where the keys represent
+     * operators and the values represent precedence levels.
+     */
     private Map<String, Integer> implTable;
 
     private OperatorTable(int initialCapacity) {

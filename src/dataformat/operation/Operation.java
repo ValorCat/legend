@@ -15,6 +15,11 @@ public abstract class Operation implements Expression {
     protected String operator;
     protected List<Expression> operands;
 
+    public Operation(Token token) {
+        this.operator = token.VALUE;
+        this.operands = Collections.emptyList();
+    }
+
     public Operation(int position, List<Token> tokens) {
         this.operator = tokens.get(position).VALUE;
         this.operands = Collections.emptyList();
@@ -39,6 +44,10 @@ public abstract class Operation implements Expression {
     @Override
     public List<Expression> getChildren() {
         return operands;
+    }
+
+    public String getOperator() {
+        return operator;
     }
 
     @Override

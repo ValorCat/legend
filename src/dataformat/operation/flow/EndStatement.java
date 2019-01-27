@@ -14,8 +14,12 @@ import java.util.Stack;
  */
 public class EndStatement extends Operation {
 
-    public EndStatement(int position, List<Token> tokens) {
+    public EndStatement(int position, List<Token> tokens, int address, Stack<FlowController> controlStack) {
         super(position, tokens);
+        if (controlStack.isEmpty()) {
+            throw new RuntimeException("Unexpected 'end'");
+        }
+        controlStack.pop().setJumpPoint(address, position, tokens);
     }
 
     @Override

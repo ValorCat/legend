@@ -9,19 +9,21 @@ import parse.Token;
 import parse.Token.TokenType;
 
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @since 1/24/2019
  */
 public class ForStatement extends Operation implements FlowController {
 
-    private int startIndex, endIndex;
+    private int startAddress, endAddress;
     private String iterVar;
     private int iterValue, iterEnd;
     private Expression iterExpr;
 
-    public ForStatement(int position, List<Token> tokens) {
+    public ForStatement(int position, List<Token> tokens, Stack<FlowController> controlStack) {
         super(position, tokens);
+        controlStack.push(this);
     }
 
     @Override
@@ -50,10 +52,10 @@ public class ForStatement extends Operation implements FlowController {
         iterEnd = iterable.getAttribute("right").asInt();
         if (iterValue <= iterEnd) {
             env.getControlStack().push(this);
-            startIndex = env.getCounter();
+            startAddress = env.getCounter();
             env.assign(iterVar, new IntValue(iterValue));
         } else {
-            env.setCounter(endIndex + 1);
+            env.setCounter(endAddress + 1);
         }
         return new IntValue(0);
     }
@@ -63,7 +65,7 @@ public class ForStatement extends Operation implements FlowController {
         iterValue++;
         if (iterValue <= iterEnd) {
             env.assign(iterVar, new IntValue(iterValue));
-            env.setCounter(startIndex + 1);
+            env.setCounter(startAddress + 1);
             return false;
         } else {
             return true;
@@ -71,8 +73,12 @@ public class ForStatement extends Operation implements FlowController {
     }
 
     @Override
-    public void setEndIndex(int endIndex) {
-        this.endIndex = endIndex;
+    public void setJumpPoint(int address, int tokenPos, List<Token> statement) {
+        if (statement.get(tokenPos).matches("end")) {
+            this.endAddress = address;
+        } else {
+            throw new RuntimeException("Unexpected symbol '" + statement.get(0).VALUE + "'");
+        }
     }
 
 }

@@ -1,8 +1,9 @@
-continue = true
-while continue
-    for i in 1 to 5
-        show(i)
-    end
-    continue = false
+x = read('Enter name: ')
+if x == 'Bob'
+    show('Bob!')
+elsif x == 'Joe'
+    show('Joe!')
+else
+    show('Else!')
 end
 show('We escaped!')

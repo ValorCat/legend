@@ -2,7 +2,6 @@ package parse;
 
 import dataformat.Expression;
 import dataformat.operation.CommaList;
-import dataformat.operation.flow.EndStatement;
 import dataformat.operation.flow.FlowController;
 
 import java.util.ArrayList;
@@ -24,24 +23,17 @@ public class Parser {
 
     /**
      * Convert a list of statements into a list of syntax trees.
-     * @param tokens the list of statements
+     * @param statements the list of statements
      * @return a list of syntax trees
      */
-    public List<Expression> parse(List<List<Token>> tokens) {
-        List<Expression> trees = new ArrayList<>(tokens.size());
+    public List<Expression> parse(List<List<Token>> statements) {
+        List<Expression> trees = new ArrayList<>(statements.size());
         Stack<FlowController> controlStack = new Stack<>();
-        for (int i = 0; i < tokens.size(); i++) {
-            Expression treeRoot = parseExpression(tokens.get(i));
-            trees.add(treeRoot);
-            if (treeRoot instanceof FlowController) {
-                controlStack.push(((FlowController) treeRoot));
-            } else if (treeRoot instanceof EndStatement) {
-                if (controlStack.isEmpty()) {
-                    throw new RuntimeException("Unexpected 'end'");
-                }
-                FlowController controller = controlStack.pop();
-                controller.setEndIndex(i);
-            }
+        for (int i = 0; i < statements.size(); i++) {
+            trees.add(parseExpression(statements.get(i), i, controlStack));
+        }
+        if (!controlStack.isEmpty()) {
+            throw new RuntimeException("Expected 'end' to close '" + controlStack.peek().getKeyword() + "'");
         }
         return trees;
     }
@@ -51,21 +43,21 @@ public class Parser {
      * @param statement the statement to convert, which will be consumed and destroyed
      * @return the root of a syntax tree
      */
-    private Expression parseExpression(List<Token> statement) {
+    private Expression parseExpression(List<Token> statement, int address, Stack<FlowController> controlStack) {
         if (statement.isEmpty()) {
             // if there are no tokens (such as from empty parens to a function call),
             // just return an empty list
             return new CommaList();
         }
         injectImplicitOperators(statement);
-        List<Token> precedence = getPrecedence(statement);
+        List<Token> precedence = getPrecedence(statement, address, controlStack);
         for (Token operator : precedence) {
             int position = statement.indexOf(operator);
             if (position < 0) {
                 throw new RuntimeException("Couldn't find operator '" + operator.VALUE + "';\n  statement="
                         + statement + "\n  precedence=" + precedence);
             }
-            OperatorTable.parseOperation(position, statement);
+            OperatorTable.parseOperation(position, statement, address, controlStack);
         }
         if (statement.size() > 1) {
             // this happens if an operator is missing from the expression
@@ -81,7 +73,7 @@ public class Parser {
      * @param statement the statement from which the operators should be drawn
      * @return a list of operators sorted by precedence
      */
-    private List<Token> getPrecedence(List<Token> statement) {
+    private List<Token> getPrecedence(List<Token> statement, int address, Stack<FlowController> controlStack) {
         List<Token> ordering = new ArrayList<>();
         for (int i = 0; i < statement.size(); i++) {
             Token token = statement.get(i);
@@ -89,7 +81,7 @@ public class Parser {
                 ordering.add(token);
             } else if (token.TYPE == PARENS) {
                 // todo move paren parsing to another method
-                parseExpression(token.CHILDREN);
+                parseExpression(token.CHILDREN, address, controlStack);
                 statement.set(i, token.CHILDREN.get(0));
             }
         }
