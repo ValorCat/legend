@@ -9,6 +9,7 @@ import parse.Token;
 import parse.Token.TokenType;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Stack;
 
 /**
@@ -17,9 +18,9 @@ import java.util.Stack;
 public class ForStatement extends Operation implements FlowController {
 
     private int startAddress, endAddress;
-    private String iterVar;
-    private int iterValue, iterEnd;
-    private Expression iterExpr;
+    private Expression iterable;
+    private Value iterator;
+    private String variable;
 
     public ForStatement(int position, List<Token> tokens, Stack<FlowController> controlStack) {
         super(position, tokens);
@@ -37,23 +38,18 @@ public class ForStatement extends Operation implements FlowController {
         } else if (tokens.size() != 4 || !tokens.get(3).isValue()) {
             throw new RuntimeException("Expected loop expression after 'in'");
         }
-        iterVar = tokens.get(1).VALUE;
-        iterExpr = tokens.get(3).asExpression();
+        variable = tokens.get(1).VALUE;
+        iterable = tokens.get(3).asExpression();
         Token.consolidate(tokens, new Token("for", this), 0, 4);
     }
 
     @Override
     public Value evaluate(Environment env) {
-        Value iterable = iterExpr.evaluate(env);
-        if (!iterable.isType("range")) {
-            throw new RuntimeException("Expected loop expression to be 'range', got '" + iterable.type().getName() + "'");
-        }
-        iterValue = iterable.getAttribute("left").asInt();
-        iterEnd = iterable.getAttribute("right").asInt();
-        if (iterValue <= iterEnd) {
+        iterator = getIterator(iterable.evaluate(env), env);
+        if (hasNext(env)) {
             env.getControlStack().push(this);
             startAddress = env.getCounter();
-            env.assign(iterVar, new IntValue(iterValue));
+            env.assign(variable, getNext(env));
         } else {
             env.setCounter(endAddress + 1);
         }
@@ -62,9 +58,8 @@ public class ForStatement extends Operation implements FlowController {
 
     @Override
     public boolean isDone(Environment env) {
-        iterValue++;
-        if (iterValue <= iterEnd) {
-            env.assign(iterVar, new IntValue(iterValue));
+        if (hasNext(env)) {
+            env.assign(variable, getNext(env));
             env.setCounter(startAddress + 1);
             return false;
         } else {
@@ -79,6 +74,28 @@ public class ForStatement extends Operation implements FlowController {
         } else {
             throw new RuntimeException("Unexpected symbol '" + statement.get(0).VALUE + "'");
         }
+    }
+
+    private boolean hasNext(Environment env) {
+        return iterator.callMethod("hasNext", env).asBool();
+    }
+
+    private Value getNext(Environment env) {
+        return iterator.callMethod("next", env);
+    }
+
+    private static Value getIterator(Value iterable, Environment env) {
+        Optional<Value> maybeIterator = iterable.getOptionalAttribute("iterator");
+        if (!maybeIterator.isPresent()) {
+            throw new RuntimeException("Expected for loop target to have 'iterator' method, got value of type '"
+                    + iterable.type().getName() + "' instead");
+        }
+        Value iterator = iterable.callMethod("iterator", env);
+        if (!iterator.isType("iterator")) {
+            throw new RuntimeException("Expected for loop target's 'iterator' method to return an iterator, got "
+                    + "value of type '" + iterator.type().getName() + "' instead");
+        }
+        return iterator;
     }
 
 }

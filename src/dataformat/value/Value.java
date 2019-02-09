@@ -1,8 +1,12 @@
 package dataformat.value;
 
+import dataformat.ArgumentList;
 import dataformat.Expression;
+import dataformat.operation.function.FunctionCall;
 import execute.Environment;
 import execute.StandardLibrary;
+
+import java.util.Optional;
 
 /**
  * @since 12/24/2018
@@ -53,6 +57,21 @@ public abstract class Value implements Expression {
 
     public Value getAttribute(String name) {
         return type().getAttribute(name, this);
+    }
+
+    public Optional<Value> getOptionalAttribute(String name) {
+        return type().getOptionalAttribute(name, this);
+    }
+
+    public void setAttribute(String name, Value value) {
+        type().setAttribute(name, this, value);
+    }
+
+    public Value callMethod(String name, Environment env, Value... args) {
+        Value method = getAttribute(name);
+        ArgumentList argList = new ArgumentList(args);
+        argList.setTarget(this);
+        return FunctionCall.call(method, argList, env);
     }
 
     public Value[] getAttributes() {

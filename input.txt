@@ -1,9 +1,4 @@
-x = read('Enter name: ')
-if x == 'Bob'
-    show('Bob!')
-elsif x == 'Joe'
-    show('Joe!')
-else
-    show('Else!')
+for i in 'abcd'
+    show(i)
 end
-show('We escaped!')
+show('Done!')

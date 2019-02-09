@@ -4,10 +4,7 @@ import dataformat.ArgumentList;
 import dataformat.TypeBuilder;
 import dataformat.value.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.function.ToIntFunction;
 
 import static dataformat.TypeBuilder.create;
@@ -34,8 +31,14 @@ public final class StandardLibrary {
                     ArgumentList bounds = new ArgumentList(args.target(), args.args()[0]);
                     return TYPES.get("range").instantiate(bounds, env);
                 }));
+        define(create("iterator")
+                .personal("values", "position", "hasNext", "next"));
         define(create("list")
-                .shared("max", (args, env) -> {
+                .personal("*list")
+                .initializer((args, env) -> {
+                    List<Value> javaList = new ArrayList<>(Arrays.asList(args.args()));
+                    return new ObjectValue(type("list"), new NativeValue(javaList));
+                }).shared("max", (args, env) -> {
                     Value[] list = args.target().getAttributes();
                     if (list.length == 0) {
                         throw new RuntimeException("Cannot compute maximum of empty list");
@@ -56,10 +59,55 @@ public final class StandardLibrary {
                 }).shared("show", (args, env) -> {
                     System.out.println(Arrays.toString(args.target().getAttributes()));
                     return new IntValue(0);
-                }));
+                }).shared("iterator", (args, env) -> type("iterator").instantiate(new ArgumentList(
+                        args.target(), new IntValue(0),
+                        new FunctionValue("hasNext", (_args, _env) -> {
+                            int index = _args.target().getAttribute("position").asInt();
+                            Object javaList = _args.target().getAttribute("values").getAttribute("*list").asNative();
+                            int size = ((Collection) javaList).size();
+                            return BoolValue.resolve(index < size);
+                        }),
+                        new FunctionValue("next", (_args, _env) -> {
+                            int index = _args.target().getAttribute("position").asInt();
+                            Object javaList = _args.target().getAttribute("values").getAttribute("*list").asNative();
+                            _args.target().setAttribute("position", new IntValue(index + 1));
+                            // todo error if out of bounds
+                            return (Value) (((List) javaList).get(index));
+                        })
+                ), env)));
+        define(create("*native"));
         define(create("range")
-                .personal("left", "right"));
-        define(create("str"));
+                .personal("left", "right")
+                .shared("iterator", (args, env) -> type("iterator").instantiate(new ArgumentList(
+                        args.target(), args.target().getAttribute("left"),
+                        new FunctionValue("hasNext", (_args, _env) -> {
+                            int current = _args.target().getAttribute("position").asInt();
+                            int max = _args.target().getAttribute("values").getAttribute("right").asInt();
+                            return BoolValue.resolve(current < max);
+                        }),
+                        new FunctionValue("next", (_args, _env) -> {
+                            Value current = _args.target().getAttribute("position");
+                            _args.target().setAttribute("position", new IntValue(current.asInt() + 1));
+                            // todo error if out of range
+                            return current;
+                        })
+                ), env)));
+        define(create("str")
+                .shared("iterator", (args, env) -> type("iterator").instantiate(new ArgumentList(
+                        args.target(), new IntValue(0),
+                        new FunctionValue("hasNext", (_args, _env) -> {
+                            int current = _args.target().getAttribute("position").asInt();
+                            int size = _args.target().getAttribute("values").asStr().length();
+                            return BoolValue.resolve(current < size);
+                        }),
+                        new FunctionValue("next", (_args, _env) -> {
+                            int current = _args.target().getAttribute("position").asInt();
+                            String string = _args.target().getAttribute("values").asStr();
+                            _args.target().setAttribute("position", new IntValue(current + 1));
+                            // todo error if out of range
+                            return new StringValue(string.substring(current, current + 1));
+                        })
+                ), env)));
         define(create("type")
                 .initializer((args, env) -> {
                     String[] attributes = args.keywords().keySet().toArray(new String[0]);

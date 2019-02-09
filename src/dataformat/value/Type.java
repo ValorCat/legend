@@ -6,6 +6,7 @@ import execute.Environment;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @since 12/23/2018
@@ -57,16 +58,27 @@ public class Type extends Value {
     }
 
     public Value getAttribute(String attribute, Value object) {
-        Integer index = personalAttributes.get(attribute);
-        if (index != null) {
-            return object.getAttributes()[index];
-        }
-        Value value = sharedAttributes.get(attribute);
+        Value value = findAttribute(attribute, object);
         if (value != null) {
             return value;
         }
-        // todo handle inherited attributes
         throw new RuntimeException("Type '" + name + "' has no attribute '" + attribute + "'");
+    }
+
+    public Optional<Value> getOptionalAttribute(String attribute, Value object) {
+        return Optional.ofNullable(findAttribute(attribute, object));
+    }
+
+    public void setAttribute(String attribute, Value object, Value value) {
+        Integer index = personalAttributes.get(attribute);
+        if (index != null) {
+            object.getAttributes()[index] = value;
+        } else if (sharedAttributes.containsKey(attribute)) {
+            sharedAttributes.put(attribute, value);
+        } else {
+            // todo handle inherited attributes
+            throw new RuntimeException("Type '" + name + "' has no attribute '" + attribute + "'");
+        }
     }
 
     public Value instantiate(ArgumentList args, Environment env) {
@@ -92,5 +104,16 @@ public class Type extends Value {
     public String toString() {
         return "type[" + getName() + "]";
     }
+
+
+    private Value findAttribute(String name, Value object) {
+        Integer index = personalAttributes.get(name);
+        if (index != null) {
+            return object.getAttributes()[index];
+        }
+        // todo handle inherited attributes
+        return sharedAttributes.get(name);
+    }
+
 
 }
