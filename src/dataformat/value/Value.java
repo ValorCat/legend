@@ -23,15 +23,19 @@ public abstract class Value implements Expression {
     }
 
     public int asInt() {
-        throw new RuntimeException("Type '" + type().getName() + "' cannot be converted to an integer");
+        throw errorOnCast("integer");
     }
 
     public String asStr() {
-        throw new RuntimeException("Type '" + type().getName() + "' cannot be converted to a string");
+        throw errorOnCast("string");
     }
 
     public boolean asBool() {
-        throw new RuntimeException("Type '" + type().getName() + "' cannot be converted to a boolean");
+        throw errorOnCast("boolean");
+    }
+
+    public Object asNative() {
+        throw errorOnCast("*native");
     }
 
     public Type type() {
@@ -64,5 +68,9 @@ public abstract class Value implements Expression {
     }
 
     public abstract boolean equals(Value other);
+
+    private RuntimeException errorOnCast(String resultType) {
+        return new RuntimeException("Type '" + type().getName() + "' cannot be converted to a " + resultType);
+    }
 
 }
