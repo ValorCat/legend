@@ -29,7 +29,7 @@ public final class OperatorTable {
             {"*", "/"},
             {"+", "-"},
             {"<", "<=", ">", ">="},
-            {"==", "!="},
+            {"==", "!=", ":="},
             {":"},
             {","},
             {"="},
@@ -41,7 +41,7 @@ public final class OperatorTable {
     These two constants are used by the tokenizer to assign the correct type
     to unusual operators.
      */
-    public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=");
+    public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=", ":=");
     public static final Set<String> KEYWORDS = Set.of("else", "elsif", "end", "for", "if", "repeat", "while");
 
     /**
@@ -63,6 +63,7 @@ public final class OperatorTable {
             case "call":    new FunctionCall(tokenPos, statement); break;
             case "unop":    new UnaryOperatorCall(tokenPos, statement); break;
             case "biop":    new BinaryOperatorCall(tokenPos, statement); break;
+            case ":=":      new AssignmentExpression(tokenPos, statement); break;
             case ":":       new Mapping(tokenPos, statement); break;
             case ",":       new CommaList(tokenPos, statement); break;
             case "=":       new Assignment(tokenPos, statement); break;

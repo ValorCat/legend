@@ -1,7 +1,6 @@
 package dataformat.operation;
 
 import dataformat.Expression;
-import dataformat.value.NullValue;
 import dataformat.value.Value;
 import execute.Environment;
 import parse.Token;
@@ -9,14 +8,14 @@ import parse.Token;
 import java.util.List;
 
 /**
- * @since 1/19/2019
+ * @since 2/9/2019
  */
-public class Assignment extends Operation {
+public class AssignmentExpression extends Operation {
 
     private String target;
     private Expression value;
 
-    public Assignment(int position, List<Token> tokens) {
+    public AssignmentExpression(int position, List<Token> tokens) {
         super(position, tokens);
     }
 
@@ -26,17 +25,19 @@ public class Assignment extends Operation {
         if (pos > 0) left = tokens.get(pos - 1);
         if (pos < tokens.size() - 1) right = tokens.get(pos + 1);
         if (left == null || right == null || !left.isValue() || !right.isValue()) {
-            throw new RuntimeException("Operator '=' requires values on both sides (did you mean '==' or ':='?)");
+            throw new RuntimeException("Operator ':=' requires values on both sides");
         }
         target = left.asExpression().getIdentifier();
         value = right.asExpression();
-        Token.consolidate(tokens, new Token("=", this), pos - 1, 3);
+        Token token = new Token(Token.TokenType.EXPRESSION, ":=", this);
+        Token.consolidate(tokens, token, pos - 1, 3);
     }
 
     @Override
     public Value evaluate(Environment env) {
-        env.assign(target, value.evaluate(env));
-        return NullValue.NULL;
+        Value result = value.evaluate(env);
+        env.assign(target, result);
+        return result;
     }
 
 }
