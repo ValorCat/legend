@@ -1,4 +1,8 @@
-for i in 'abcd'
-    show(i)
+x = 10
+if x := null
+    show('Hello!')
+else
+    show('Not hello!')
 end
+show(x)
 show('Done!')

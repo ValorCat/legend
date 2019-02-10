@@ -16,8 +16,8 @@ public class ComparisonOperation extends Operation {
 
     private static final Map<String, BiPredicate<Integer, Integer>> OPERATIONS = Map.of(
             "<", (a, b) -> a < b,
-            "<=", (a, b) -> a > b,
-            ">", (a, b) -> a <= b,
+            "<=", (a, b) -> a <= b,
+            ">", (a, b) -> a > b,
             ">=", (a, b) -> a >= b
     );
 

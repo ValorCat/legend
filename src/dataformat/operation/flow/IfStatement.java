@@ -98,7 +98,7 @@ public class IfStatement extends Operation implements FlowController {
         } else if (statement.size() > 2) {
             throw new RuntimeException("Unexpected symbol '" + statement.get(2) + "'");
         }
-        branches.put(statement.get(1).asExpression(), address);
+        branches.putIfAbsent(statement.get(1).asExpression(), address);
         Token.consolidate(statement, new Token("elsif", this), 0, 2);
     }
 
@@ -108,7 +108,7 @@ public class IfStatement extends Operation implements FlowController {
         } else if (statement.size() > 1) {
             throw new RuntimeException("Unxpected symbol '" + statement.get(1).VALUE + "'");
         }
-        branches.put(BoolValue.TRUE, address);
+        branches.putIfAbsent(BoolValue.TRUE, address);
         Token.consolidate(statement, new Token("else", this), 0, 1);
     }
 
