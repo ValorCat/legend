@@ -2,6 +2,7 @@ package dataformat.operation;
 
 import dataformat.Expression;
 import parse.Token;
+import parse.Token.TokenType;
 
 import java.util.Collections;
 import java.util.List;
@@ -72,7 +73,8 @@ public abstract class Operation implements Expression {
 
         // convert this operation into a tree
         operands = List.of(left.asExpression(), right.asExpression());
-        Token.consolidate(tokens, new Token( operator, this), pos - 1, 3);
+        Token token = new Token(TokenType.EXPRESSION, operator, this);
+        Token.consolidate(tokens, token, pos - 1, 3);
     }
 
     protected void parseStandaloneOperation(int pos, List<Token> tokens) {

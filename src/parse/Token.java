@@ -4,6 +4,7 @@ import dataformat.Expression;
 import dataformat.Variable;
 import dataformat.value.BoolValue;
 import dataformat.value.IntValue;
+import dataformat.value.NullValue;
 import dataformat.value.StringValue;
 
 import java.util.Collections;
@@ -21,7 +22,7 @@ import java.util.List;
  */
 public class Token {
 
-    public enum TokenType { EXPRESSION, IDENTIFIER, LITERAL, OPERATOR, PARENS }
+    public enum TokenType { EXPRESSION, IDENTIFIER, LITERAL, OPERATOR, PARENS, STATEMENT }
 
     public final TokenType TYPE;
     public final String VALUE;
@@ -44,7 +45,11 @@ public class Token {
     }
 
     public Token(String value, Expression expression) {
-        this(TokenType.EXPRESSION, value, expression, Collections.emptyList());
+        this(TokenType.STATEMENT, value, expression, Collections.emptyList());
+    }
+
+    public Token(TokenType type, String value, Expression expression) {
+        this(type, value, expression, Collections.emptyList());
     }
 
     /**
@@ -52,7 +57,8 @@ public class Token {
      * @return whether this token is not an operator
      */
     public boolean isValue() {
-        return TYPE != TokenType.OPERATOR;
+        return TYPE != TokenType.OPERATOR
+                && TYPE != TokenType.STATEMENT;
     }
 
     /**
@@ -71,7 +77,7 @@ public class Token {
      */
     public Expression asExpression() {
         switch (TYPE) {
-            case EXPRESSION:
+            case EXPRESSION: case STATEMENT:
                 return EXPRESSION;
             case IDENTIFIER:
                 return new Variable(VALUE);
@@ -80,6 +86,8 @@ public class Token {
                     return new IntValue(Integer.parseInt(VALUE));
                 } else if (VALUE.equals("true") || VALUE.equals("false")) {
                     return BoolValue.resolve(VALUE.equals("true"));
+                } else if (VALUE.equals("null")) {
+                    return NullValue.NULL;
                 } else {
                     return new StringValue(VALUE);
                 }

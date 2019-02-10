@@ -3,7 +3,7 @@ package dataformat.operation.flow;
 import dataformat.Expression;
 import dataformat.operation.Operation;
 import dataformat.value.BoolValue;
-import dataformat.value.IntValue;
+import dataformat.value.NullValue;
 import dataformat.value.Value;
 import execute.Environment;
 import parse.Token;
@@ -53,7 +53,7 @@ public class IfStatement extends Operation implements FlowController {
                 env.setCounter(endAddress);
             }
         }
-        return new IntValue(0);
+        return NullValue.NULL;
     }
 
     @Override

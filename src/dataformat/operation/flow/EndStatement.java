@@ -1,7 +1,7 @@
 package dataformat.operation.flow;
 
 import dataformat.operation.Operation;
-import dataformat.value.IntValue;
+import dataformat.value.NullValue;
 import dataformat.value.Value;
 import execute.Environment;
 import parse.Token;
@@ -33,7 +33,7 @@ public class EndStatement extends Operation {
         if (stack.peek().isDone(env)) {
             stack.pop();
         }
-        return new IntValue(0);
+        return NullValue.NULL;
     }
 
 }

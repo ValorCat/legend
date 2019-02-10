@@ -164,7 +164,7 @@ public class Tokenizer {
      */
     private static boolean isLiteral(CharSequence token) {
         String str = token.toString();
-        return str.matches("\\d+") || str.equals("true") || str.equals("false");
+        return str.matches("\\d+") || str.equals("true") || str.equals("false") || str.equals("null");
     }
 
     /**

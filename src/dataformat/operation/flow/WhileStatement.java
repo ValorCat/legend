@@ -2,7 +2,7 @@ package dataformat.operation.flow;
 
 import dataformat.Expression;
 import dataformat.operation.Operation;
-import dataformat.value.IntValue;
+import dataformat.value.NullValue;
 import dataformat.value.Value;
 import execute.Environment;
 import parse.Token;
@@ -44,7 +44,7 @@ public class WhileStatement extends Operation implements FlowController {
         } else {
             env.setCounter(endAddress + 1);
         }
-        return new IntValue(0);
+        return NullValue.NULL;
     }
 
     @Override

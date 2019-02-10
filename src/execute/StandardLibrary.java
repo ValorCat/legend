@@ -29,7 +29,7 @@ public final class StandardLibrary {
         define(create("int")
                 .shared("to", (args, env) -> {
                     ArgumentList bounds = new ArgumentList(args.target(), args.args()[0]);
-                    return TYPES.get("range").instantiate(bounds, env);
+                    return type("range").instantiate(bounds, env);
                 }));
         define(create("iterator")
                 .personal("values", "position", "hasNext", "next"));
@@ -58,7 +58,7 @@ public final class StandardLibrary {
                     return max;
                 }).shared("show", (args, env) -> {
                     System.out.println(Arrays.toString(args.target().getAttributes()));
-                    return new IntValue(0);
+                    return NullValue.NULL;
                 }).shared("iterator", (args, env) -> type("iterator").instantiate(new ArgumentList(
                         args.target(), new IntValue(0),
                         new FunctionValue("hasNext", (_args, _env) -> {
@@ -76,6 +76,7 @@ public final class StandardLibrary {
                         })
                 ), env)));
         define(create("*native"));
+        define(create("null"));
         define(create("range")
                 .personal("left", "right")
                 .shared("iterator", (args, env) -> type("iterator").instantiate(new ArgumentList(
@@ -128,15 +129,7 @@ public final class StandardLibrary {
 
             define("exit", (args, env) -> {
                 System.exit(0);
-                return new IntValue(0);
-            }),
-
-            define("exitif", (args, env) -> {
-                if (args.args()[0].asBool()) {
-                    System.exit(0);
-
-                }
-                return new IntValue(0);
+                return NullValue.NULL;
             }),
 
             define("read", (args, env) -> {
@@ -148,7 +141,7 @@ public final class StandardLibrary {
 
             define("show", (args, env) -> {
                 System.out.println(args.args()[0].asStr());
-                return new IntValue(0);
+                return NullValue.NULL;
             }),
 
             define("showenv", (args, env) -> {
@@ -159,7 +152,7 @@ public final class StandardLibrary {
                             value.type().getName(), value);
                 }
                 System.out.println("===================================================");
-                return new IntValue(0);
+                return NullValue.NULL;
             })
     };
 
