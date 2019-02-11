@@ -1,8 +1,3 @@
-x = 10
-if x := null
-    show('Hello!')
-else
-    show('Not hello!')
+for i in List(1, 2, 3)
+    show(i)
 end
-show(x)
-show('Done!')

@@ -32,7 +32,7 @@ public final class StandardLibrary {
                     return type("Range").instantiate(bounds, env);
                 }));
         define(create("Iterator")
-                .personal("values", "position", "hasNext", "next"));
+                .personal("values", "position", "has_next", "next"));
         define(create("List")
                 .personal("*list")
                 .initializer((args, env) -> {
@@ -61,7 +61,7 @@ public final class StandardLibrary {
                     return NullValue.NULL;
                 }).shared("iterator", (args, env) -> type("Iterator").instantiate(new ArgumentList(
                         args.target(), new IntValue(0),
-                        new FunctionValue("hasNext", (_args, _env) -> {
+                        new FunctionValue("has_next", (_args, _env) -> {
                             int index = _args.target().getAttribute("position").asInteger();
                             Object javaList = _args.target().getAttribute("values").getAttribute("*list").asNative();
                             int size = ((Collection) javaList).size();
@@ -81,10 +81,10 @@ public final class StandardLibrary {
                 .personal("left", "right")
                 .shared("iterator", (args, env) -> type("Iterator").instantiate(new ArgumentList(
                         args.target(), args.target().getAttribute("left"),
-                        new FunctionValue("hasNext", (_args, _env) -> {
+                        new FunctionValue("has_next", (_args, _env) -> {
                             int current = _args.target().getAttribute("position").asInteger();
                             int max = _args.target().getAttribute("values").getAttribute("right").asInteger();
-                            return BoolValue.resolve(current < max);
+                            return BoolValue.resolve(current <= max);
                         }),
                         new FunctionValue("next", (_args, _env) -> {
                             Value current = _args.target().getAttribute("position");
@@ -96,7 +96,7 @@ public final class StandardLibrary {
         define(create("String")
                 .shared("iterator", (args, env) -> type("Iterator").instantiate(new ArgumentList(
                         args.target(), new IntValue(0),
-                        new FunctionValue("hasNext", (_args, _env) -> {
+                        new FunctionValue("has_next", (_args, _env) -> {
                             int current = _args.target().getAttribute("position").asInteger();
                             int size = _args.target().getAttribute("values").asString().length();
                             return BoolValue.resolve(current < size);

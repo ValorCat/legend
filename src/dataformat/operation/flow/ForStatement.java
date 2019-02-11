@@ -77,7 +77,7 @@ public class ForStatement extends Operation implements FlowController {
     }
 
     private boolean hasNext(Environment env) {
-        return iterator.callMethod("hasNext", env).asBoolean();
+        return iterator.callMethod("has_next", env).asBoolean();
     }
 
     private Value getNext(Environment env) {
