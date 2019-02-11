@@ -62,7 +62,7 @@ public class Environment {
      */
     public void assign(String name, Value value) {
         namespace.put(name, store(value));
-        if (value.type() == StandardLibrary.type("type")) {
+        if (value.type() == StandardLibrary.type("Type")) {
             // todo deanonymize functions
             ((Type) value).deanonymize(name);
         }

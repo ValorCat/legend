@@ -67,11 +67,11 @@ public class WhileStatement extends Operation implements FlowController {
 
     private boolean checkCondition(Environment env) {
         Value result = condition.evaluate(env);
-        if (!result.isType("bool")) {
+        if (!result.isType("Boolean")) {
             throw new RuntimeException("While loop expected boolean condition, got type '"
                     + result.type().getName() + "'");
         }
-        return result.asBool();
+        return result.asBoolean();
     }
 
 }

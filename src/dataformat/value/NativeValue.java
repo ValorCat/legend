@@ -10,7 +10,7 @@ public class NativeValue extends Value {
     private Object value;
 
     public NativeValue(Object javaValue) {
-        super(StandardLibrary.type("*native"));
+        super(StandardLibrary.type("*Native"));
         this.value = javaValue;
     }
 

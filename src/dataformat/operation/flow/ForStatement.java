@@ -77,7 +77,7 @@ public class ForStatement extends Operation implements FlowController {
     }
 
     private boolean hasNext(Environment env) {
-        return iterator.callMethod("hasNext", env).asBool();
+        return iterator.callMethod("hasNext", env).asBoolean();
     }
 
     private Value getNext(Environment env) {
@@ -91,7 +91,7 @@ public class ForStatement extends Operation implements FlowController {
                     + iterable.type().getName() + "' instead");
         }
         Value iterator = iterable.callMethod("iterator", env);
-        if (!iterator.isType("iterator")) {
+        if (!iterator.isType("Iterator")) {
             throw new RuntimeException("Expected for loop target's 'iterator' method to return an iterator, got "
                     + "value of type '" + iterator.type().getName() + "' instead");
         }

@@ -10,22 +10,22 @@ public class IntValue extends Value {
     private int value;
 
     public IntValue(int value) {
-        super(StandardLibrary.type("int"));
+        super(StandardLibrary.type("Integer"));
         this.value = value;
     }
 
     @Override
     public boolean matches(String pattern) {
-        return asStr().equals(pattern);
+        return asString().equals(pattern);
     }
 
     @Override
-    public int asInt() {
+    public int asInteger() {
         return value;
     }
 
     @Override
-    public String asStr() {
+    public String asString() {
         return String.valueOf(value);
     }
 

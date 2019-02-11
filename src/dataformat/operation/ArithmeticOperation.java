@@ -28,8 +28,8 @@ public class ArithmeticOperation extends Operation {
 
     @Override
     public Value evaluate(Environment env) {
-        int left = operands.get(0).evaluate(env).asInt();
-        int right = operands.get(1).evaluate(env).asInt();
+        int left = operands.get(0).evaluate(env).asInteger();
+        int right = operands.get(1).evaluate(env).asInteger();
         int result = OPERATIONS.get(operator).applyAsInt(left, right);
         return new IntValue(result);
     }

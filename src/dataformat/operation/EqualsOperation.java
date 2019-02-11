@@ -29,7 +29,7 @@ public class EqualsOperation extends Operation {
         if (left.equals(right)) return NEGATE ? FALSE : TRUE;
         List<String> types = List.of(left.type().getName(), right.type().getName());
         if (types.contains("str") && (types.contains("bool") || types.contains("int"))) {
-            return BoolValue.resolve(NEGATE != left.asStr().equals(right.asStr()));
+            return BoolValue.resolve(NEGATE != left.asString().equals(right.asString()));
         }
         return FALSE;
     }

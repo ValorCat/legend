@@ -10,7 +10,7 @@ public class StringValue extends Value {
     private String value;
 
     public StringValue(String value) {
-        super(StandardLibrary.type("str"));
+        super(StandardLibrary.type("String"));
         this.value = value;
     }
 
@@ -20,7 +20,7 @@ public class StringValue extends Value {
     }
 
     @Override
-    public int asInt() {
+    public int asInteger() {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
@@ -29,12 +29,12 @@ public class StringValue extends Value {
     }
 
     @Override
-    public String asStr() {
+    public String asString() {
         return value;
     }
 
     @Override
-    public boolean asBool() {
+    public boolean asBoolean() {
         switch (value) {
             case "true": return true;
             case "false": return false;

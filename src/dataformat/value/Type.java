@@ -42,7 +42,7 @@ public class Type extends Value {
     }
 
     @Override
-    public String asStr() {
+    public String asString() {
         return "type[" + getName() + "]";
     }
 

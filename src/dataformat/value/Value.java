@@ -26,24 +26,24 @@ public abstract class Value implements Expression {
         return this;
     }
 
-    public int asInt() {
-        throw errorOnCast("integer");
+    public int asInteger() {
+        throw errorOnCast("Integer");
     }
 
-    public String asStr() {
-        throw errorOnCast("string");
+    public String asString() {
+        throw errorOnCast("String");
     }
 
-    public boolean asBool() {
-        throw errorOnCast("boolean");
+    public boolean asBoolean() {
+        throw errorOnCast("Boolean");
     }
 
     public Object asNative() {
-        throw errorOnCast("*native");
+        throw errorOnCast("Native");
     }
 
     public Type type() {
-        if (type == null) type = StandardLibrary.type("type");
+        if (type == null) type = StandardLibrary.type("Type");
         return type;
     }
 
@@ -89,7 +89,7 @@ public abstract class Value implements Expression {
     public abstract boolean equals(Value other);
 
     private RuntimeException errorOnCast(String resultType) {
-        return new RuntimeException("Type '" + type().getName() + "' cannot be converted to a " + resultType);
+        return new RuntimeException("Type '" + type().getName() + "' cannot be converted to " + resultType);
     }
 
 }

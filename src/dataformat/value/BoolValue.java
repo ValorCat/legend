@@ -18,7 +18,7 @@ public final class BoolValue extends Value {
     private String string;
 
     private BoolValue(boolean value) {
-        super(StandardLibrary.type("bool"));
+        super(StandardLibrary.type("Boolean"));
         this.value = value;
         this.string = String.valueOf(value);
     }
@@ -29,12 +29,12 @@ public final class BoolValue extends Value {
     }
 
     @Override
-    public String asStr() {
+    public String asString() {
         return string;
     }
 
     @Override
-    public boolean asBool() {
+    public boolean asBoolean() {
         return value;
     }
 

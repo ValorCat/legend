@@ -43,7 +43,7 @@ public class IfStatement extends Operation implements FlowController {
         } else {
             env.getControlStack().push(this);
             for (Entry<Expression, Integer> branch : branches.entrySet()) {
-                if (branch.getKey().evaluate(env).asBool()) {
+                if (branch.getKey().evaluate(env).asBoolean()) {
                     env.setCounter(branch.getValue() + 1);
                     done = true;
                     break;

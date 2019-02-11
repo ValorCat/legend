@@ -12,7 +12,7 @@ public class ObjectValue extends Value {
     }
 
     @Override
-    public String asStr() {
+    public String asString() {
         return toString();
     }
 

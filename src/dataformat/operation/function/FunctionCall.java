@@ -32,11 +32,11 @@ public class FunctionCall extends Operation {
     }
 
     public static Value call(Value executable, ArgumentList args, Environment env) {
-        if (executable.isType("func")) {
+        if (executable.isType("Function")) {
             FunctionValue func = ((FunctionValue) executable);
             // todo check if args match params
             return func.call(args, env);
-        } else if (executable.isType("type")) {
+        } else if (executable.isType("Type")) {
             return ((Type) executable).instantiate(args, env);
         }
         throw new RuntimeException("Cannot execute object of type '" + executable.type().getName() + "'");

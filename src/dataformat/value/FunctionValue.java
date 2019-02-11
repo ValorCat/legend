@@ -22,13 +22,13 @@ public class FunctionValue extends Value {
     }
 
     public FunctionValue(String name, FunctionBody body) {
-        super(StandardLibrary.type("func"));
+        super(StandardLibrary.type("Function"));
         this.name = name;
         this.body = body;
     }
 
     @Override
-    public String asStr() {
+    public String asString() {
         return "func[" + name + "]";
     }
 

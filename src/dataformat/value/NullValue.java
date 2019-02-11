@@ -10,16 +10,16 @@ public final class NullValue extends Value {
     public static NullValue NULL = new NullValue();
 
     private NullValue() {
-        super(StandardLibrary.type("null"));
+        super(StandardLibrary.type("*Null"));
     }
 
     @Override
-    public String asStr() {
+    public String asString() {
         return "null";
     }
 
     @Override
-    public boolean asBool() {
+    public boolean asBoolean() {
         return false;
     }
 
