@@ -2,7 +2,7 @@ package dataformat.operation.flow;
 
 import dataformat.Expression;
 import dataformat.operation.Operation;
-import dataformat.value.NullValue;
+import dataformat.value.LNull;
 import dataformat.value.Value;
 import execute.Environment;
 import parse.Token;
@@ -53,7 +53,7 @@ public class ForStatement extends Operation implements FlowController {
         } else {
             env.setCounter(endAddress + 1);
         }
-        return NullValue.NULL;
+        return LNull.NULL;
     }
 
     @Override

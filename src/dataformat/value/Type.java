@@ -1,7 +1,7 @@
 package dataformat.value;
 
 import dataformat.ArgumentList;
-import dataformat.value.FunctionValue.FunctionBody;
+import dataformat.value.LFunction.FunctionBody;
 import execute.Environment;
 
 import java.util.HashMap;
@@ -87,7 +87,7 @@ public class Type extends Value {
                 throw new RuntimeException("Type '" + getName() + "' does not accept keyword arguments");
             }
             // todo check params = args
-            return new ObjectValue(this, args.args());
+            return new LObject(this, args.args());
         } else {
             Value instance = initializer.apply(args, env);
             instance.setType(this);

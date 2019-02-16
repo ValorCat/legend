@@ -5,11 +5,11 @@ import execute.StandardLibrary;
 /**
  * @since 12/24/2018
  */
-public class IntValue extends Value {
+public class LInteger extends Value {
 
     private int value;
 
-    public IntValue(int value) {
+    public LInteger(int value) {
         super(StandardLibrary.type("Integer"));
         this.value = value;
     }
@@ -36,7 +36,7 @@ public class IntValue extends Value {
     @Override
     public boolean equals(Value other) {
         return type() == other.type()
-                && value == ((IntValue) other).value;
+                && value == ((LInteger) other).value;
     }
 
     @Override

@@ -2,7 +2,7 @@ package dataformat.operation;
 
 import dataformat.Expression;
 import dataformat.value.Attribute;
-import dataformat.value.FunctionValue;
+import dataformat.value.LFunction;
 import dataformat.value.Value;
 import execute.Environment;
 import parse.Token;
@@ -31,7 +31,7 @@ public class DotOperation extends Operation {
     public Value evaluate(Environment env) {
         String attribute = operands.get(1).getIdentifier();
         if (operands.get(0).matches("_")) {
-            return new FunctionValue((args, _env) -> args.args()[0].getAttribute(attribute));
+            return new LFunction((args, _env) -> args.args()[0].getAttribute(attribute));
         } else {
             Value target = operands.get(0).evaluate(env);
             return new Attribute(target, target.getAttribute(attribute));

@@ -1,7 +1,7 @@
 package dataformat.operation.flow;
 
 import dataformat.operation.Operation;
-import dataformat.value.NullValue;
+import dataformat.value.LNull;
 import dataformat.value.Value;
 import execute.Environment;
 import parse.Token;
@@ -30,7 +30,7 @@ public class RepeatStatement extends Operation implements FlowController {
     public Value evaluate(Environment env) {
         env.getControlStack().push(this);
         startIndex = env.getCounter();
-        return NullValue.NULL;
+        return LNull.NULL;
     }
 
     @Override

@@ -2,10 +2,10 @@ package parse;
 
 import dataformat.Expression;
 import dataformat.Variable;
-import dataformat.value.BoolValue;
-import dataformat.value.IntValue;
-import dataformat.value.NullValue;
-import dataformat.value.StringValue;
+import dataformat.value.LBoolean;
+import dataformat.value.LInteger;
+import dataformat.value.LNull;
+import dataformat.value.LString;
 
 import java.util.Collections;
 import java.util.List;
@@ -83,13 +83,13 @@ public class Token {
                 return new Variable(VALUE);
             case LITERAL:
                 if (Character.isDigit(VALUE.charAt(0))) {
-                    return new IntValue(Integer.parseInt(VALUE));
+                    return new LInteger(Integer.parseInt(VALUE));
                 } else if (VALUE.equals("true") || VALUE.equals("false")) {
-                    return BoolValue.resolve(VALUE.equals("true"));
+                    return LBoolean.resolve(VALUE.equals("true"));
                 } else if (VALUE.equals("null")) {
-                    return NullValue.NULL;
+                    return LNull.NULL;
                 } else {
-                    return new StringValue(VALUE);
+                    return new LString(VALUE);
                 }
             default:
                 throw new RuntimeException("Unexpected token: " + VALUE);

@@ -5,11 +5,11 @@ import execute.StandardLibrary;
 /**
  * @since 2/9/2019
  */
-public final class NullValue extends Value {
+public final class LNull extends Value {
 
-    public static NullValue NULL = new NullValue();
+    public static LNull NULL = new LNull();
 
-    private NullValue() {
+    private LNull() {
         super(StandardLibrary.type("*Null"));
     }
 

@@ -3,7 +3,7 @@ package dataformat.operation.function;
 import dataformat.ArgumentList;
 import dataformat.operation.Operation;
 import dataformat.value.Attribute;
-import dataformat.value.FunctionValue;
+import dataformat.value.LFunction;
 import dataformat.value.Type;
 import dataformat.value.Value;
 import execute.Environment;
@@ -33,7 +33,7 @@ public class FunctionCall extends Operation {
 
     public static Value call(Value executable, ArgumentList args, Environment env) {
         if (executable.isType("Function")) {
-            FunctionValue func = ((FunctionValue) executable);
+            LFunction func = ((LFunction) executable);
             // todo check if args match params
             return func.call(args, env);
         } else if (executable.isType("Type")) {

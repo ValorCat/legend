@@ -1,7 +1,7 @@
 package dataformat.operation;
 
 import dataformat.Expression;
-import dataformat.value.NullValue;
+import dataformat.value.LNull;
 import dataformat.value.Value;
 import execute.Environment;
 import parse.Token;
@@ -36,7 +36,7 @@ public class Assignment extends Operation {
     @Override
     public Value evaluate(Environment env) {
         env.assign(target, value.evaluate(env));
-        return NullValue.NULL;
+        return LNull.NULL;
     }
 
 }

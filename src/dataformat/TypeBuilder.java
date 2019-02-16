@@ -1,7 +1,7 @@
 package dataformat;
 
-import dataformat.value.FunctionValue;
-import dataformat.value.FunctionValue.FunctionBody;
+import dataformat.value.LFunction;
+import dataformat.value.LFunction.FunctionBody;
 import dataformat.value.Type;
 import dataformat.value.Value;
 
@@ -43,7 +43,7 @@ public class TypeBuilder {
     }
 
     public TypeBuilder shared(String name, FunctionBody method) {
-        shared.put(name, new FunctionValue(name, method));
+        shared.put(name, new LFunction(name, method));
         return this;
     }
 

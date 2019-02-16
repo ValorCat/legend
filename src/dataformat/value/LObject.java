@@ -5,9 +5,9 @@ import java.util.Arrays;
 /**
  * @since 1/18/2019
  */
-public class ObjectValue extends Value {
+public class LObject extends Value {
 
-    public ObjectValue(Type type, Value... attributes) {
+    public LObject(Type type, Value... attributes) {
         super(type, attributes);
     }
 

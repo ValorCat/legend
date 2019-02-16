@@ -5,19 +5,19 @@ import execute.StandardLibrary;
 /**
  * @since 12/28/2018
  */
-public final class BoolValue extends Value {
+public final class LBoolean extends Value {
 
-    public static final BoolValue TRUE = new BoolValue(true);
-    public static final BoolValue FALSE = new BoolValue(false);
+    public static final LBoolean TRUE = new LBoolean(true);
+    public static final LBoolean FALSE = new LBoolean(false);
 
-    public static BoolValue resolve(boolean b) {
+    public static LBoolean resolve(boolean b) {
         return b ? TRUE : FALSE;
     }
 
     private boolean value;
     private String string;
 
-    private BoolValue(boolean value) {
+    private LBoolean(boolean value) {
         super(StandardLibrary.type("Boolean"));
         this.value = value;
         this.string = String.valueOf(value);

@@ -1,6 +1,9 @@
 package dataformat.value;
 
 /**
+ * Represents a value retrieved from an object with the . operator.
+ * This class is used instead of simply returning the retrieved value
+ * so that methods can have a reference to their owner object.
  * @since 12/27/2018
  */
 public class Attribute extends Value {

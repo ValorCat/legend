@@ -1,7 +1,7 @@
 package execute;
 
 import dataformat.operation.flow.FlowController;
-import dataformat.value.FunctionValue;
+import dataformat.value.LFunction;
 import dataformat.value.Type;
 import dataformat.value.Value;
 
@@ -37,7 +37,7 @@ public class Environment {
             GLOBAL.assign(type.getKey(), type.getValue());
         }
 
-        for (FunctionValue func : StandardLibrary.FUNCTIONS) {
+        for (LFunction func : StandardLibrary.FUNCTIONS) {
             GLOBAL.assign(func.getName(), func);
         }
     }

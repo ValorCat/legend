@@ -1,14 +1,14 @@
 package dataformat.operation;
 
-import dataformat.value.BoolValue;
+import dataformat.value.LBoolean;
 import dataformat.value.Value;
 import execute.Environment;
 import parse.Token;
 
 import java.util.List;
 
-import static dataformat.value.BoolValue.FALSE;
-import static dataformat.value.BoolValue.TRUE;
+import static dataformat.value.LBoolean.FALSE;
+import static dataformat.value.LBoolean.TRUE;
 
 /**
  * @since 1/19/2019
@@ -29,7 +29,7 @@ public class EqualsOperation extends Operation {
         if (left.equals(right)) return NEGATE ? FALSE : TRUE;
         List<String> types = List.of(left.type().getName(), right.type().getName());
         if (types.contains("str") && (types.contains("bool") || types.contains("int"))) {
-            return BoolValue.resolve(NEGATE != left.asString().equals(right.asString()));
+            return LBoolean.resolve(NEGATE != left.asString().equals(right.asString()));
         }
         return FALSE;
     }

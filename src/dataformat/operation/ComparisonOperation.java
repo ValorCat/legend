@@ -1,6 +1,6 @@
 package dataformat.operation;
 
-import dataformat.value.BoolValue;
+import dataformat.value.LBoolean;
 import dataformat.value.Value;
 import execute.Environment;
 import parse.Token;
@@ -30,6 +30,6 @@ public class ComparisonOperation extends Operation {
         int left = operands.get(0).evaluate(env).asInteger();
         int right = operands.get(1).evaluate(env).asInteger();
         boolean result = OPERATIONS.get(operator).test(left, right);
-        return BoolValue.resolve(result);
+        return LBoolean.resolve(result);
     }
 }

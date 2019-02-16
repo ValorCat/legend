@@ -1,6 +1,6 @@
 package dataformat.operation;
 
-import dataformat.value.IntValue;
+import dataformat.value.LInteger;
 import dataformat.value.Value;
 import execute.Environment;
 import parse.Token;
@@ -31,7 +31,7 @@ public class ArithmeticOperation extends Operation {
         int left = operands.get(0).evaluate(env).asInteger();
         int right = operands.get(1).evaluate(env).asInteger();
         int result = OPERATIONS.get(operator).applyAsInt(left, right);
-        return new IntValue(result);
+        return new LInteger(result);
     }
 
 }

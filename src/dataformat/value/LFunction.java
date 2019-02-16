@@ -9,7 +9,7 @@ import java.util.function.BiFunction;
 /**
  * @since 12/24/2018
  */
-public class FunctionValue extends Value {
+public class LFunction extends Value {
 
     @FunctionalInterface
     public interface FunctionBody extends BiFunction<ArgumentList, Environment, Value> {}
@@ -17,11 +17,11 @@ public class FunctionValue extends Value {
     private String name;
     private FunctionBody body;
 
-    public FunctionValue(FunctionBody body) {
+    public LFunction(FunctionBody body) {
         this("anonymous function", body);
     }
 
-    public FunctionValue(String name, FunctionBody body) {
+    public LFunction(String name, FunctionBody body) {
         super(StandardLibrary.type("Function"));
         this.name = name;
         this.body = body;
@@ -47,7 +47,7 @@ public class FunctionValue extends Value {
     @Override
     public boolean equals(Value other) {
         return type() == other.type()
-                && body == ((FunctionValue) other).body;
+                && body == ((LFunction) other).body;
     }
 
     @Override

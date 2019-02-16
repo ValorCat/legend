@@ -5,11 +5,11 @@ import execute.StandardLibrary;
 /**
  * @since 12/24/2018
  */
-public class StringValue extends Value {
+public class LString extends Value {
 
     private String value;
 
-    public StringValue(String value) {
+    public LString(String value) {
         super(StandardLibrary.type("String"));
         this.value = value;
     }
@@ -49,7 +49,7 @@ public class StringValue extends Value {
     @Override
     public boolean equals(Value other) {
         return type() == other.type()
-                && ((StringValue) other).value.equals(value);
+                && ((LString) other).value.equals(value);
     }
 
     @Override

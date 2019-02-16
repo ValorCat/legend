@@ -2,8 +2,8 @@ package dataformat.operation.flow;
 
 import dataformat.Expression;
 import dataformat.operation.Operation;
-import dataformat.value.BoolValue;
-import dataformat.value.NullValue;
+import dataformat.value.LBoolean;
+import dataformat.value.LNull;
 import dataformat.value.Value;
 import execute.Environment;
 import parse.Token;
@@ -53,7 +53,7 @@ public class IfStatement extends Operation implements FlowController {
                 env.setCounter(endAddress);
             }
         }
-        return NullValue.NULL;
+        return LNull.NULL;
     }
 
     @Override
@@ -108,7 +108,7 @@ public class IfStatement extends Operation implements FlowController {
         } else if (statement.size() > 1) {
             throw new RuntimeException("Unxpected symbol '" + statement.get(1).VALUE + "'");
         }
-        branches.putIfAbsent(BoolValue.TRUE, address);
+        branches.putIfAbsent(LBoolean.TRUE, address);
         Token.consolidate(statement, new Token("else", this), 0, 1);
     }
 
