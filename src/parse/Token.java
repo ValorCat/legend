@@ -2,6 +2,7 @@ package parse;
 
 import dataformat.Expression;
 import dataformat.Variable;
+import dataformat.operation.CommaList;
 import dataformat.value.LBoolean;
 import dataformat.value.LInteger;
 import dataformat.value.LNull;
@@ -41,7 +42,7 @@ public class Token {
     }
 
     public Token(TokenType type, List<Token> tokens) {
-        this(type, null, null, tokens);
+        this(type, "", null, tokens);
     }
 
     public Token(String value, Expression expression) {
@@ -79,6 +80,8 @@ public class Token {
         switch (TYPE) {
             case EXPRESSION: case STATEMENT:
                 return EXPRESSION;
+            case PARENS:
+                return new CommaList();
             case IDENTIFIER:
                 return new Variable(VALUE);
             case LITERAL:
@@ -92,7 +95,7 @@ public class Token {
                     return new LString(VALUE);
                 }
             default:
-                throw new RuntimeException("Unexpected token: " + VALUE);
+                throw new RuntimeException("Unexpected token: " + VALUE + " (type " + TYPE.name() + ")");
         }
     }
 
@@ -106,7 +109,7 @@ public class Token {
 
     @Override
     public String toString() {
-        String type = TYPE.name().substring(0, 3) + TYPE.name().substring(TYPE.name().length() - 1);
+        String type = TYPE.name().substring(0, 4);
         if (CHILDREN.isEmpty()) {
             return String.format("%s \"%s\"", type, VALUE);
         } else if (VALUE == null) {

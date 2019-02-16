@@ -30,7 +30,8 @@ public class Parser {
         List<Expression> trees = new ArrayList<>(statements.size());
         Stack<FlowController> controlStack = new Stack<>();
         for (int i = 0; i < statements.size(); i++) {
-            trees.add(parseExpression(statements.get(i), i, controlStack));
+            Token root = parseExpression(statements.get(i), i, controlStack);
+            trees.add(root.asExpression());
         }
         if (!controlStack.isEmpty()) {
             throw new RuntimeException("Expected 'end' to close '" + controlStack.peek().getKeyword() + "'");
@@ -43,11 +44,11 @@ public class Parser {
      * @param statement the statement to convert, which will be consumed and destroyed
      * @return the root of a syntax tree
      */
-    private Expression parseExpression(List<Token> statement, int address, Stack<FlowController> controlStack) {
+    private Token parseExpression(List<Token> statement, int address, Stack<FlowController> controlStack) {
         if (statement.isEmpty()) {
             // if there are no tokens (such as from empty parens to a function call),
             // just return an empty list
-            return new CommaList();
+            return new Token(PARENS, List.of());
         }
         injectImplicitOperators(statement);
         List<Token> precedence = getPrecedence(statement, address, controlStack);
@@ -64,7 +65,7 @@ public class Parser {
             // for example: 3 x * 2
             throw new RuntimeException("Expression resolved to multiple values: " + statement);
         }
-        return statement.get(0).EXPRESSION;
+        return statement.get(0);
     }
 
     /**
@@ -81,8 +82,8 @@ public class Parser {
                 ordering.add(token);
             } else if (token.TYPE == PARENS) {
                 // todo move paren parsing to another method
-                parseExpression(token.CHILDREN, address, controlStack);
-                statement.set(i, token.CHILDREN.get(0));
+                Token parens = parseExpression(token.CHILDREN, address, controlStack);
+                statement.set(i, parens);
             }
         }
         ordering.sort(OperatorTable.byPrecedence());
