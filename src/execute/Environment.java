@@ -44,6 +44,7 @@ public class Environment {
 
     private Map<String, Integer> namespace;
     private Stack<FlowController> controlStack;
+    private Stack<Integer> returnAddresses;
     private Environment parent;
     private int programCounter;
     private boolean programCounterChanged;
@@ -51,6 +52,7 @@ public class Environment {
     public Environment(Environment parent) {
         this.namespace = new HashMap<>();
         this.controlStack = new Stack<>();
+        this.returnAddresses = new Stack<>();
         this.parent = parent;
         this.programCounter = 0;
     }
@@ -97,6 +99,14 @@ public class Environment {
 
     public Stack<FlowController> getControlStack() {
         return controlStack;
+    }
+
+    public void markReturnPoint() {
+        returnAddresses.push(programCounter);
+    }
+
+    public void jumpToReturnPoint() {
+        this.programCounter = returnAddresses.pop();
     }
 
     public int getCounter() {

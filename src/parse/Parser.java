@@ -102,7 +102,7 @@ public class Parser {
             int distanceFromEnd = tokens.size() - i - 1;
             if (current.isValue() && distanceFromEnd > 0) {
                 Token next = tokens.get(i + 1);
-                if (next.TYPE == PARENS) {
+                if (next.TYPE == PARENS && (i == 0 || !tokens.get(i - 1).matches("def"))) {
                     tokens.add(i + 1, new Token(OPERATOR, "call"));
                 } else if (next.TYPE == IDENTIFIER) {
                     if (distanceFromEnd == 1 || !tokens.get(i + 2).isValue()) {

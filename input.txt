@@ -1,3 +1,10 @@
-for i in List(1, 2, 3)
-    show(i)
+show('begin!')
+
+def print_test()
+    show('test')
 end
+
+print_test()
+print_test()
+
+show('end!')

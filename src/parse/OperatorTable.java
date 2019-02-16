@@ -4,6 +4,7 @@ import dataformat.operation.*;
 import dataformat.operation.flow.*;
 import dataformat.operation.function.BinaryOperatorCall;
 import dataformat.operation.function.FunctionCall;
+import dataformat.operation.function.FunctionDefinition;
 import dataformat.operation.function.UnaryOperatorCall;
 
 import java.util.*;
@@ -35,7 +36,7 @@ public final class OperatorTable {
             {","},
             {"="},
             {"in"},                 // low precedence
-            {"else", "elsif", "end", "for", "if", "repeat", "while"}
+            {"def", "else", "elsif", "end", "for", "if", "repeat", "while"}
     });
 
     /*
@@ -43,7 +44,7 @@ public final class OperatorTable {
     to unusual operators.
      */
     public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=", ":=");
-    public static final Set<String> KEYWORDS = Set.of("else", "elsif", "end", "for", "if", "repeat", "while");
+    public static final Set<String> KEYWORDS = Set.of("def", "else", "elsif", "end", "for", "if", "repeat", "while");
 
     /**
      * Verify an operator's environmental constraints are met (e.g. for the '+'
@@ -68,6 +69,7 @@ public final class OperatorTable {
             case ":":       new Mapping(tokenPos, statement); break;
             case ",":       new CommaList(tokenPos, statement); break;
             case "=":       new Assignment(tokenPos, statement); break;
+            case "def":     new FunctionDefinition(tokenPos, statement, controlStack); break;
             case "end":     new EndStatement(tokenPos, statement, address, controlStack); break;
             case "if":      new IfStatement(tokenPos, statement, address, controlStack); break;
             case "for":     new ForStatement(tokenPos, statement, controlStack); break;
