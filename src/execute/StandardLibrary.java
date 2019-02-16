@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.function.ToIntFunction;
 
 import static dataformat.TypeBuilder.create;
-import static dataformat.value.LFunction.FunctionBody;
+import static dataformat.value.NativeFunction.FunctionBody;
 
 /**
  * Maintains a list of built-in types and functions. These values are
@@ -61,13 +61,13 @@ public final class StandardLibrary {
                     return LNull.NULL;
                 }).shared("iterator", (args, env) -> type("Iterator").instantiate(new ArgumentList(
                         args.target(), new LInteger(0),
-                        new LFunction("has_next", (_args, _env) -> {
+                        new NativeFunction("has_next", (_args, _env) -> {
                             int index = _args.target().getAttribute("position").asInteger();
                             Object javaList = _args.target().getAttribute("values").getAttribute("*list").asNative();
                             int size = ((Collection) javaList).size();
                             return LBoolean.resolve(index < size);
                         }),
-                        new LFunction("next", (_args, _env) -> {
+                        new NativeFunction("next", (_args, _env) -> {
                             int index = _args.target().getAttribute("position").asInteger();
                             Object javaList = _args.target().getAttribute("values").getAttribute("*list").asNative();
                             _args.target().setAttribute("position", new LInteger(index + 1));
@@ -81,12 +81,12 @@ public final class StandardLibrary {
                 .personal("left", "right")
                 .shared("iterator", (args, env) -> type("Iterator").instantiate(new ArgumentList(
                         args.target(), args.target().getAttribute("left"),
-                        new LFunction("has_next", (_args, _env) -> {
+                        new NativeFunction("has_next", (_args, _env) -> {
                             int current = _args.target().getAttribute("position").asInteger();
                             int max = _args.target().getAttribute("values").getAttribute("right").asInteger();
                             return LBoolean.resolve(current <= max);
                         }),
-                        new LFunction("next", (_args, _env) -> {
+                        new NativeFunction("next", (_args, _env) -> {
                             Value current = _args.target().getAttribute("position");
                             _args.target().setAttribute("position", new LInteger(current.asInteger() + 1));
                             // todo error if out of range
@@ -96,12 +96,12 @@ public final class StandardLibrary {
         define(create("String")
                 .shared("iterator", (args, env) -> type("Iterator").instantiate(new ArgumentList(
                         args.target(), new LInteger(0),
-                        new LFunction("has_next", (_args, _env) -> {
+                        new NativeFunction("has_next", (_args, _env) -> {
                             int current = _args.target().getAttribute("position").asInteger();
                             int size = _args.target().getAttribute("values").asString().length();
                             return LBoolean.resolve(current < size);
                         }),
-                        new LFunction("next", (_args, _env) -> {
+                        new NativeFunction("next", (_args, _env) -> {
                             int current = _args.target().getAttribute("position").asInteger();
                             String string = _args.target().getAttribute("values").asString();
                             _args.target().setAttribute("position", new LInteger(current + 1));
@@ -180,7 +180,7 @@ public final class StandardLibrary {
      * @return a new function value
      */
     private static LFunction define(String name, FunctionBody body) {
-        return new LFunction(name, body);
+        return new NativeFunction(name, body);
     }
 
 }

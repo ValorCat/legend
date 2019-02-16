@@ -1,7 +1,7 @@
 package dataformat.value;
 
 import dataformat.ArgumentList;
-import dataformat.value.LFunction.FunctionBody;
+import dataformat.value.NativeFunction.FunctionBody;
 import execute.Environment;
 
 import java.util.HashMap;

@@ -4,54 +4,37 @@ import dataformat.ArgumentList;
 import execute.Environment;
 import execute.StandardLibrary;
 
-import java.util.function.BiFunction;
-
 /**
  * @since 12/24/2018
  */
-public class LFunction extends Value {
-
-    @FunctionalInterface
-    public interface FunctionBody extends BiFunction<ArgumentList, Environment, Value> {}
+public abstract class LFunction extends Value {
 
     private String name;
-    private FunctionBody body;
 
-    public LFunction(FunctionBody body) {
-        this("anonymous function", body);
+    public LFunction() {
+        this("anonymous function");
     }
 
-    public LFunction(String name, FunctionBody body) {
+    public LFunction(String name) {
         super(StandardLibrary.type("Function"));
         this.name = name;
-        this.body = body;
     }
+
+    public abstract Value call(ArgumentList args, Environment env);
+    public abstract boolean equals(Value other);
+    public abstract String toString();
 
     @Override
     public String asString() {
-        return "func[" + name + "]";
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Value call(ArgumentList args, Environment env) {
-        return body.apply(args, env);
+        return "function[" + name + "]";
     }
 
     public Value call(Environment env, Value... args) {
         return call(new ArgumentList(args), env);
     }
 
-    @Override
-    public boolean equals(Value other) {
-        return type() == other.type()
-                && body == ((LFunction) other).body;
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public String toString() {
-        return "func[" + Integer.toHexString(System.identityHashCode(body)) + "]";
-    }
 }
