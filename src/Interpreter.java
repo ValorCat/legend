@@ -1,4 +1,5 @@
 import dataformat.Expression;
+import execute.Environment;
 import execute.Executor;
 import parse.Parser;
 import parse.Token;
@@ -47,11 +48,10 @@ public class Interpreter {
 
         Tokenizer tokenizer = new Tokenizer();
         Parser parser = new Parser();
-        Executor executor = new Executor();
 
         List<List<Token>> tokens = tokenizer.tokenize(input);
         List<Expression> statements = parser.parse(tokens);
-        executor.execute(statements);
+        Executor.execute(new Environment(statements, Environment.GLOBAL));
     }
 
 }

@@ -1,11 +1,13 @@
 package dataformat.operation.function;
 
+import dataformat.Expression;
 import dataformat.operation.Operation;
 import dataformat.operation.flow.FlowController;
 import dataformat.value.LNull;
 import dataformat.value.UserDefinedFunction;
 import dataformat.value.Value;
 import execute.Environment;
+import execute.Executor;
 import parse.Token;
 import parse.Token.TokenType;
 
@@ -54,16 +56,14 @@ public class FunctionDefinition extends Operation implements FlowController {
     }
 
     public void call(Environment env) {
-        env.markReturnPoint();
-        env.getControlStack().push(this);
-        env.setCounter(startAddress + 1);
-        // todo enter new scope on function call
+        List<Expression> body = env.getProgram().subList(startAddress + 1, endAddress);
+        Executor.execute(new Environment(body, env));
     }
 
+    /* This method should never be called. */
     @Override
     public boolean isDone(Environment env) {
-        env.jumpToReturnPoint();
-        return true;
+        throw new IllegalStateException("Cannot call isDone() on user-defined function");
     }
 
     @Override

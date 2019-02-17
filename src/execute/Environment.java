@@ -1,5 +1,6 @@
 package execute;
 
+import dataformat.Expression;
 import dataformat.operation.flow.FlowController;
 import dataformat.value.LFunction;
 import dataformat.value.Type;
@@ -23,7 +24,7 @@ public class Environment {
     The global environment is the default environment, and directly or
     indirectly the parent of all other environments.
      */
-    public static final Environment GLOBAL = new Environment(null);
+    public static final Environment GLOBAL = new Environment(List.of(), null);
 
     /*
     Variable data is stored here and referenced by its index (address).
@@ -42,19 +43,22 @@ public class Environment {
         }
     }
 
+    private Environment parent;
     private Map<String, Integer> namespace;
     private Stack<FlowController> controlStack;
-    private Stack<Integer> returnAddresses;
-    private Environment parent;
+
+    private List<Expression> statements;
     private int programCounter;
     private boolean programCounterChanged;
 
-    public Environment(Environment parent) {
+    public Environment(List<Expression> statements, Environment parent) {
+        this.parent = parent;
         this.namespace = new HashMap<>();
         this.controlStack = new Stack<>();
-        this.returnAddresses = new Stack<>();
-        this.parent = parent;
+
+        this.statements = statements;
         this.programCounter = 0;
+        this.programCounterChanged = false;
     }
 
     /**
@@ -101,12 +105,8 @@ public class Environment {
         return controlStack;
     }
 
-    public void markReturnPoint() {
-        returnAddresses.push(programCounter);
-    }
-
-    public void jumpToReturnPoint() {
-        this.programCounter = returnAddresses.pop();
+    public List<Expression> getProgram() {
+        return statements;
     }
 
     public int getCounter() {

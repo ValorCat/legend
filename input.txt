@@ -1,10 +1,15 @@
-show('begin!')
-
-def print_test()
-    show('test')
+x = 10
+def increment()
+    x = x + 1
+    show('Incrementing to ')
+    show(x)
 end
 
-print_test()
-print_test()
+show(x)
 
-show('end!')
+increment()
+
+show('Outside, it is')
+show(x)
+
+increment()
