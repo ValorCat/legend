@@ -1,5 +1,6 @@
 package dataformat;
 
+import dataformat.group.Parentheses;
 import dataformat.value.Value;
 import execute.Environment;
 
@@ -22,25 +23,19 @@ public class ArgumentList {
         this.keywords = Map.of();
     }
 
-    public ArgumentList(Expression root, Environment env) {
+    public ArgumentList(Expression args, Environment env) {
         List<Value> argsList = new ArrayList<>();
         keywords = new HashMap<>();
-        if (root.matches(",")) {
-            for (Expression child : root.getChildren()) {
-                if (child.matches(":")) {
-                    handleKeyword(child, env);
-                } else if (keywords.isEmpty()) {
-                    handleArgument(child, env, argsList);
-                } else {
-                    throw new RuntimeException("Sequential args must precede keyword args");
-                }
+        for (Expression child : ((Parentheses) args).getContents()) {
+            if (child.matches(":")) {
+                handleKeyword(child, env);
+            } else if (keywords.isEmpty()) {
+                handleArgument(child, env, argsList);
+            } else {
+                throw new RuntimeException("Sequential args must precede keyword args");
             }
-        } else if (root.matches(":")) {
-            handleKeyword(root, env);
-        } else {
-            handleArgument(root, env, argsList);
         }
-        args = argsList.toArray(new Value[0]);
+        this.args = argsList.toArray(new Value[0]);
     }
 
     private void handleArgument(Expression expr, Environment env, List<Value> argsList) {

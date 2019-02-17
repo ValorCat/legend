@@ -1,12 +1,9 @@
-x = 10
-def increment()
-    x = x + 1
-    show('Inside the function')
-    return x
+def no_param(a, b)
+    show('no params!')
 end
 
-show(x)                 ~ 10
-show(increment())       ~ 11
-show('Outside, it is:')
-show(x)                 ~ 11
-show(increment())       ~ 12
+no_param()
+
+x = List('a')
+y = List('a', 'b')
+z = List()

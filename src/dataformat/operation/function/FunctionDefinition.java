@@ -1,6 +1,7 @@
 package dataformat.operation.function;
 
 import dataformat.Expression;
+import dataformat.group.Parentheses;
 import dataformat.operation.Operation;
 import dataformat.operation.flow.FlowController;
 import dataformat.value.LNull;
@@ -40,6 +41,7 @@ public class FunctionDefinition extends Operation implements FlowController {
             throw new RuntimeException("Unexpected symbol '" + tokens.get(2).VALUE + "' after function parameters");
         }
         name = tokens.get(1).VALUE;
+        params = (Parentheses) tokens.get(2).asExpression();
         Token.consolidate(tokens, Token.newStatement("def", this), 0, 3);
     }
 

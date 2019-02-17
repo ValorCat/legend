@@ -1,6 +1,7 @@
 package parse;
 
 import dataformat.Expression;
+import dataformat.group.Parentheses;
 import dataformat.operation.flow.FlowController;
 
 import java.util.ArrayList;
@@ -30,8 +31,7 @@ public class Parser {
         List<Expression> trees = new ArrayList<>(statements.size());
         Stack<FlowController> controlStack = new Stack<>();
         for (int i = 0; i < statements.size(); i++) {
-            Token root = parseExpression(statements.get(i), i, controlStack);
-            trees.add(root.asExpression());
+            trees.add(parseExpression(statements.get(i), i, controlStack));
         }
         if (!controlStack.isEmpty()) {
             throw new RuntimeException("Expected 'end' to close '" + controlStack.peek().getKeyword() + "'");
@@ -42,16 +42,19 @@ public class Parser {
     /**
      * Convert a statement into a parsed syntax tree.
      * @param statement the statement to convert, which will be consumed and destroyed
+     * @param address the current instruction's address
+     * @param controlStack the stack of flow control structures
      * @return the root of a syntax tree
      */
-    private Token parseExpression(List<Token> statement, int address, Stack<FlowController> controlStack) {
+    private Expression parseExpression(List<Token> statement, int address, Stack<FlowController> controlStack) {
         if (statement.isEmpty()) {
-            // if there are no tokens (such as from empty parens to a function call),
-            // just return an empty list
-            return Token.newGroup("()", List.of());
+            // if there are no tokens (such as in a function call with no args)
+            // just return empty parentheses
+            return Parentheses.EMPTY_PARENS;
         }
         injectImplicitOperators(statement);
-        List<Token> precedence = getPrecedence(statement, address, controlStack);
+        resolveGroups(statement, address, controlStack);
+        List<Token> precedence = getPrecedence(statement);
         for (Token operator : precedence) {
             int position = statement.indexOf(operator);
             if (position < 0) {
@@ -65,7 +68,27 @@ public class Parser {
             // for example: 3 x * 2
             throw new RuntimeException("Expression resolved to multiple values: " + statement);
         }
-        return statement.get(0);
+        return statement.get(0).asExpression();
+    }
+
+    /**
+     * Recursively search through a statement for subexpressions (pairs of (),
+     * [], or {}) and parse them.
+     * @param statement the statement to search through
+     * @param address the current instruction's address
+     * @param controlStack the stack of flow control structures
+     */
+    private void resolveGroups(List<Token> statement, int address, Stack<FlowController> controlStack) {
+        for (int i = 0; i < statement.size(); i++) {
+            Token token = statement.get(i);
+            if (token.matches("()")) {
+                Expression value = parseExpression(token.CHILDREN, address, controlStack);
+                if (value != Parentheses.EMPTY_PARENS) {
+                    value = new Parentheses(value);
+                }
+                statement.set(i, Token.newExpression("()", value));
+            }
+        }
     }
 
     /**
@@ -74,16 +97,11 @@ public class Parser {
      * @param statement the statement from which the operators should be drawn
      * @return a list of operators sorted by precedence
      */
-    private List<Token> getPrecedence(List<Token> statement, int address, Stack<FlowController> controlStack) {
+    private static List<Token> getPrecedence(List<Token> statement) {
         List<Token> ordering = new ArrayList<>();
-        for (int i = 0; i < statement.size(); i++) {
-            Token token = statement.get(i);
+        for (Token token : statement) {
             if (token.TYPE == OPERATOR) {
                 ordering.add(token);
-            } else if (token.matches("()")) {
-                // todo move paren parsing to another method
-                Token parens = parseExpression(token.CHILDREN, address, controlStack);
-                statement.set(i, parens);
             }
         }
         ordering.sort(OperatorTable.byPrecedence());
