@@ -1,15 +1,12 @@
 x = 10
 def increment()
     x = x + 1
-    show('Incrementing to ')
-    show(x)
+    show('Inside the function')
+    return x
 end
 
-show(x)
-
-increment()
-
-show('Outside, it is')
-show(x)
-
-increment()
+show(x)                 ~ 10
+show(increment())       ~ 11
+show('Outside, it is:')
+show(x)                 ~ 11
+show(increment())       ~ 12

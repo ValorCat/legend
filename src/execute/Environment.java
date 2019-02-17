@@ -50,6 +50,7 @@ public class Environment {
     private List<Expression> statements;
     private int programCounter;
     private boolean programCounterChanged;
+    private Value returnValue;
 
     public Environment(List<Expression> statements, Environment parent) {
         this.parent = parent;
@@ -124,6 +125,14 @@ public class Environment {
     public void setCounter(int counter) {
         this.programCounter = counter;
         this.programCounterChanged = true;
+    }
+
+    public Value getReturnValue() {
+        return returnValue;
+    }
+
+    public void setReturnValue(Value returnValue) {
+        this.returnValue = returnValue;
     }
 
     /**

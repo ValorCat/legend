@@ -36,7 +36,7 @@ public final class OperatorTable {
             {","},
             {"="},
             {"in"},                 // low precedence
-            {"def", "else", "elsif", "end", "for", "if", "repeat", "while"}
+            {"def", "else", "elsif", "end", "for", "if", "repeat", "return", "while"}
     });
 
     /*
@@ -44,7 +44,9 @@ public final class OperatorTable {
     to unusual operators.
      */
     public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=", ":=");
-    public static final Set<String> KEYWORDS = Set.of("def", "else", "elsif", "end", "for", "if", "repeat", "while");
+    public static final Set<String> KEYWORDS = Set.of(
+            "def", "else", "elsif", "end", "for", "if","repeat", "return", "while"
+    );
 
     /**
      * Verify an operator's environmental constraints are met (e.g. for the '+'
@@ -74,6 +76,7 @@ public final class OperatorTable {
             case "if":      new IfStatement(tokenPos, statement, address, controlStack); break;
             case "for":     new ForStatement(tokenPos, statement, controlStack); break;
             case "repeat":  new RepeatStatement(tokenPos, statement, controlStack); break;
+            case "return":  new ReturnStatement(tokenPos, statement, controlStack); break;
             case "while":   new WhileStatement(tokenPos, statement, controlStack); break;
             case "^": case "*": case "/": case "+": case "-":
                             new ArithmeticOperation(tokenPos, statement); break;

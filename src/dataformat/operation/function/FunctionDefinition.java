@@ -55,9 +55,11 @@ public class FunctionDefinition extends Operation implements FlowController {
         return LNull.NULL;
     }
 
-    public void call(Environment env) {
+    public Value call(Environment env) {
         List<Expression> body = env.getProgram().subList(startAddress + 1, endAddress);
-        Executor.execute(new Environment(body, env));
+        Environment newScope = new Environment(body, env);
+        Executor.execute(newScope);
+        return newScope.getReturnValue();
     }
 
     /* This method should never be called. */
