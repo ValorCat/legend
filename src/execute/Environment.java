@@ -63,11 +63,16 @@ public class Environment {
 
     /**
      * Store a value in memory and then map it to a variable name.
+     * If the variable is already defined in an outer scope, that
+     * variable will be reassigned. Otherwise, create a new local
+     * variable.
      * @param name the name of the variable
      * @param value the value to store
      */
     public void assign(String name, Value value) {
-        namespace.put(name, store(value));
+        int address = store(value);
+        Environment env = findName(name).orElse(this);
+        env.namespace.put(name, address);
         if (value.type() == StandardLibrary.type("Type")) {
             // todo deanonymize functions
             ((Type) value).deanonymize(name);
@@ -80,15 +85,11 @@ public class Environment {
      * @return the variable's value
      */
     public Value fetch(String name) {
-        Integer address = null;
-        Environment env = this;
-        while (address == null && env != null) {
-            address = env.namespace.get(name);
-            if (address == null) env = env.parent;
-        }
-        if (address == null) {
+        Optional<Environment> definingEnv = findName(name);
+        if (!definingEnv.isPresent()) {
             throw new RuntimeException("Variable '" + name + "' is not defined");
         }
+        int address = definingEnv.get().namespace.get(name);
         Value value = memory.get(address);
         if (value == null) {
             throw new RuntimeException("Variable '" + name + "' (address "
@@ -123,6 +124,20 @@ public class Environment {
     public void setCounter(int counter) {
         this.programCounter = counter;
         this.programCounterChanged = true;
+    }
+
+    /**
+     * Find the nearest scope in which a variable is defined.
+     * @param name the variable name to search for
+     * @return an optional containing the innermost environment
+     *         scope, or an empty optional if it is undefined
+     */
+    private Optional<Environment> findName(String name) {
+        Environment current = this;
+        while (current != null && !current.namespace.containsKey(name)) {
+            current = current.parent;
+        }
+        return Optional.ofNullable(current);
     }
 
     /**
