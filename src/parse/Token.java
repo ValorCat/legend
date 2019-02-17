@@ -96,7 +96,7 @@ public final class Token {
 
     @Override
     public String toString() {
-        String type = TYPE.name().substring(0, 4);
+        String type = TYPE.name().substring(0, 3);
         if (CHILDREN.isEmpty()) {
             return String.format("%s \"%s\"", type, VALUE);
         } else if (VALUE == null) {

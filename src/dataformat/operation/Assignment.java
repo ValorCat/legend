@@ -39,4 +39,9 @@ public class Assignment extends Operation {
         return LNull.NULL;
     }
 
+    @Override
+    public String toString() {
+        return "=(" + target + " " + value + ")";
+    }
+
 }

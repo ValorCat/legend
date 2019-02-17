@@ -65,6 +65,11 @@ public class WhileStatement extends Operation implements FlowController {
         }
     }
 
+    @Override
+    public String toString() {
+        return "while(" + condition + ")";
+    }
+
     private boolean checkCondition(Environment env) {
         Value result = condition.evaluate(env);
         if (!result.isType("Boolean")) {

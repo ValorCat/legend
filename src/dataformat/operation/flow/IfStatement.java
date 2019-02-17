@@ -78,6 +78,11 @@ public class IfStatement extends Operation implements FlowController {
         }
     }
 
+    @Override
+    public String toString() {
+        return "if(" + branches + ")";
+    }
+
     private void parseIf(int pos, List<Token> statement) {
         if (pos > 0) {
             throw new RuntimeException("Unexpected symbol 'if'");

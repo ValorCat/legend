@@ -20,6 +20,7 @@ import java.util.Stack;
 public class FunctionDefinition extends Operation implements FlowController {
 
     private String name;
+    private Parentheses params;
     private int startAddress, endAddress;
 
     public FunctionDefinition(int position, List<Token> tokens, Stack<FlowController> controlStack) {
@@ -75,6 +76,11 @@ public class FunctionDefinition extends Operation implements FlowController {
         } else {
             throw new RuntimeException("Unexpected symbol '" + statement.get(0).VALUE + "'");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "def(" + name + " " + params + ")";
     }
 
 }

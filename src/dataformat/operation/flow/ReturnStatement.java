@@ -46,4 +46,9 @@ public class ReturnStatement extends Operation {
         return LNull.NULL;
     }
 
+    @Override
+    public String toString() {
+        return "return(" + value + ")";
+    }
+
 }

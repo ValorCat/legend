@@ -54,6 +54,6 @@ public class LString extends Value {
 
     @Override
     public String toString() {
-        return value;
+        return "'" + value + "'";
     }
 }
