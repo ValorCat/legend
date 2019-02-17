@@ -40,7 +40,7 @@ public class ForStatement extends Operation implements FlowController {
         }
         variable = tokens.get(1).VALUE;
         iterable = tokens.get(3).asExpression();
-        Token.consolidate(tokens, new Token("for", this), 0, 4);
+        Token.consolidate(tokens, Token.newStatement("for", this), 0, 4);
     }
 
     @Override

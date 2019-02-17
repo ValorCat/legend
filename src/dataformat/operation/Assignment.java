@@ -30,7 +30,7 @@ public class Assignment extends Operation {
         }
         target = left.asExpression().getIdentifier();
         value = right.asExpression();
-        Token.consolidate(tokens, new Token("=", this), pos - 1, 3);
+        Token.consolidate(tokens, Token.newStatement("=", this), pos - 1, 3);
     }
 
     @Override

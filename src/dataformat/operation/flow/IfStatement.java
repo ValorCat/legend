@@ -87,7 +87,7 @@ public class IfStatement extends Operation implements FlowController {
             throw new RuntimeException("Unexpected symbol '" + statement.get(2) + "'");
         }
         branches.put(statement.get(1).asExpression(), startAddress);
-        Token.consolidate(statement, new Token("if", this), 0, 2);
+        Token.consolidate(statement, Token.newStatement("if", this), 0, 2);
     }
 
     private void parseElsif(int pos, List<Token> statement, int address) {
@@ -99,7 +99,7 @@ public class IfStatement extends Operation implements FlowController {
             throw new RuntimeException("Unexpected symbol '" + statement.get(2) + "'");
         }
         branches.putIfAbsent(statement.get(1).asExpression(), address);
-        Token.consolidate(statement, new Token("elsif", this), 0, 2);
+        Token.consolidate(statement, Token.newStatement("elsif", this), 0, 2);
     }
 
     private void parseElse(int pos, List<Token> statement, int address) {
@@ -109,7 +109,7 @@ public class IfStatement extends Operation implements FlowController {
             throw new RuntimeException("Unxpected symbol '" + statement.get(1).VALUE + "'");
         }
         branches.putIfAbsent(LBoolean.TRUE, address);
-        Token.consolidate(statement, new Token("else", this), 0, 1);
+        Token.consolidate(statement, Token.newStatement("else", this), 0, 1);
     }
 
 }

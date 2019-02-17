@@ -33,13 +33,13 @@ public class FunctionDefinition extends Operation implements FlowController {
             throw new RuntimeException("Unexpected symbol 'def'");
         } else if (tokens.size() == 1 || tokens.get(1).TYPE != TokenType.IDENTIFIER) {
             throw new RuntimeException("Expected function name after 'def'");
-        } else if (tokens.size() == 2 || tokens.get(2).TYPE != TokenType.PARENS) {
+        } else if (tokens.size() == 2 || !tokens.get(2).matches("()")) {
             throw new RuntimeException("Expected function parameters after '" + tokens.get(1).VALUE + "'");
         } else if (tokens.size() > 3) {
             throw new RuntimeException("Unexpected symbol '" + tokens.get(2).VALUE + "' after function parameters");
         }
         name = tokens.get(1).VALUE;
-        Token.consolidate(tokens, new Token("def", this), 0, 3);
+        Token.consolidate(tokens, Token.newStatement("def", this), 0, 3);
     }
 
     /*

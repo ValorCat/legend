@@ -33,7 +33,7 @@ public class WhileStatement extends Operation implements FlowController {
             throw new RuntimeException("Unexpected symbol '" + tokens.get(2) + "'");
         }
         condition = tokens.get(1).asExpression();
-        Token.consolidate(tokens, new Token("while", this), 0, 2);
+        Token.consolidate(tokens, Token.newStatement("while", this), 0, 2);
     }
 
     @Override

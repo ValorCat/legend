@@ -2,7 +2,6 @@ package dataformat.operation;
 
 import dataformat.Expression;
 import parse.Token;
-import parse.Token.TokenType;
 
 import java.util.Collections;
 import java.util.List;
@@ -73,8 +72,7 @@ public abstract class Operation implements Expression {
 
         // convert this operation into a tree
         operands = List.of(left.asExpression(), right.asExpression());
-        Token token = new Token(TokenType.EXPRESSION, operator, this);
-        Token.consolidate(tokens, token, pos - 1, 3);
+        Token.consolidate(tokens, Token.newExpression(operator, this), pos - 1, 3);
     }
 
     protected void parseStandaloneOperation(int pos, List<Token> tokens) {
@@ -84,7 +82,7 @@ public abstract class Operation implements Expression {
         } else if (tokens.size() > 1) {
             throw new RuntimeException("Unexpected symbol after '" + operator + "'");
         }
-        tokens.set(pos, new Token(operator, this));
+        tokens.set(pos, Token.newStatement(operator, this));
     }
 
 }

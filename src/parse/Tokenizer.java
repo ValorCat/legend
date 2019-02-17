@@ -114,7 +114,8 @@ public class Tokenizer {
 
         // check if the current token is finished
         if (type != null) {
-            currStatement.add(new Token(type, currToken.toString()));
+            Token token = Token.newToken(type, currToken.toString());
+            currStatement.add(token);
             currToken.setLength(0);
         }
     }
@@ -202,7 +203,7 @@ public class Tokenizer {
             int size = statement.size();
             return size > 1
                     && statement.get(0).matches("for")
-                    && !statement.contains(new Token(OPERATOR, "in"))
+                    && !statement.contains(Token.newOperator("in"))
                     && (size == 2 || !statement.get(size - 1).matches(","));
         }
         return false;
@@ -214,20 +215,20 @@ public class Tokenizer {
      * @param tokens the statement to search
      */
     private static void aggregateGroups(List<Token> tokens) {
-        Stack<TokenType> delimiters = new Stack<>();
+        Stack<String> delimiters = new Stack<>();
         Stack<Integer> starts = new Stack<>();
         for (int i = 0; i < tokens.size(); i++) {
             String token = tokens.get(i).VALUE;
             if (token.equals("(")) {
-                delimiters.push(PARENS);
+                delimiters.push("(");
                 starts.push(i);
             } else if (token.equals(")")) {
-                if (delimiters.isEmpty() || delimiters.pop() != PARENS) {
+                if (delimiters.isEmpty() || !delimiters.pop().equals("(")) {
                     throw new RuntimeException("Unexpected ')'");
                 }
                 int start = starts.pop();
                 List<Token> subTokens = tokens.subList(start + 1, i);
-                Token gathered = new Token(PARENS, new ArrayList<>(subTokens));
+                Token gathered = Token.newGroup("()", subTokens);
                 Token.consolidate(tokens, gathered, start, i - start + 1);
                 i = start;
             }

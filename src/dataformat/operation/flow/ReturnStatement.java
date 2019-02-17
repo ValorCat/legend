@@ -33,15 +33,10 @@ public class ReturnStatement extends Operation {
         } else if (tokens.size() > 2) {
             throw new RuntimeException("Unexpected symbol '" + tokens.get(2).VALUE + "'");
         }
-        if (tokens.size() == 2) {
-            // return a value
-            value = tokens.get(1).asExpression();
-            Token.consolidate(tokens, new Token("return", this), 0, 2);
-        } else {
-            // return without a value
-            value = LNull.NULL;
-            Token.consolidate(tokens, new Token("return", this), 0, 1);
-        }
+        value = tokens.size() == 2
+                ? tokens.get(1).asExpression()  // return with a value
+                : LNull.NULL;                   // return without a value
+        Token.consolidate(tokens, Token.newStatement("return", this), 0, tokens.size());
     }
 
     @Override

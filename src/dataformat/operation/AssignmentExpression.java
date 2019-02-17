@@ -29,8 +29,7 @@ public class AssignmentExpression extends Operation {
         }
         target = left.asExpression().getIdentifier();
         value = right.asExpression();
-        Token token = new Token(Token.TokenType.EXPRESSION, ":=", this);
-        Token.consolidate(tokens, token, pos - 1, 3);
+        Token.consolidate(tokens, Token.newExpression(":=", this), pos - 1, 3);
     }
 
     @Override

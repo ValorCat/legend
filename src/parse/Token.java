@@ -8,8 +8,10 @@ import dataformat.value.LInteger;
 import dataformat.value.LNull;
 import dataformat.value.LString;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Collections.emptyList;
 
 /**
  * A token is a fundamental symbol in the source code, such as an operator,
@@ -21,36 +23,21 @@ import java.util.List;
  * @see Parser
  * @since 12/21/2018
  */
-public class Token {
+public final class Token {
 
-    public enum TokenType { EXPRESSION, IDENTIFIER, LITERAL, OPERATOR, PARENS, STATEMENT }
+    public enum TokenType { EXPRESSION, GROUP, IDENTIFIER, LITERAL, OPERATOR, STATEMENT }
 
     public final TokenType TYPE;
     public final String VALUE;
     public final Expression EXPRESSION;
     public final List<Token> CHILDREN;
 
+    /* Use the static factory methods to create new tokens */
     private Token(TokenType type, String value, Expression expression, List<Token> tokens) {
         TYPE = type;
         VALUE = value;
         EXPRESSION = expression;
         CHILDREN = tokens;
-    }
-
-    public Token(TokenType type, String value, Token... tokens) {
-        this(type, value, null, List.of(tokens));
-    }
-
-    public Token(TokenType type, List<Token> tokens) {
-        this(type, "", null, tokens);
-    }
-
-    public Token(String value, Expression expression) {
-        this(TokenType.STATEMENT, value, expression, Collections.emptyList());
-    }
-
-    public Token(TokenType type, String value, Expression expression) {
-        this(type, value, expression, Collections.emptyList());
     }
 
     /**
@@ -80,7 +67,7 @@ public class Token {
         switch (TYPE) {
             case EXPRESSION: case STATEMENT:
                 return EXPRESSION;
-            case PARENS:
+            case GROUP:
                 return new CommaList();
             case IDENTIFIER:
                 return new Variable(VALUE);
@@ -117,6 +104,26 @@ public class Token {
         } else {
             return String.format("%s \"%s\" %s", type, VALUE, CHILDREN);
         }
+    }
+
+    public static Token newExpression(String value, Expression expr) {
+        return new Token(TokenType.EXPRESSION, value, expr, emptyList());
+    }
+
+    public static Token newGroup(String wrappers, List<Token> children) {
+        return new Token(TokenType.GROUP, wrappers, null, new ArrayList<>(children));
+    }
+
+    public static Token newOperator(String value) {
+        return new Token(TokenType.OPERATOR, value, null, emptyList());
+    }
+
+    public static Token newStatement(String value, Expression expr) {
+        return new Token(TokenType.STATEMENT, value, expr, emptyList());
+    }
+
+    public static Token newToken(TokenType type, String value) {
+        return new Token(type, value, null, emptyList());
     }
 
     /**

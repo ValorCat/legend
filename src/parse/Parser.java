@@ -1,14 +1,14 @@
 package parse;
 
 import dataformat.Expression;
-import dataformat.operation.CommaList;
 import dataformat.operation.flow.FlowController;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import static parse.Token.TokenType.*;
+import static parse.Token.TokenType.IDENTIFIER;
+import static parse.Token.TokenType.OPERATOR;
 
 /**
  * Convert the tokens produced by the {@link Tokenizer} class into a syntax tree.
@@ -48,7 +48,7 @@ public class Parser {
         if (statement.isEmpty()) {
             // if there are no tokens (such as from empty parens to a function call),
             // just return an empty list
-            return new Token(PARENS, List.of());
+            return Token.newGroup("()", List.of());
         }
         injectImplicitOperators(statement);
         List<Token> precedence = getPrecedence(statement, address, controlStack);
@@ -80,7 +80,7 @@ public class Parser {
             Token token = statement.get(i);
             if (token.TYPE == OPERATOR) {
                 ordering.add(token);
-            } else if (token.TYPE == PARENS) {
+            } else if (token.matches("()")) {
                 // todo move paren parsing to another method
                 Token parens = parseExpression(token.CHILDREN, address, controlStack);
                 statement.set(i, parens);
@@ -102,14 +102,14 @@ public class Parser {
             int distanceFromEnd = tokens.size() - i - 1;
             if (current.isValue() && distanceFromEnd > 0) {
                 Token next = tokens.get(i + 1);
-                if (next.TYPE == PARENS && (i == 0 || !tokens.get(i - 1).matches("def"))) {
-                    tokens.add(i + 1, new Token(OPERATOR, "call"));
+                if (next.matches("()") && (i == 0 || !tokens.get(i - 1).matches("def"))) {
+                    tokens.add(i + 1, Token.newOperator("call"));
                 } else if (next.TYPE == IDENTIFIER) {
                     if (distanceFromEnd == 1 || !tokens.get(i + 2).isValue()) {
-                        tokens.add(i + 1, new Token(OPERATOR, "unop"));
+                        tokens.add(i + 1, Token.newOperator("unop"));
                     } else {
-                        tokens.add(i + 1, new Token(OPERATOR, "."));
-                        tokens.add(i + 3, new Token(OPERATOR, "biop"));
+                        tokens.add(i + 1, Token.newOperator("."));
+                        tokens.add(i + 3, Token.newOperator("biop"));
                     }
                 }
             }
