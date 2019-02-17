@@ -23,10 +23,10 @@ public class ArgumentList {
         this.keywords = Map.of();
     }
 
-    public ArgumentList(Expression args, Environment env) {
+    public ArgumentList(Parentheses args, Environment env) {
         List<Value> argsList = new ArrayList<>();
         keywords = new HashMap<>();
-        for (Expression child : ((Parentheses) args).getContents()) {
+        for (Expression child : args.getContents()) {
             if (child.matches(":")) {
                 handleKeyword(child, env);
             } else if (keywords.isEmpty()) {
@@ -47,8 +47,16 @@ public class ArgumentList {
         keywords.put(children.get(0).getIdentifier(), children.get(1).evaluate(env));
     }
 
+    public Value arg(int index) {
+        return args[index];
+    }
+
     public Value[] args() {
         return args;
+    }
+
+    public int size() {
+        return args.length;
     }
 
     public Map<String, Value> keywords() {

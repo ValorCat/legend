@@ -1,6 +1,7 @@
 package dataformat.group;
 
 import dataformat.Expression;
+import dataformat.operation.CommaList;
 import dataformat.value.Value;
 import execute.Environment;
 
@@ -33,8 +34,9 @@ public class Parentheses implements Expression {
     }
 
     public List<Expression> getContents() {
-        List<Expression> children = contents.getChildren();
-        return children.isEmpty() ? List.of(contents) : children;
+        return contents instanceof CommaList
+                ? contents.getChildren()
+                : List.of(contents);
     }
 
     @Override

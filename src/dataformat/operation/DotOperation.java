@@ -31,7 +31,7 @@ public class DotOperation extends Operation {
     public Value evaluate(Environment env) {
         String attribute = operands.get(1).getIdentifier();
         if (operands.get(0).matches("_")) {
-            return new NativeFunction((args, _env) -> args.args()[0].getAttribute(attribute));
+            return new NativeFunction((args, _env) -> args.arg(0).getAttribute(attribute));
         } else {
             Value target = operands.get(0).evaluate(env);
             return new Attribute(target, target.getAttribute(attribute));

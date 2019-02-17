@@ -28,7 +28,7 @@ public final class StandardLibrary {
         define(create("Function"));
         define(create("Integer")
                 .shared("to", (args, env) -> {
-                    ArgumentList bounds = new ArgumentList(args.target(), args.args()[0]);
+                    ArgumentList bounds = new ArgumentList(args.target(), args.arg(0));
                     return type("Range").instantiate(bounds, env);
                 }));
         define(create("Iterator")
@@ -44,8 +44,8 @@ public final class StandardLibrary {
                         throw new RuntimeException("Cannot compute maximum of empty list");
                     }
                     ToIntFunction<Value> comparator = Value::asInteger;
-                    if (args.args().length >= 1) {
-                        LFunction keyExtractor = ((LFunction) args.args()[0]);
+                    if (args.size() >= 1) {
+                        LFunction keyExtractor = ((LFunction) args.arg(0));
                         comparator = e -> keyExtractor.call(env, e).asInteger();
                     }
                     Value max = list[0];
@@ -125,7 +125,7 @@ public final class StandardLibrary {
     }
 
     public static final LFunction[] FUNCTIONS = {
-            define("autosave", (args, env) -> args.args()[0]), // todo autosave
+            define("autosave", (args, env) -> args.arg(0)), // todo autosave
 
             define("exit", (args, env) -> {
                 System.exit(0);
@@ -133,14 +133,14 @@ public final class StandardLibrary {
             }),
 
             define("read", (args, env) -> {
-                if (args.args().length > 0) {
-                    System.out.print(((LString) args.args()[0]).getValue());
+                if (args.size() > 0) {
+                    System.out.print(((LString) args.arg(0)).getValue());
                 }
                 return new LString(input().nextLine());
             }),
 
             define("show", (args, env) -> {
-                System.out.println(args.args()[0].asString());
+                System.out.println(args.arg(0).asString());
                 return LNull.NULL;
             }),
 

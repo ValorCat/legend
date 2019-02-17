@@ -2,7 +2,6 @@ package parse;
 
 import dataformat.Expression;
 import dataformat.Variable;
-import dataformat.group.Parentheses;
 import dataformat.value.LBoolean;
 import dataformat.value.LInteger;
 import dataformat.value.LNull;
@@ -67,8 +66,6 @@ public final class Token {
         switch (TYPE) {
             case EXPRESSION: case STATEMENT:
                 return EXPRESSION;
-            case GROUP:
-                return Parentheses.EMPTY_PARENS;
             case IDENTIFIER:
                 return new Variable(VALUE);
             case LITERAL:

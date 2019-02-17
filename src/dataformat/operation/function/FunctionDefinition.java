@@ -1,6 +1,8 @@
 package dataformat.operation.function;
 
+import dataformat.ArgumentList;
 import dataformat.Expression;
+import dataformat.ParameterList;
 import dataformat.group.Parentheses;
 import dataformat.operation.Operation;
 import dataformat.operation.flow.FlowController;
@@ -14,6 +16,7 @@ import parse.Token.TokenType;
 
 import java.util.List;
 import java.util.Stack;
+import java.util.StringJoiner;
 
 /**
  * @since 2/16/2019
@@ -21,7 +24,7 @@ import java.util.Stack;
 public class FunctionDefinition extends Operation implements FlowController {
 
     private String name;
-    private Parentheses params;
+    private ParameterList params;
     private int startAddress, endAddress;
 
     public FunctionDefinition(int position, List<Token> tokens, Stack<FlowController> controlStack) {
@@ -40,8 +43,9 @@ public class FunctionDefinition extends Operation implements FlowController {
         } else if (tokens.size() > 3) {
             throw new RuntimeException("Unexpected symbol '" + tokens.get(2).VALUE + "' after function parameters");
         }
+        List<Expression> paramData = ((Parentheses) tokens.get(2).asExpression()).getContents();
         name = tokens.get(1).VALUE;
-        params = (Parentheses) tokens.get(2).asExpression();
+        params = new ParameterList(name, paramData);
         Token.consolidate(tokens, Token.newStatement("def", this), 0, 3);
     }
 
@@ -58,9 +62,10 @@ public class FunctionDefinition extends Operation implements FlowController {
         return LNull.NULL;
     }
 
-    public Value call(Environment env) {
+    public Value call(ArgumentList args, Environment env) {
         List<Expression> body = env.getProgram().subList(startAddress + 1, endAddress);
         Environment newScope = new Environment(body, env);
+        params.accept(args, env);
         Executor.execute(newScope);
         return newScope.getReturnValue();
     }
@@ -82,7 +87,11 @@ public class FunctionDefinition extends Operation implements FlowController {
 
     @Override
     public String toString() {
-        return "def(" + name + " " + params + ")";
+        StringJoiner joiner = new StringJoiner(" ");
+        for (String param : params.getParamNames()) {
+            joiner.add(param);
+        }
+        return "def(" + name + " " + joiner + ")";
     }
 
 }

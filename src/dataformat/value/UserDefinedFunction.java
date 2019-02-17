@@ -18,7 +18,7 @@ public class UserDefinedFunction extends LFunction {
 
     @Override
     public Value call(ArgumentList args, Environment env) {
-        return body.call(env);
+        return body.call(args, env);
     }
 
     @Override

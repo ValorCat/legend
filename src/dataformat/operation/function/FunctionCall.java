@@ -1,6 +1,7 @@
 package dataformat.operation.function;
 
 import dataformat.ArgumentList;
+import dataformat.group.Parentheses;
 import dataformat.operation.Operation;
 import dataformat.value.Attribute;
 import dataformat.value.LFunction;
@@ -23,7 +24,7 @@ public class FunctionCall extends Operation {
     @Override
     public Value evaluate(Environment env) {
         Value executable = operands.get(0).evaluate(env);
-        ArgumentList arguments = new ArgumentList(operands.get(1), env);
+        ArgumentList arguments = new ArgumentList((Parentheses) operands.get(1), env);
         if (executable.hasOwner()) {
             arguments.setTarget(executable.getOwner());
             executable = ((Attribute) executable).getValue();
@@ -33,9 +34,7 @@ public class FunctionCall extends Operation {
 
     public static Value call(Value executable, ArgumentList args, Environment env) {
         if (executable.isType("Function")) {
-            LFunction func = ((LFunction) executable);
-            // todo check if args match params
-            return func.call(args, env);
+            return ((LFunction) executable).call(args, env);
         } else if (executable.isType("Type")) {
             return ((Type) executable).instantiate(args, env);
         }

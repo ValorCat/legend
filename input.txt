@@ -1,9 +1,5 @@
-def no_param(a, b)
-    show('no params!')
+def add(a, b)
+    return a + b
 end
 
-no_param()
-
-x = List('a')
-y = List('a', 'b')
-z = List()
+show(add(5, 10))

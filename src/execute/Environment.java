@@ -71,13 +71,21 @@ public class Environment {
      * @param value the value to store
      */
     public void assign(String name, Value value) {
-        int address = store(value);
         Environment env = findName(name).orElse(this);
-        env.namespace.put(name, address);
+        env.assignLocal(name, value);
         if (value.type() == StandardLibrary.type("Type")) {
             // todo deanonymize functions
             ((Type) value).deanonymize(name);
         }
+    }
+
+    /**
+     * Store a value in memory and then map it to a variable name.
+     * @param name the name of the variable
+     * @param value the value to store
+     */
+    public void assignLocal(String name, Value value) {
+        namespace.put(name, store(value));
     }
 
     /**
