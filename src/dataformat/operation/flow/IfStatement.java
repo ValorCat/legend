@@ -8,11 +8,8 @@ import dataformat.value.Value;
 import execute.Environment;
 import parse.Token;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Stack;
 
 /**
  * @since 1/27/2019
@@ -80,7 +77,11 @@ public class IfStatement extends Operation implements FlowController {
 
     @Override
     public String toString() {
-        return "if(" + branches + ")";
+        StringJoiner joiner = new StringJoiner(" ");
+        for (Entry<Expression, Integer> branch : branches.entrySet()) {
+            joiner.add(String.format("(%s -> %h)", branch.getKey(), branch.getValue()));
+        }
+        return "if(" + joiner + ")";
     }
 
     private void parseIf(int pos, List<Token> statement) {

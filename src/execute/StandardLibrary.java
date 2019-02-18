@@ -140,7 +140,10 @@ public final class StandardLibrary {
             }),
 
             define("show", (args, env) -> {
-                System.out.println(args.arg(0).asString());
+                for (Value arg : args.args()) {
+                    System.out.print(arg.asString());
+                }
+                System.out.println();
                 return LNull.NULL;
             }),
 
