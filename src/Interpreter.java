@@ -1,5 +1,6 @@
 import dataformat.Expression;
 import dataformat.value.LNull;
+import dataformat.value.Value;
 import execute.Environment;
 import execute.Executor;
 import parse.Parser;
@@ -52,11 +53,13 @@ public class Interpreter {
 
         List<List<Token>> tokens = tokenizer.tokenize(input);
         List<Expression> statements = parser.parse(tokens);
-        Environment environ = new Environment(statements, Environment.GLOBAL);
-        Executor.execute(environ);
 
-        if (environ.getReturnValue() != LNull.NULL) {
-            System.out.println("Program returned value: " + environ.getReturnValue().asString());
+        Environment.GLOBAL.setProgram(statements);
+        Executor.execute(Environment.GLOBAL);
+
+        Value returnValue = Environment.GLOBAL.getReturnValue();
+        if (returnValue != LNull.NULL) {
+            System.out.println("Program returned value: " + returnValue.asString());
         }
     }
 

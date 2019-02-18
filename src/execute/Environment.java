@@ -3,19 +3,16 @@ package execute;
 import dataformat.Expression;
 import dataformat.operation.flow.FlowController;
 import dataformat.value.LFunction;
+import dataformat.value.LNull;
 import dataformat.value.Type;
 import dataformat.value.Value;
 
 import java.util.*;
 
 /**
- * An environment stores execution data related to a particular scope.
- * Four types of information are stored:
- * 1. A collection of variable names mapped to memory addresses
- * 2. A parent environment, which is deferred to if a referenced variable
- *    cannot be found in the current environment
- * 3. A stack of active flow control structures
- * 4. A local program counter
+ * An environment stores execution data related to a particular scope,
+ * including the instruction list, program counter, control structure
+ * stack, variable mappings, and function return values.
  * @since 12/23/2018
  */
 public class Environment {
@@ -24,7 +21,7 @@ public class Environment {
     The global environment is the default environment, and directly or
     indirectly the parent of all other environments.
      */
-    public static final Environment GLOBAL = new Environment(List.of(), null);
+    public static final Environment GLOBAL = new Environment();
 
     /*
     Variable data is stored here and referenced by its index (address).
@@ -49,17 +46,27 @@ public class Environment {
 
     private List<Expression> statements;
     private int programCounter;
+    private int addressOffset;
     private boolean programCounterChanged;
     private Value returnValue;
 
-    public Environment(List<Expression> statements, Environment parent) {
+    private Environment(List<Expression> statements, int startAddress, Environment parent) {
         this.parent = parent;
         this.namespace = new HashMap<>();
         this.controlStack = new Stack<>();
 
         this.statements = statements;
-        this.programCounter = 0;
+        this.programCounter = startAddress;
+        this.addressOffset = startAddress;
         this.programCounterChanged = false;
+    }
+
+    private Environment() {
+        this(List.of(), 0, null);
+    }
+
+    public Environment(List<Expression> statements, int startAddress) {
+        this(statements, startAddress, GLOBAL);
     }
 
     /**
@@ -115,8 +122,20 @@ public class Environment {
         return controlStack;
     }
 
-    public List<Expression> getProgram() {
-        return statements;
+    public void setProgram(List<Expression> statements) {
+        this.statements = statements;
+    }
+
+    public boolean hasMoreInstructions() {
+        return programCounter - addressOffset < statements.size();
+    }
+
+    public Expression getInstruction() {
+        return statements.get(programCounter - addressOffset);
+    }
+
+    public List<Expression> getSubroutine(int startAddress, int endAddress) {
+        return statements.subList(startAddress - addressOffset, endAddress - addressOffset);
     }
 
     public int getCounter() {

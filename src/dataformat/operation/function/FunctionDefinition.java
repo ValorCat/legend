@@ -63,9 +63,9 @@ public class FunctionDefinition extends Operation implements FlowController {
     }
 
     public Value call(ArgumentList args, Environment env) {
-        List<Expression> body = env.getProgram().subList(startAddress + 1, endAddress);
-        Environment newScope = new Environment(body, env);
-        params.accept(args, env);
+        List<Expression> body = env.getSubroutine(startAddress + 1, endAddress);
+        Environment newScope = new Environment(body, startAddress + 1);
+        params.accept(args, newScope);
         Executor.execute(newScope);
         return newScope.getReturnValue();
     }
