@@ -1,5 +1,7 @@
 package dataformat;
 
+import dataformat.operation.function.FunctionCall;
+import dataformat.value.Value;
 import execute.Environment;
 
 import java.util.List;
@@ -36,12 +38,31 @@ public class ParameterList {
                     name, params.length, args.size()));
         }
         for (int i = 0; i < args.size(); i++) {
+            Value arg = args.arg(i);
+            if (bounds[i] != null) {
+                Value bound = bounds[i].evaluate(env);
+                if (!withinBound(arg, bound, env)) {
+                    throw new RuntimeException(String.format("Argument #%d (%s) of function '%s' is out of bounds: %s",
+                            i + 1, arg.asString(), name, bound.asString()));
+                }
+            }
             env.assignLocal(params[i], args.arg(i));
         }
     }
 
     public String[] getParamNames() {
         return params;
+    }
+
+    private boolean withinBound(Value value, Expression boundExpr, Environment env) {
+        Value bound = boundExpr.evaluate(env);
+        switch (bound.type().getName()) {
+            case "Type":     return value.type() == bound;
+            case "Range":    return bound.callMethod("contains", env, value).asBoolean();
+            case "Function": return FunctionCall.call(bound, new ArgumentList(value), env).asBoolean();
+            default: throw new RuntimeException(String.format("Invalid bound '%s' (type %s) for function '%s'",
+                    bound, bound.type().getName(), name));
+        }
     }
 
 }

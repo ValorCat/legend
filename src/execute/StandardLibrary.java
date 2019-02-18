@@ -79,7 +79,12 @@ public final class StandardLibrary {
         define(create("*Null"));
         define(create("Range")
                 .personal("left", "right")
-                .shared("iterator", (args, env) -> type("Iterator").instantiate(new ArgumentList(
+                .shared("contains", (args, env) -> {
+                    int value = args.arg(0).asInteger();
+                    int left = args.target().getAttribute("left").asInteger();
+                    int right = args.target().getAttribute("right").asInteger();
+                    return LBoolean.resolve(value >= left && value <= right);
+                }).shared("iterator", (args, env) -> type("Iterator").instantiate(new ArgumentList(
                         args.target(), args.target().getAttribute("left"),
                         new NativeFunction("has_next", (_args, _env) -> {
                             int current = _args.target().getAttribute("position").asInteger();
