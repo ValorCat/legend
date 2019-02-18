@@ -136,7 +136,7 @@ public class Environment {
     }
 
     public Value getReturnValue() {
-        return returnValue;
+        return returnValue == null ? LNull.NULL : returnValue;
     }
 
     public void setReturnValue(Value returnValue) {

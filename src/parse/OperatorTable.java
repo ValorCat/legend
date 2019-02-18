@@ -76,7 +76,7 @@ public final class OperatorTable {
             case "if":      new IfStatement(tokenPos, statement, address, controlStack); break;
             case "for":     new ForStatement(tokenPos, statement, controlStack); break;
             case "repeat":  new RepeatStatement(tokenPos, statement, controlStack); break;
-            case "return":  new ReturnStatement(tokenPos, statement, controlStack); break;
+            case "return":  new ReturnStatement(tokenPos, statement); break;
             case "while":   new WhileStatement(tokenPos, statement, controlStack); break;
             case "^": case "*": case "/": case "+": case "-":
                             new ArithmeticOperation(tokenPos, statement); break;

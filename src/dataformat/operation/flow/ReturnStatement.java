@@ -8,7 +8,6 @@ import execute.Environment;
 import parse.Token;
 
 import java.util.List;
-import java.util.Stack;
 
 /**
  * @since 2/16/2019
@@ -17,11 +16,8 @@ public class ReturnStatement extends Operation {
 
     private Expression value;
 
-    public ReturnStatement(int position, List<Token> tokens, Stack<FlowController> controlStack) {
+    public ReturnStatement(int position, List<Token> tokens) {
         super(position, tokens);
-        if (controlStack.isEmpty() || !controlStack.peek().getKeyword().equals("def")) {
-            throw new RuntimeException("Cannot return while outside a function");
-        }
     }
 
     @Override
