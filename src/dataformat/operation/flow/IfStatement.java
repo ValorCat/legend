@@ -18,7 +18,6 @@ public class IfStatement extends Operation implements FlowController {
 
     private int startAddress, endAddress;
     private Map<Expression, Integer> branches;
-    private boolean done;
 
     public IfStatement(int position, List<Token> tokens, int address, Stack<FlowController> controlStack) {
         super(tokens.get(position));
@@ -35,19 +34,20 @@ public class IfStatement extends Operation implements FlowController {
 
     @Override
     public Value evaluate(Environment env) {
-        if (done) {
+        if (env.getCounter() != startAddress) {
+            // we're at an elsif or else branch, which means we finished the
+            // branch that executed, so we can jump straight to the end
             env.setCounter(endAddress);
         } else {
+            // if we don't find a branch to jump to, we should go to the end
+            env.setCounter(endAddress);
             env.getControlStack().push(this);
             for (Entry<Expression, Integer> branch : branches.entrySet()) {
                 if (branch.getKey().evaluate(env).asBoolean()) {
+                    // a branch was found, so we'll jump there instead
                     env.setCounter(branch.getValue() + 1);
-                    done = true;
                     break;
                 }
-            }
-            if (!done) {
-                env.setCounter(endAddress);
             }
         }
         return LNull.NULL;
