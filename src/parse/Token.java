@@ -69,7 +69,7 @@ public final class Token {
             case IDENTIFIER:
                 return new Variable(VALUE);
             case LITERAL:
-                if (Character.isDigit(VALUE.charAt(0))) {
+                if (VALUE.matches("\\d+")) {
                     return new LInteger(Integer.parseInt(VALUE));
                 } else if (VALUE.equals("true") || VALUE.equals("false")) {
                     return LBoolean.resolve(VALUE.equals("true"));
