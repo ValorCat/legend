@@ -19,6 +19,7 @@ public class ArithmeticOperation extends Operation {
             "-", (a, b) -> a - b,
             "*", (a, b) -> a * b,
             "/", (a, b) -> Math.round((float) a / b),
+            "%", (a, b) -> a % b,
             "^", (a, b) -> (int) Math.pow(a, b)
     );
 

@@ -75,6 +75,15 @@ public abstract class Operation implements Expression {
         Token.consolidate(tokens, Token.newExpression(operator, this), pos - 1, 3);
     }
 
+    protected void parseLeftUnaryOperation(int pos, List<Token> tokens) {
+        String operator = tokens.get(pos).VALUE;
+        if (pos == tokens.size() - 1 || !tokens.get(pos + 1).isValue()) {
+            throw new RuntimeException("Operator '" + operator + "' requires a value on the left");
+        }
+        operands = List.of(tokens.get(pos + 1).asExpression());
+        Token.consolidate(tokens, Token.newExpression(operator, this), pos, 2);
+    }
+
     protected void parseStandaloneOperation(int pos, List<Token> tokens) {
         String operator = tokens.get(pos).VALUE;
         if (pos > 0) {

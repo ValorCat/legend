@@ -25,12 +25,15 @@ public final class OperatorTable {
      */
     private static final OperatorTable OPERATORS = defineOperations(new String[][] {
             {".", "call"},
-            {"unop", "biop"},       // high precedence
+            {"#"},                 // high precedence
+            {"unop", "biop"},
+            {"not"},
             {"^"},
-            {"*", "/"},
+            {"*", "/", "%"},
             {"+", "-"},
-            {"<", "<=", ">", ">="},
-            {"==", "!="},
+            {"==", "!=", "<", "<=", ">", ">="},
+            {"and", "or", "nor"},
+            {"::"},
             {":="},
             {":"},
             {","},
@@ -43,9 +46,9 @@ public final class OperatorTable {
     These two constants are used by the tokenizer to assign the correct type
     to unusual operators.
      */
-    public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=", ":=");
+    public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=", "::", ":=");
     public static final Set<String> KEYWORDS = Set.of(
-            "def", "else", "elsif", "end", "for", "if","repeat", "return", "while"
+            "and", "def", "else", "elsif", "end", "for", "if", "or", "nor", "not", "repeat", "return", "while"
     );
 
     /**
@@ -65,8 +68,11 @@ public final class OperatorTable {
         switch (statement.get(tokenPos).VALUE) {
             case ".":       new DotOperation(tokenPos, statement); break;
             case "call":    new FunctionCall(tokenPos, statement); break;
+            case "#":       new LengthOperation(tokenPos, statement); break;
             case "unop":    new UnaryOperatorCall(tokenPos, statement); break;
             case "biop":    new BinaryOperatorCall(tokenPos, statement); break;
+            case "not":     new NotOperation(tokenPos, statement); break;
+            case "::":      new ConcatenationOperation(tokenPos, statement); break;
             case ":=":      new AssignmentExpression(tokenPos, statement); break;
             case ":":       new Mapping(tokenPos, statement); break;
             case ",":       new CommaList(tokenPos, statement); break;
@@ -78,12 +84,14 @@ public final class OperatorTable {
             case "repeat":  new RepeatStatement(tokenPos, statement, controlStack); break;
             case "return":  new ReturnStatement(tokenPos, statement); break;
             case "while":   new WhileStatement(tokenPos, statement, controlStack); break;
-            case "^": case "*": case "/": case "+": case "-":
+            case "^": case "*": case "/": case "%": case "+": case "-":
                             new ArithmeticOperation(tokenPos, statement); break;
+            case "==": case "!=":
+                new EqualsOperation(tokenPos, statement); break;
             case "<": case ">": case "<=": case ">=":
                             new ComparisonOperation(tokenPos, statement); break;
-            case "==": case "!=":
-                            new EqualsOperation(tokenPos, statement); break;
+            case "and": case "or": case "nor":
+                            new LogicalOperation(tokenPos, statement); break;
             case "else": case "elsif":
                             if (controlStack.isEmpty()) {
                                 throw new RuntimeException("Unexpected symbol '" + statement.get(tokenPos).VALUE + "'");

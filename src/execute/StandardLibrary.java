@@ -57,7 +57,7 @@ public final class StandardLibrary {
                     }
                     return max;
                 }).shared("show", (args, env) -> {
-                    System.out.println(Arrays.toString(args.target().getAttributes()));
+                    System.out.println(args.target().getAttribute("*list").asNative());
                     return LNull.NULL;
                 }).shared("iterator", (args, env) -> type("Iterator").instantiate(new ArgumentList(
                         args.target(), new LInteger(0),
@@ -74,7 +74,9 @@ public final class StandardLibrary {
                             // todo error if out of bounds
                             return (Value) (((List) javaList).get(index));
                         })
-                ), env)));
+                ), env))
+                .shared("_size", (args, env) -> new LInteger(((Collection) args.target().getAttribute("*list")
+                        .asNative()).size())));
         define(create("*Native"));
         define(create("*Null"));
         define(create("Range")
@@ -97,7 +99,12 @@ public final class StandardLibrary {
                             // todo error if out of range
                             return current;
                         })
-                ), env)));
+                ), env))
+                .shared("_size", (args, env) -> {
+                    int left = args.target().getAttribute("left").asInteger();
+                    int right = args.target().getAttribute("right").asInteger();
+                    return new LInteger(right - left + 1);
+                }));
         define(create("String")
                 .shared("iterator", (args, env) -> type("Iterator").instantiate(new ArgumentList(
                         args.target(), new LInteger(0),
@@ -113,7 +120,8 @@ public final class StandardLibrary {
                             // todo error if out of range
                             return new LString(string.substring(current, current + 1));
                         })
-                ), env)));
+                ), env))
+                .shared("_size", (args, env) -> new LInteger(args.target().asString().length())));
         define(create("Type")
                 .initializer((args, env) -> {
                     String[] attributes = args.keywords().keySet().toArray(new String[0]);
