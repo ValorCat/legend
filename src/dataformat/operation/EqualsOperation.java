@@ -7,9 +7,6 @@ import parse.Token;
 
 import java.util.List;
 
-import static dataformat.value.LBoolean.FALSE;
-import static dataformat.value.LBoolean.TRUE;
-
 /**
  * @since 1/19/2019
  */
@@ -26,12 +23,15 @@ public class EqualsOperation extends Operation {
     public Value evaluate(Environment env) {
         Value left = operands.get(0).evaluate(env);
         Value right = operands.get(1).evaluate(env);
-        if (left.equals(right)) return NEGATE ? FALSE : TRUE;
+        if (left.type() == right.type()) {
+            // operands are same type, so we can do (left==right) XOR (negate)
+            return LBoolean.resolve(left.equals(right) != NEGATE);
+        }
         List<String> types = List.of(left.type().getName(), right.type().getName());
         if (types.contains("str") && (types.contains("bool") || types.contains("int"))) {
             return LBoolean.resolve(NEGATE != left.asString().equals(right.asString()));
         }
-        return FALSE;
+        return LBoolean.FALSE;
     }
 
 }
