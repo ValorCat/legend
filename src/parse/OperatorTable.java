@@ -25,7 +25,7 @@ public final class OperatorTable {
      */
     private static final OperatorTable OPERATORS = defineOperations(new String[][] {
             {".", "call"},
-            {"#"},                 // high precedence
+            {"#", "?"},             // high precedence
             {"unop", "biop"},
             {"not"},
             {"^"},
@@ -69,6 +69,7 @@ public final class OperatorTable {
             case ".":       new DotOperation(tokenPos, statement); break;
             case "call":    new FunctionCall(tokenPos, statement); break;
             case "#":       new LengthOperation(tokenPos, statement); break;
+            case "?":       new NullableOperation(tokenPos, statement); break;
             case "unop":    new UnaryOperatorCall(tokenPos, statement); break;
             case "biop":    new BinaryOperatorCall(tokenPos, statement); break;
             case "not":     new NotOperation(tokenPos, statement); break;

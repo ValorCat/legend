@@ -8,6 +8,7 @@ import execute.StandardLibrary;
 public final class LNull extends Value {
 
     public static LNull NULL = new LNull();
+    public static Type NULL_TYPE = NULL.type();
 
     private LNull() {
         super(StandardLibrary.type("*Null"));

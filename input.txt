@@ -1,17 +1,8 @@
-if 5 < 10 and 30 != 40
-    show('It worked!')
+int_or_null = Integer?
+
+def my_func(x: Integer?)
+    show('Value is ' :: x)
 end
 
-t = true
-f = false
-
-if t or f and t     ~ and/or have equal precedence (for now?)
-    show('Inside the if!')
-end
-
-show('We can now... ' :: 'concatenate! ' :: 4 + 2 * 3)
-
-ls = List(3, 1, 4, 1, 5, 9)
-show('The list has ' :: #ls :: ' elements.')
-
-show('14764 mod 7 is ' :: 14764 % 7)
+my_func(5)
+my_func(null)

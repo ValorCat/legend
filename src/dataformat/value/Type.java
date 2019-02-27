@@ -36,6 +36,19 @@ public class Type extends Value {
         this.anonymous = false;
     }
 
+    public Type(Type other) {
+        super(null);
+        this.name = other.name;
+        this.initializer = other.initializer;
+        this.personalAttributes = other.personalAttributes;
+        this.sharedAttributes = other.sharedAttributes;
+        this.anonymous = false;
+    }
+
+    public boolean encompasses(Type other) {
+        return this == other;
+    }
+
     @Override
     public boolean matches(String name) {
         return getName().equals(name);
@@ -104,7 +117,6 @@ public class Type extends Value {
     public String toString() {
         return "type[" + getName() + "]";
     }
-
 
     private Value findAttribute(String name, Value object) {
         Integer index = personalAttributes.get(name);

@@ -1,6 +1,7 @@
 package dataformat;
 
 import dataformat.operation.function.FunctionCall;
+import dataformat.value.Type;
 import dataformat.value.Value;
 import execute.Environment;
 
@@ -57,7 +58,7 @@ public class ParameterList {
     private boolean withinBound(Value value, Expression boundExpr, Environment env) {
         Value bound = boundExpr.evaluate(env);
         switch (bound.type().getName()) {
-            case "Type":     return value.type() == bound;
+            case "Type":     return ((Type) bound).encompasses(value.type());
             case "Range":    return bound.callMethod("contains", env, value).asBoolean();
             case "Function": return FunctionCall.call(bound, new ArgumentList(value), env).asBoolean();
             default: throw new RuntimeException(String.format("Invalid bound '%s' (type %s) for function '%s'",
