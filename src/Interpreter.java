@@ -1,6 +1,6 @@
-import dataformat.statement.Statement;
-import dataformat.value.LNull;
-import dataformat.value.Value;
+import statement.Statement;
+import expression.value.LNull;
+import expression.value.Value;
 import execute.Environment;
 import execute.Executor;
 import parse.Lexer;

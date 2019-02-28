@@ -1,11 +1,11 @@
 package execute;
 
-import dataformat.statement.FlowController;
-import dataformat.statement.Statement;
-import dataformat.value.LFunction;
-import dataformat.value.LNull;
-import dataformat.value.Type;
-import dataformat.value.Value;
+import statement.structure.FlowController;
+import statement.Statement;
+import expression.value.LFunction;
+import expression.value.LNull;
+import expression.value.Type;
+import expression.value.Value;
 
 import java.util.*;
 

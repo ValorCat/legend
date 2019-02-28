@@ -1,8 +1,9 @@
 package parse;
 
-import dataformat.Expression;
-import dataformat.group.Parentheses;
-import dataformat.statement.*;
+import expression.Expression;
+import expression.group.Parentheses;
+import statement.*;
+import statement.structure.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import static parse.Token.TokenType.OPERATOR;
  * Each internal node in the tree represents an operation to be performed, and the
  * leaves represent literals and variables. A tree node implements the {@link Expression}
  * interface. Each type of node, i.e. each class that implements Expression, is defined
- * in the {@link dataformat} package and its subpackages.
+ * in the {@link expression} package and its subpackages.
  * @see Expression
  * @since 12/22/2018
  */

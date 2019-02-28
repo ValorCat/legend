@@ -1,11 +1,11 @@
 package parse;
 
-import dataformat.Expression;
-import dataformat.Variable;
-import dataformat.value.LBoolean;
-import dataformat.value.LInteger;
-import dataformat.value.LNull;
-import dataformat.value.LString;
+import expression.Expression;
+import expression.value.Variable;
+import expression.value.LBoolean;
+import expression.value.LInteger;
+import expression.value.LNull;
+import expression.value.LString;
 
 import java.util.ArrayList;
 import java.util.List;
