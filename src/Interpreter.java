@@ -25,11 +25,11 @@ import java.util.List;
 public class Interpreter {
 
     /*
-    This main method executes the provided source file in {@code input.txt}. If you don't want
+    This main method executes the provided source file in {@code input.leg}. If you don't want
     to make a new source file, you can simply edit the provided file and run this method.
      */
     public static void main(String[] args) {
-        interpret(new File("input.txt"));
+        interpret(new File("input.leg"));
     }
 
     /**
@@ -39,6 +39,10 @@ public class Interpreter {
     public static void interpret(File sourceFile) {
         if (Files.notExists(sourceFile.toPath())) {
             throw new RuntimeException("Couldn't locate source file: " + sourceFile.getAbsolutePath());
+        }
+
+        if (!sourceFile.getName().endsWith(".leg")) {
+            throw new RuntimeException("Couldn't read source file: does not end in .leg");
         }
 
         String input;
