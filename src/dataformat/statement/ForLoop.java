@@ -56,9 +56,9 @@ public class ForLoop implements FlowController {
     }
 
     @Override
-    public void setJumpPoint(int address, List<Token> tokens, Parser parser) {
+    public void setJumpPoint(List<Token> tokens, Parser parser) {
         if (tokens.get(0).matches("end")) {
-            this.endAddress = address;
+            this.endAddress = parser.getAddress();
         } else {
             throw new RuntimeException("Unexpected symbol '" + tokens.get(0).VALUE + "'");
         }

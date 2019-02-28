@@ -20,8 +20,8 @@ public class IfStatement implements FlowController {
     private int startAddress, endAddress;
     private Map<Expression, Integer> branches;
 
-    public IfStatement(List<Token> tokens, int address, Parser parser) {
-        startAddress = address;
+    public IfStatement(List<Token> tokens, Parser parser) {
+        startAddress = parser.getAddress();
         branches = new LinkedHashMap<>();
         parseIf(tokens, parser);
     }
@@ -52,16 +52,16 @@ public class IfStatement implements FlowController {
     }
 
     @Override
-    public void setJumpPoint(int address, List<Token> tokens, Parser parser) {
+    public void setJumpPoint(List<Token> tokens, Parser parser) {
         switch (tokens.get(0).VALUE) {
             case "end":
-                endAddress = address;
+                endAddress = parser.getAddress();
                 break;
             case "elsif":
-                parseElsif(tokens, address, parser);
+                parseElsif(tokens, parser);
                 break;
             case "else":
-                parseElse(tokens, address);
+                parseElse(tokens, parser);
                 break;
             default:
                 throw new RuntimeException("Unexpected symbol '" + tokens.get(0).VALUE + "'");
@@ -85,19 +85,19 @@ public class IfStatement implements FlowController {
         branches.put(control, startAddress);
     }
 
-    private void parseElsif(List<Token> tokens, int address, Parser parser) {
+    private void parseElsif(List<Token> tokens, Parser parser) {
         if (tokens.size() == 1 || !tokens.get(1).isValue()) {
             throw new RuntimeException("Expected boolean expression after 'elsif'");
         }
         Expression control = parser.parseFrom(tokens, 1);
-        branches.putIfAbsent(control, address);
+        branches.putIfAbsent(control, parser.getAddress());
     }
 
-    private void parseElse(List<Token> tokens, int address) {
+    private void parseElse(List<Token> tokens, Parser parser) {
         if (tokens.size() > 1) {
             throw new RuntimeException("Unxpected symbol '" + tokens.get(1).VALUE + "' (did you mean 'elsif'?)");
         }
-        branches.putIfAbsent(LBoolean.TRUE, address);
+        branches.putIfAbsent(LBoolean.TRUE, parser.getAddress());
     }
 
 }

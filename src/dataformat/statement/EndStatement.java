@@ -12,13 +12,14 @@ import java.util.Stack;
  */
 public class EndStatement implements Statement {
 
-    public EndStatement(List<Token> tokens, int address, Stack<FlowController> controlStack, Parser parser) {
+    public EndStatement(List<Token> tokens, Parser parser) {
         if (tokens.size() != 1) {
             throw new RuntimeException("Unexpected symbol '" + tokens.get(1).VALUE + "' after 'end'");
-        } else if (controlStack.isEmpty()) {
+        } else if (parser.getControlStack().isEmpty()) {
             throw new RuntimeException("Unexpected 'end'");
         }
-        controlStack.pop().setJumpPoint(address, tokens, parser);
+        FlowController controlStruct = parser.getControlStack().pop();
+        controlStruct.setJumpPoint(tokens, parser);
     }
 
     @Override

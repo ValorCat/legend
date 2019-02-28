@@ -22,6 +22,9 @@ import static parse.Token.TokenType.OPERATOR;
  */
 public class Parser {
 
+    private int address;
+    private Stack<FlowController> controlStack;
+
     /**
      * Convert a stream of tokens into a sequence of syntax trees.
      * @param tokens the list of tokens
@@ -29,9 +32,9 @@ public class Parser {
      */
     public List<Statement> parse(List<List<Token>> tokens) {
         List<Statement> trees = new ArrayList<>(tokens.size());
-        Stack<FlowController> controlStack = new Stack<>();
-        for (int i = 0; i < tokens.size(); i++) {
-            trees.add(parseStatement(tokens.get(i), i, controlStack));
+        controlStack = new Stack<>();
+        for (address = 0; address < tokens.size(); address++) {
+            trees.add(parseStatement(tokens.get(address)));
         }
         if (!controlStack.isEmpty()) {
             throw new RuntimeException("Expected 'end' to close '" + controlStack.peek().getKeyword() + "'");
@@ -42,11 +45,9 @@ public class Parser {
     /**
      * Convert a line of tokens into a statement.
      * @param tokens the tokens to convert
-     * @param address the current instruction's address
-     * @param controlStack the stack of flow control structures
      * @return the parsed statement
      */
-    private Statement parseStatement(List<Token> tokens, int address, Stack<FlowController> controlStack) {
+    private Statement parseStatement(List<Token> tokens) {
         Token initial = tokens.get(0);
         if (initial.TYPE != OPERATOR) {
             // check if assignment
@@ -60,9 +61,9 @@ public class Parser {
             Statement statement = null;
             switch (initial.VALUE) {
                 case "def":    statement = new FunctionDefinition(tokens, this); break;
-                case "end":    statement = new EndStatement(tokens, address, controlStack, this); break;
+                case "end":    statement = new EndStatement(tokens, this); break;
                 case "for":    statement = new ForLoop(tokens, this); break;
-                case "if":     statement = new IfStatement(tokens, address, this); break;
+                case "if":     statement = new IfStatement(tokens, this); break;
                 case "repeat": statement = new RepeatLoop(tokens); break;
                 case "return": statement = new ReturnStatement(tokens); break;
                 case "while":  statement = new WhileLoop(tokens, this); break;
@@ -70,7 +71,7 @@ public class Parser {
                     if (controlStack.isEmpty()) {
                         throw new RuntimeException("Unexpected symbol '" + initial.VALUE + "'");
                     }
-                    controlStack.peek().setJumpPoint(address, tokens, this);
+                    controlStack.peek().setJumpPoint(tokens, this);
                     break;
             }
             if (statement != null) {
@@ -116,6 +117,14 @@ public class Parser {
             throw new RuntimeException("Expression resolved to multiple values: " + expression);
         }
         return expression.get(0).asExpression();
+    }
+
+    public int getAddress() {
+        return address;
+    }
+
+    public Stack<FlowController> getControlStack() {
+        return controlStack;
     }
 
     /**

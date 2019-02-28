@@ -30,11 +30,10 @@ public interface FlowController extends Statement {
      * execution of this structure. Examples include the 'end' statement
      * of a loop and 'elsif' clauses in an 'if' statement. This method
      * is called during parsing.
-     * @param address the instruction address to allow jumping to
      * @param tokens the statement to jump to
      * @param parser the current parser
      */
-    void setJumpPoint(int address, List<Token> tokens, Parser parser);
+    void setJumpPoint(List<Token> tokens, Parser parser);
 
     /**
      * Get the keyword associated with this flow control structure, such
