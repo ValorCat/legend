@@ -10,7 +10,7 @@ public final class Executor {
 
     public static void execute(Environment env) {
         while (env.hasMoreInstructions()) {
-            env.getInstruction().evaluate(env);
+            env.getInstruction().execute(env);
             env.incrementCounter();
         }
     }

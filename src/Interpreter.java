@@ -1,4 +1,4 @@
-import dataformat.Expression;
+import dataformat.Statement;
 import dataformat.value.LNull;
 import dataformat.value.Value;
 import execute.Environment;
@@ -56,7 +56,7 @@ public class Interpreter {
         Parser parser = new Parser();
 
         List<List<Token>> tokens = lexer.tokenize(input);
-        List<Expression> statements = parser.parse(tokens);
+        List<Statement> statements = parser.parse(tokens);
 
         Environment.GLOBAL.setProgram(statements);
         Executor.execute(Environment.GLOBAL);

@@ -1,6 +1,7 @@
 package parse;
 
 import dataformat.Expression;
+import dataformat.Statement;
 import dataformat.group.Parentheses;
 import dataformat.operation.flow.FlowController;
 
@@ -23,20 +24,54 @@ import static parse.Token.TokenType.OPERATOR;
 public class Parser {
 
     /**
-     * Convert a list of statements into a list of syntax trees.
-     * @param statements the list of statements
+     * Convert a stream of tokens into a sequence of syntax trees.
+     * @param tokens the list of tokens
      * @return a list of syntax trees
      */
-    public List<Expression> parse(List<List<Token>> statements) {
-        List<Expression> trees = new ArrayList<>(statements.size());
+    public List<Statement> parse(List<List<Token>> tokens) {
+        List<Statement> trees = new ArrayList<>(tokens.size());
         Stack<FlowController> controlStack = new Stack<>();
-        for (int i = 0; i < statements.size(); i++) {
-            trees.add(parseExpression(statements.get(i), i, controlStack));
+        for (int i = 0; i < tokens.size(); i++) {
+            trees.add(parseStatement(tokens.get(i), i, controlStack));
         }
         if (!controlStack.isEmpty()) {
             throw new RuntimeException("Expected 'end' to close '" + controlStack.peek().getKeyword() + "'");
         }
         return trees;
+    }
+
+    /**
+     * Convert a line of tokens into a statement.
+     * @param tokens the tokens to convert
+     * @param address the current instruction's address
+     * @param controlStack the stack of flow control structures
+     * @return the parsed statement
+     */
+    public Statement parseStatement(List<Token> tokens, int address, Stack<FlowController> controlStack) {
+        return parseExpression(tokens, address, controlStack);
+//        Statement dummy = env -> {};
+//        Token initial = tokens.get(0);
+//        if (initial.TYPE != OPERATOR) {
+//            // check if assignment
+//            for (Token token : tokens) {
+//                if (token.matches("=")) {
+//                    return dummy;
+//                }
+//            }
+//        } else {
+//            // check if flow control statement
+//            switch (initial.VALUE) {
+//                case "def":    return dummy;
+//                case "end":    return dummy;
+//                case "for":    return dummy;
+//                case "if":     return dummy;
+//                case "repeat": return dummy;
+//                case "return": return dummy;
+//                case "while":  return dummy;
+//            }
+//        }
+//        // statement is expression
+//        return dummy;
     }
 
     /**
@@ -46,7 +81,7 @@ public class Parser {
      * @param controlStack the stack of flow control structures
      * @return the root of a syntax tree
      */
-    private Expression parseExpression(List<Token> statement, int address, Stack<FlowController> controlStack) {
+    public Expression parseExpression(List<Token> statement, int address, Stack<FlowController> controlStack) {
         if (statement.isEmpty()) {
             // if there are no tokens (such as in a function call with no args)
             // just return empty parentheses

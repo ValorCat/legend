@@ -11,7 +11,7 @@ import java.util.List;
  * parsed statement's syntax tree.
  * @since 12/23/2018
  */
-public interface Expression {
+public interface Expression extends Statement {
 
     /**
      * Execute this expression, also executing any sub-expressions as necessary.
@@ -44,6 +44,11 @@ public interface Expression {
      */
     default List<Expression> getChildren() {
         return Collections.emptyList();
+    }
+
+    @Override
+    default void execute(Environment env) {
+        evaluate(env);
     }
 
 }

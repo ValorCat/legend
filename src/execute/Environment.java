@@ -1,6 +1,6 @@
 package execute;
 
-import dataformat.Expression;
+import dataformat.Statement;
 import dataformat.operation.flow.FlowController;
 import dataformat.value.LFunction;
 import dataformat.value.LNull;
@@ -44,13 +44,13 @@ public class Environment {
     private Map<String, Integer> namespace;
     private Stack<FlowController> controlStack;
 
-    private List<Expression> statements;
+    private List<Statement> statements;
     private int programCounter;
     private int addressOffset;
     private boolean programCounterChanged;
     private Value returnValue;
 
-    private Environment(List<Expression> statements, int startAddress, Environment parent) {
+    private Environment(List<Statement> statements, int startAddress, Environment parent) {
         this.parent = parent;
         this.namespace = new HashMap<>();
         this.controlStack = new Stack<>();
@@ -65,7 +65,7 @@ public class Environment {
         this(List.of(), 0, null);
     }
 
-    public Environment(List<Expression> statements, int startAddress) {
+    public Environment(List<Statement> statements, int startAddress) {
         this(statements, startAddress, GLOBAL);
     }
 
@@ -122,7 +122,7 @@ public class Environment {
         return controlStack;
     }
 
-    public void setProgram(List<Expression> statements) {
+    public void setProgram(List<Statement> statements) {
         this.statements = statements;
     }
 
@@ -130,11 +130,11 @@ public class Environment {
         return programCounter - addressOffset < statements.size();
     }
 
-    public Expression getInstruction() {
+    public Statement getInstruction() {
         return statements.get(programCounter - addressOffset);
     }
 
-    public List<Expression> getSubroutine(int startAddress, int endAddress) {
+    public List<Statement> getSubroutine(int startAddress, int endAddress) {
         return statements.subList(startAddress - addressOffset, endAddress - addressOffset);
     }
 

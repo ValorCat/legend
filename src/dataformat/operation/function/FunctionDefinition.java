@@ -3,6 +3,7 @@ package dataformat.operation.function;
 import dataformat.ArgumentList;
 import dataformat.Expression;
 import dataformat.ParameterList;
+import dataformat.Statement;
 import dataformat.group.Parentheses;
 import dataformat.operation.Operation;
 import dataformat.operation.flow.FlowController;
@@ -63,7 +64,7 @@ public class FunctionDefinition extends Operation implements FlowController {
     }
 
     public Value call(ArgumentList args, Environment env) {
-        List<Expression> body = env.getSubroutine(startAddress + 1, endAddress);
+        List<Statement> body = env.getSubroutine(startAddress + 1, endAddress);
         Environment newScope = new Environment(body, startAddress + 1);
         params.accept(args, newScope);
         Executor.execute(newScope);
