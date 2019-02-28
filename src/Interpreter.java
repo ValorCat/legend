@@ -3,9 +3,9 @@ import dataformat.value.LNull;
 import dataformat.value.Value;
 import execute.Environment;
 import execute.Executor;
+import parse.Lexer;
 import parse.Parser;
 import parse.Token;
-import parse.Tokenizer;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.util.List;
  * by calling {@link #interpret(File)} and passing in the file object.
  * <p>
  * Interpretation is a three-step process:
- * <ol><li>The source code is divided into tokens and statements by the {@link parse.Tokenizer} class.
+ * <ol><li>The source code is divided into tokens and statements by the {@link Lexer} class.
  * <li>The statements are parsed into syntax trees by the {@link parse.Parser} class.
  * <li>The syntax trees are traversed and executed by the {@link execute.Executor} class.</ol>
  * @since 1/15/2019
@@ -48,10 +48,10 @@ public class Interpreter {
             throw new RuntimeException("Couldn't read source file: " + e.getMessage());
         }
 
-        Tokenizer tokenizer = new Tokenizer();
+        Lexer lexer = new Lexer();
         Parser parser = new Parser();
 
-        List<List<Token>> tokens = tokenizer.tokenize(input);
+        List<List<Token>> tokens = lexer.tokenize(input);
         List<Expression> statements = parser.parse(tokens);
 
         Environment.GLOBAL.setProgram(statements);

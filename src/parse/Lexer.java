@@ -15,7 +15,7 @@ import static parse.Token.TokenType.*;
  * @see Token
  * @since 12/21/2018
  */
-public class Tokenizer {
+public class Lexer {
 
     private List<List<Token>> tokenized;
     private List<Token> currStatement;

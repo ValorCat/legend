@@ -16,9 +16,9 @@ import static java.util.Collections.emptyList;
  * A token is a fundamental symbol in the source code, such as an operator,
  * variable, or literal value. A token is represented by a type, value, and
  * sometimes a token sublist (in the case of grouping tokens like parentheses).
- * Tokens are created by the {@link Tokenizer} class and consumed by the {@link Parser}
+ * Tokens are created by the {@link Lexer} class and consumed by the {@link Parser}
  * class, which uses them to build a syntax tree.
- * @see Tokenizer
+ * @see Lexer
  * @see Parser
  * @since 12/21/2018
  */

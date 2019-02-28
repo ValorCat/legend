@@ -12,7 +12,7 @@ import static parse.Token.TokenType.IDENTIFIER;
 import static parse.Token.TokenType.OPERATOR;
 
 /**
- * Convert the tokens produced by the {@link Tokenizer} class into a syntax tree.
+ * Convert the tokens produced by the {@link Lexer} class into a syntax tree.
  * Each internal node in the tree represents an operation to be performed, and the
  * leaves represent literals and variables. A tree node implements the {@link Expression}
  * interface. Each type of node, i.e. each class that implements Expression, is defined
