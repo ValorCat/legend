@@ -1,7 +1,8 @@
-package dataformat.operation.flow;
+package dataformat.statement;
 
 import dataformat.operation.Operation;
 import execute.Environment;
+import parse.Parser;
 import parse.Token;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * in the environment.
  * @since 12/29/2018
  */
-public interface FlowController {
+public interface FlowController extends Statement {
 
     /**
      * Check if this flow control structure is done and should be popped
@@ -30,11 +31,10 @@ public interface FlowController {
      * of a loop and 'elsif' clauses in an 'if' statement. This method
      * is called during parsing.
      * @param address the instruction address to allow jumping to
-     * @param tokenPos the position of the keyword within its statement
-     *                 that marked this instruction as a jump point
-     * @param statement the statement to jump to
+     * @param tokens the statement to jump to
+     * @param parser the current parser
      */
-    void setJumpPoint(int address, int tokenPos, List<Token> statement);
+    void setJumpPoint(int address, List<Token> tokens, Parser parser);
 
     /**
      * Get the keyword associated with this flow control structure, such

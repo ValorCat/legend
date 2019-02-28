@@ -1,50 +1,37 @@
-package dataformat.operation.flow;
+package dataformat.statement;
 
 import dataformat.Expression;
-import dataformat.operation.Operation;
-import dataformat.value.LNull;
 import dataformat.value.Value;
 import execute.Environment;
+import parse.Parser;
 import parse.Token;
 
 import java.util.List;
-import java.util.Stack;
 
 /**
  * @since 1/20/2019
  */
-public class WhileStatement extends Operation implements FlowController {
+public class WhileLoop implements FlowController {
 
     private int startAddress, endAddress;
     private Expression condition;
 
-    public WhileStatement(int position, List<Token> tokens, Stack<FlowController> controlStack) {
-        super(position, tokens);
-        controlStack.push(this);
-    }
-
-    @Override
-    protected void parse(int pos, List<Token> tokens) {
-        if (pos > 0) {
-            throw new RuntimeException("Unexpected symbol 'while'");
-        } else if (tokens.size() == 1 || !tokens.get(1).isValue()) {
+    public WhileLoop(List<Token> tokens, Parser parser) {
+        if (tokens.size() == 1 || !tokens.get(1).isValue()) {
             throw new RuntimeException("Expected boolean condition after 'while'");
-        } else if (tokens.size() > 2) {
-            throw new RuntimeException("Unexpected symbol '" + tokens.get(2) + "'");
         }
-        condition = tokens.get(1).asExpression();
-        Token.consolidate(tokens, Token.newStatement("while", this), 0, 2);
+        condition = parser.parseFrom(tokens, 1);
     }
 
+
     @Override
-    public Value evaluate(Environment env) {
+    public void execute(Environment env) {
         if (checkCondition(env)) {
             env.getControlStack().push(this);
             startAddress = env.getCounter();
         } else {
             env.setCounter(endAddress + 1);
         }
-        return LNull.NULL;
     }
 
     @Override
@@ -57,11 +44,11 @@ public class WhileStatement extends Operation implements FlowController {
     }
 
     @Override
-    public void setJumpPoint(int address, int tokenPos, List<Token> statement) {
-        if (statement.get(tokenPos).matches("end")) {
+    public void setJumpPoint(int address, List<Token> tokens, Parser parser) {
+        if (tokens.get(0).matches("end")) {
             this.endAddress = address;
         } else {
-            throw new RuntimeException("Unexpected symbol '" + statement.get(0).VALUE + "'");
+            throw new RuntimeException("Unexpected symbol '" + tokens.get(0).VALUE + "'");
         }
     }
 

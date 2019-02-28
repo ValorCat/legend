@@ -1,50 +1,39 @@
-package dataformat.operation.flow;
+package dataformat.statement;
 
 import dataformat.Expression;
-import dataformat.operation.Operation;
-import dataformat.value.LNull;
 import dataformat.value.Value;
 import execute.Environment;
+import parse.Parser;
 import parse.Token;
 import parse.Token.TokenType;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Stack;
 
 /**
  * @since 1/24/2019
  */
-public class ForStatement extends Operation implements FlowController {
+public class ForLoop implements FlowController {
 
     private int startAddress, endAddress;
     private Expression iterable;
     private Value iterator;
     private String variable;
 
-    public ForStatement(int position, List<Token> tokens, Stack<FlowController> controlStack) {
-        super(position, tokens);
-        controlStack.push(this);
-    }
-
-    @Override
-    protected void parse(int pos, List<Token> tokens) {
-        if (pos > 0) {
-            throw new RuntimeException("Unexpected symbol 'for'");
-        } else if (tokens.size() == 1 || tokens.get(1).TYPE != TokenType.IDENTIFIER) {
+    public ForLoop(List<Token> tokens, Parser parser) {
+        if (tokens.size() == 1 || tokens.get(1).TYPE != TokenType.IDENTIFIER) {
             throw new RuntimeException("Expected variable name after 'for'");
         } else if (tokens.size() == 2 || !tokens.get(2).matches("in")) {
             throw new RuntimeException("Expected 'in' after variable '" + tokens.get(1).VALUE + "'");
-        } else if (tokens.size() != 4 || !tokens.get(3).isValue()) {
+        } else if (tokens.size() == 3 || !tokens.get(3).isValue()) {
             throw new RuntimeException("Expected loop expression after 'in'");
         }
         variable = tokens.get(1).VALUE;
-        iterable = tokens.get(3).asExpression();
-        Token.consolidate(tokens, Token.newStatement("for", this), 0, 4);
+        iterable = parser.parseFrom(tokens, 3);
     }
 
     @Override
-    public Value evaluate(Environment env) {
+    public void execute(Environment env) {
         iterator = getIterator(iterable.evaluate(env), env);
         if (hasNext(env)) {
             env.getControlStack().push(this);
@@ -53,7 +42,6 @@ public class ForStatement extends Operation implements FlowController {
         } else {
             env.setCounter(endAddress + 1);
         }
-        return LNull.NULL;
     }
 
     @Override
@@ -68,11 +56,11 @@ public class ForStatement extends Operation implements FlowController {
     }
 
     @Override
-    public void setJumpPoint(int address, int tokenPos, List<Token> statement) {
-        if (statement.get(tokenPos).matches("end")) {
+    public void setJumpPoint(int address, List<Token> tokens, Parser parser) {
+        if (tokens.get(0).matches("end")) {
             this.endAddress = address;
         } else {
-            throw new RuntimeException("Unexpected symbol '" + statement.get(0).VALUE + "'");
+            throw new RuntimeException("Unexpected symbol '" + tokens.get(0).VALUE + "'");
         }
     }
 

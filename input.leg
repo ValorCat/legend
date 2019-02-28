@@ -1,8 +1,31 @@
-int_or_null = Integer?
+x = 10
 
-def my_func(x: Integer?)
-    show('Value is ' :: x)
+for i in 1 to 3
+    show(i)
 end
 
-my_func(5)
-my_func(null)
+def my_func(a, b)
+    return a + b
+end
+
+show('Result is ', my_func(5, 10))
+
+n = 1
+while n % 5 != 0
+    show('n = ', n)
+    n = n + 1
+end
+
+def repeater()
+    i = 0
+    repeat
+        i = i + 1
+        if i >= 5
+            return
+        end
+    end
+end
+
+repeater()
+
+show('Done!')

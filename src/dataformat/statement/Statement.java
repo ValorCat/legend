@@ -1,4 +1,4 @@
-package dataformat;
+package dataformat.statement;
 
 import execute.Environment;
 

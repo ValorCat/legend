@@ -1,53 +1,36 @@
-package dataformat.operation.function;
+package dataformat.statement;
 
 import dataformat.ArgumentList;
-import dataformat.Expression;
 import dataformat.ParameterList;
-import dataformat.Statement;
 import dataformat.group.Parentheses;
-import dataformat.operation.Operation;
-import dataformat.operation.flow.FlowController;
-import dataformat.value.LNull;
 import dataformat.value.UserDefinedFunction;
 import dataformat.value.Value;
 import execute.Environment;
 import execute.Executor;
+import parse.Parser;
 import parse.Token;
 import parse.Token.TokenType;
 
 import java.util.List;
-import java.util.Stack;
 import java.util.StringJoiner;
 
 /**
  * @since 2/16/2019
  */
-public class FunctionDefinition extends Operation implements FlowController {
+public class FunctionDefinition implements FlowController {
 
     private String name;
     private ParameterList params;
     private int startAddress, endAddress;
 
-    public FunctionDefinition(int position, List<Token> tokens, Stack<FlowController> controlStack) {
-        super(position, tokens);
-        controlStack.push(this);
-    }
-
-    @Override
-    protected void parse(int pos, List<Token> tokens) {
-        if (pos > 0) {
-            throw new RuntimeException("Unexpected symbol 'def'");
-        } else if (tokens.size() == 1 || tokens.get(1).TYPE != TokenType.IDENTIFIER) {
+    public FunctionDefinition(List<Token> tokens, Parser parser) {
+        if (tokens.size() == 1 || tokens.get(1).TYPE != TokenType.IDENTIFIER) {
             throw new RuntimeException("Expected function name after 'def'");
         } else if (tokens.size() == 2 || !tokens.get(2).matches("()")) {
             throw new RuntimeException("Expected function parameters after '" + tokens.get(1).VALUE + "'");
-        } else if (tokens.size() > 3) {
-            throw new RuntimeException("Unexpected symbol '" + tokens.get(2).VALUE + "' after function parameters");
         }
-        List<Expression> paramData = ((Parentheses) tokens.get(2).asExpression()).getContents();
         name = tokens.get(1).VALUE;
-        params = new ParameterList(name, paramData);
-        Token.consolidate(tokens, Token.newStatement("def", this), 0, 3);
+        params = new ParameterList(name, ((Parentheses) parser.parseFrom(tokens, 2)).getContents());
     }
 
     /*
@@ -56,11 +39,10 @@ public class FunctionDefinition extends Operation implements FlowController {
     is executed later, the call method is run instead.
      */
     @Override
-    public Value evaluate(Environment env) {
+    public void execute(Environment env) {
         startAddress = env.getCounter();
         env.assign(name, new UserDefinedFunction(name, this));
         env.setCounter(endAddress + 1);
-        return LNull.NULL;
     }
 
     public Value call(ArgumentList args, Environment env) {
@@ -78,11 +60,11 @@ public class FunctionDefinition extends Operation implements FlowController {
     }
 
     @Override
-    public void setJumpPoint(int address, int tokenPos, List<Token> statement) {
-        if (statement.get(tokenPos).matches("end")) {
+    public void setJumpPoint(int address, List<Token> tokens, Parser parser) {
+        if (tokens.get(0).matches("end")) {
             this.endAddress = address;
         } else {
-            throw new RuntimeException("Unexpected symbol '" + statement.get(0).VALUE + "'");
+            throw new RuntimeException("Unexpected symbol '" + tokens.get(0).VALUE + "'");
         }
     }
 

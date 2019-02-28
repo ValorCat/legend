@@ -1,7 +1,7 @@
 package dataformat.value;
 
 import dataformat.ArgumentList;
-import dataformat.operation.function.FunctionDefinition;
+import dataformat.statement.FunctionDefinition;
 import execute.Environment;
 
 /**

@@ -1,7 +1,7 @@
 package execute;
 
-import dataformat.Statement;
-import dataformat.operation.flow.FlowController;
+import dataformat.statement.FlowController;
+import dataformat.statement.Statement;
 import dataformat.value.LFunction;
 import dataformat.value.LNull;
 import dataformat.value.Type;

@@ -15,11 +15,6 @@ public abstract class Operation implements Expression {
     protected String operator;
     protected List<Expression> operands;
 
-    public Operation(Token token) {
-        this.operator = token.VALUE;
-        this.operands = Collections.emptyList();
-    }
-
     public Operation(int position, List<Token> tokens) {
         this.operator = tokens.get(position).VALUE;
         this.operands = Collections.emptyList();
@@ -91,16 +86,6 @@ public abstract class Operation implements Expression {
         }
         operands = List.of(tokens.get(pos - 1).asExpression());
         Token.consolidate(tokens, Token.newExpression(operator, this), pos - 1, 2);
-    }
-
-    protected void parseStandaloneOperation(int pos, List<Token> tokens) {
-        String operator = tokens.get(pos).VALUE;
-        if (pos > 0) {
-            throw new RuntimeException("Unexpected symbol '" + operator + "'");
-        } else if (tokens.size() > 1) {
-            throw new RuntimeException("Unexpected symbol after '" + operator + "'");
-        }
-        tokens.set(pos, Token.newStatement(operator, this));
     }
 
 }

@@ -1,10 +1,8 @@
 package parse;
 
 import dataformat.operation.*;
-import dataformat.operation.flow.*;
 import dataformat.operation.function.BinaryOperatorCall;
 import dataformat.operation.function.FunctionCall;
-import dataformat.operation.function.FunctionDefinition;
 import dataformat.operation.function.UnaryOperatorCall;
 
 import java.util.*;
@@ -24,8 +22,8 @@ public final class OperatorTable {
     during tokenization and their corresponding operators are inserted implicitly.
      */
     private static final OperatorTable OPERATORS = defineOperations(new String[][] {
-            {".", "call"},
-            {"#", "?"},             // high precedence
+            {".", "call"},      // high precedence
+            {"#", "?"},
             {"unop", "biop"},
             {"not"},
             {"^"},
@@ -37,13 +35,11 @@ public final class OperatorTable {
             {":="},
             {":"},
             {","},
-            {"="},
-            {"in"},                 // low precedence
-            {"def", "else", "elsif", "end", "for", "if", "repeat", "return", "while"}
+            {"in"}              // low precedence
     });
 
     /*
-    These two constants are used by the tokenizer to assign the correct type
+    These two constants are used by the lexer to assign the correct type
     to unusual operators.
      */
     public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=", "::", ":=");
@@ -59,47 +55,31 @@ public final class OperatorTable {
      * structures are also pushed on and popped off the stack as they are
      * encountered.
      * @param tokenPos the index of the operator in the list
-     * @param statement the list of tokens
-     * @param address the address of this statement
-     * @param controlStack the stack of flow control structures
+     * @param tokens the list of tokens
      */
-    public static void parseOperation(int tokenPos, List<Token> statement, int address,
-                                      Stack<FlowController> controlStack) {
-        switch (statement.get(tokenPos).VALUE) {
-            case ".":       new DotOperation(tokenPos, statement); break;
-            case "call":    new FunctionCall(tokenPos, statement); break;
-            case "#":       new LengthOperation(tokenPos, statement); break;
-            case "?":       new NullableOperation(tokenPos, statement); break;
-            case "unop":    new UnaryOperatorCall(tokenPos, statement); break;
-            case "biop":    new BinaryOperatorCall(tokenPos, statement); break;
-            case "not":     new NotOperation(tokenPos, statement); break;
-            case "::":      new ConcatenationOperation(tokenPos, statement); break;
-            case ":=":      new AssignmentExpression(tokenPos, statement); break;
-            case ":":       new Mapping(tokenPos, statement); break;
-            case ",":       new CommaList(tokenPos, statement); break;
-            case "=":       new Assignment(tokenPos, statement); break;
-            case "def":     new FunctionDefinition(tokenPos, statement, controlStack); break;
-            case "end":     new EndStatement(tokenPos, statement, address, controlStack); break;
-            case "if":      new IfStatement(tokenPos, statement, address, controlStack); break;
-            case "for":     new ForStatement(tokenPos, statement, controlStack); break;
-            case "repeat":  new RepeatStatement(tokenPos, statement, controlStack); break;
-            case "return":  new ReturnStatement(tokenPos, statement); break;
-            case "while":   new WhileStatement(tokenPos, statement, controlStack); break;
+    public static void parseOperation(int tokenPos, List<Token> tokens) {
+        switch (tokens.get(tokenPos).VALUE) {
+            case ".":       new DotOperation(tokenPos, tokens); break;
+            case "call":    new FunctionCall(tokenPos, tokens); break;
+            case "#":       new LengthOperation(tokenPos, tokens); break;
+            case "?":       new NullableOperation(tokenPos, tokens); break;
+            case "unop":    new UnaryOperatorCall(tokenPos, tokens); break;
+            case "biop":    new BinaryOperatorCall(tokenPos, tokens); break;
+            case "not":     new NotOperation(tokenPos, tokens); break;
             case "^": case "*": case "/": case "%": case "+": case "-":
-                            new ArithmeticOperation(tokenPos, statement); break;
+                            new ArithmeticOperation(tokenPos, tokens); break;
             case "==": case "!=":
-                new EqualsOperation(tokenPos, statement); break;
+                            new EqualsOperation(tokenPos, tokens); break;
             case "<": case ">": case "<=": case ">=":
-                            new ComparisonOperation(tokenPos, statement); break;
+                            new ComparisonOperation(tokenPos, tokens); break;
             case "and": case "or": case "nor":
-                            new LogicalOperation(tokenPos, statement); break;
-            case "else": case "elsif":
-                            if (controlStack.isEmpty()) {
-                                throw new RuntimeException("Unexpected symbol '" + statement.get(tokenPos).VALUE + "'");
-                            }
-                            controlStack.peek().setJumpPoint(address, tokenPos, statement); break;
+                            new LogicalOperation(tokenPos, tokens); break;
+            case "::":      new ConcatenationOperation(tokenPos, tokens); break;
+            case ":=":      new AssignmentExpression(tokenPos, tokens); break;
+            case ":":       new Mapping(tokenPos, tokens); break;
+            case ",":       new CommaList(tokenPos, tokens); break;
             case "in":      break; // ignore
-            default: throw new RuntimeException("Invalid operator '" + statement.get(tokenPos).VALUE + "'");
+            default: throw new RuntimeException("Invalid operator '" + tokens.get(tokenPos).VALUE + "'");
         }
     }
 

@@ -1,9 +1,8 @@
 package parse;
 
 import dataformat.Expression;
-import dataformat.Statement;
 import dataformat.group.Parentheses;
-import dataformat.operation.flow.FlowController;
+import dataformat.statement.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,81 +46,92 @@ public class Parser {
      * @param controlStack the stack of flow control structures
      * @return the parsed statement
      */
-    public Statement parseStatement(List<Token> tokens, int address, Stack<FlowController> controlStack) {
-        return parseExpression(tokens, address, controlStack);
-//        Statement dummy = env -> {};
-//        Token initial = tokens.get(0);
-//        if (initial.TYPE != OPERATOR) {
-//            // check if assignment
-//            for (Token token : tokens) {
-//                if (token.matches("=")) {
-//                    return dummy;
-//                }
-//            }
-//        } else {
-//            // check if flow control statement
-//            switch (initial.VALUE) {
-//                case "def":    return dummy;
-//                case "end":    return dummy;
-//                case "for":    return dummy;
-//                case "if":     return dummy;
-//                case "repeat": return dummy;
-//                case "return": return dummy;
-//                case "while":  return dummy;
-//            }
-//        }
-//        // statement is expression
-//        return dummy;
+    private Statement parseStatement(List<Token> tokens, int address, Stack<FlowController> controlStack) {
+        Token initial = tokens.get(0);
+        if (initial.TYPE != OPERATOR) {
+            // check if assignment
+            for (int i = 0; i < tokens.size(); i++) {
+                if (tokens.get(i).matches("=")) {
+                    return new Assignment(tokens, i, this);
+                }
+            }
+        } else {
+            // check if flow control statement
+            Statement statement = null;
+            switch (initial.VALUE) {
+                case "def":    statement = new FunctionDefinition(tokens, this); break;
+                case "end":    statement = new EndStatement(tokens, address, controlStack, this); break;
+                case "for":    statement = new ForLoop(tokens, this); break;
+                case "if":     statement = new IfStatement(tokens, address, this); break;
+                case "repeat": statement = new RepeatLoop(tokens); break;
+                case "return": statement = new ReturnStatement(tokens); break;
+                case "while":  statement = new WhileLoop(tokens, this); break;
+                case "elsif": case "else":
+                    if (controlStack.isEmpty()) {
+                        throw new RuntimeException("Unexpected symbol '" + initial.VALUE + "'");
+                    }
+                    controlStack.peek().setJumpPoint(address, tokens, this);
+                    break;
+            }
+            if (statement != null) {
+                if (statement instanceof FlowController) {
+                    controlStack.push((FlowController) statement);
+                }
+                return statement;
+            }
+        }
+        // statement is expression
+        return parseExpression(tokens);
+    }
+
+    public Expression parseFrom(List<Token> expression, int startIndex) {
+        return parseExpression(expression.subList(startIndex, expression.size()));
     }
 
     /**
-     * Convert a statement into a parsed syntax tree.
-     * @param statement the statement to convert, which will be consumed and destroyed
-     * @param address the current instruction's address
-     * @param controlStack the stack of flow control structures
+     * Convert an expression into a parsed syntax tree.
+     * @param expression the tokens to convert, which will be consumed and destroyed
      * @return the root of a syntax tree
      */
-    public Expression parseExpression(List<Token> statement, int address, Stack<FlowController> controlStack) {
-        if (statement.isEmpty()) {
+    public Expression parseExpression(List<Token> expression) {
+        if (expression.isEmpty()) {
             // if there are no tokens (such as in a function call with no args)
             // just return empty parentheses
             return Parentheses.EMPTY_PARENS;
         }
-        injectImplicitOperators(statement);
-        resolveGroups(statement, address, controlStack);
-        List<Token> precedence = getPrecedence(statement);
+        injectImplicitOperators(expression);
+        resolveGroups(expression);
+        List<Token> precedence = getPrecedence(expression);
         for (Token operator : precedence) {
-            int position = statement.indexOf(operator);
+            int position = expression.indexOf(operator);
             if (position < 0) {
-                throw new RuntimeException("Couldn't find operator '" + operator.VALUE + "';\n  statement="
-                        + statement + "\n  precedence=" + precedence);
+                throw new RuntimeException("Couldn't find operator '" + operator.VALUE + "';\n  expression="
+                        + expression + "\n  precedence=" + precedence);
             }
-            OperatorTable.parseOperation(position, statement, address, controlStack);
+            OperatorTable.parseOperation(position, expression);
         }
-        if (statement.size() > 1) {
+        if (expression.size() > 1) {
             // this happens if an operator is missing from the expression
             // for example: 3 x * 2
-            throw new RuntimeException("Expression resolved to multiple values: " + statement);
+            throw new RuntimeException("Expression resolved to multiple values: " + expression);
         }
-        return statement.get(0).asExpression();
+        return expression.get(0).asExpression();
     }
 
     /**
      * Recursively search through a statement for subexpressions (pairs of (),
      * [], or {}) and parse them.
-     * @param statement the statement to search through
-     * @param address the current instruction's address
-     * @param controlStack the stack of flow control structures
+     * @param tokens the statement to search through
      */
-    private void resolveGroups(List<Token> statement, int address, Stack<FlowController> controlStack) {
-        for (int i = 0; i < statement.size(); i++) {
-            Token token = statement.get(i);
+    private void resolveGroups(List<Token> tokens) {
+        for (int i = 0; i < tokens.size(); i++) {
+            Token token = tokens.get(i);
             if (token.matches("()")) {
-                Expression value = parseExpression(token.CHILDREN, address, controlStack);
+                Expression value = parseExpression(token.CHILDREN);
                 if (value != Parentheses.EMPTY_PARENS) {
                     value = new Parentheses(value);
                 }
-                statement.set(i, Token.newExpression("()", value));
+                tokens.set(i, Token.newExpression("()", value));
             }
         }
     }
@@ -129,12 +139,12 @@ public class Parser {
     /**
      * Return a list of the operators in a statement, sorted by their precedence
      * level from high to low.
-     * @param statement the statement from which the operators should be drawn
+     * @param tokens the statement from which the operators should be drawn
      * @return a list of operators sorted by precedence
      */
-    private static List<Token> getPrecedence(List<Token> statement) {
+    private static List<Token> getPrecedence(List<Token> tokens) {
         List<Token> ordering = new ArrayList<>();
-        for (Token token : statement) {
+        for (Token token : tokens) {
             if (token.TYPE == OPERATOR) {
                 ordering.add(token);
             }
