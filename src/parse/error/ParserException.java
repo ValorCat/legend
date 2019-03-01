@@ -1,4 +1,4 @@
-package parse;
+package parse.error;
 
 /**
  * @since 3/1/2019

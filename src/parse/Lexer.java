@@ -1,14 +1,15 @@
 package parse;
 
 import parse.Token.TokenType;
+import parse.error.ErrorLog;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import static parse.ErrorDescription.BAD_PARENS;
-import static parse.ErrorDescription.BAD_STRING;
 import static parse.Token.TokenType.*;
+import static parse.error.ErrorDescription.BAD_PARENS;
+import static parse.error.ErrorDescription.BAD_STRING;
 
 /**
  * Convert raw Legend code into a list of tokens. A token is a fundamental symbol in the

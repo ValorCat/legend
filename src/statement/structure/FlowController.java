@@ -2,14 +2,14 @@ package statement.structure;
 
 import execute.Environment;
 import expression.operation.Operation;
-import parse.ErrorLog;
 import parse.Parser;
 import parse.Token;
+import parse.error.ErrorLog;
 import statement.Statement;
 
 import java.util.List;
 
-import static parse.ErrorDescription.BAD_JUMP_POINT;
+import static parse.error.ErrorDescription.BAD_JUMP_POINT;
 
 /**
  * Classes that implement this interface represent flow control structures,

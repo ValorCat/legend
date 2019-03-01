@@ -3,13 +3,13 @@ package statement.structure;
 import execute.Environment;
 import expression.Expression;
 import expression.value.Value;
-import parse.ErrorLog;
 import parse.Parser;
 import parse.Token;
+import parse.error.ErrorLog;
 
 import java.util.List;
 
-import static parse.ErrorDescription.BAD_WHILE_LOOP;
+import static parse.error.ErrorDescription.BAD_WHILE_LOOP;
 
 /**
  * @since 1/20/2019

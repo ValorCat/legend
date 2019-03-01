@@ -2,6 +2,8 @@ package parse;
 
 import expression.Expression;
 import expression.group.Parentheses;
+import parse.error.ErrorLog;
+import parse.error.ParserException;
 import statement.Assignment;
 import statement.EndStatement;
 import statement.ReturnStatement;
@@ -13,9 +15,9 @@ import java.util.List;
 import java.util.Stack;
 import java.util.StringJoiner;
 
-import static parse.ErrorDescription.*;
 import static parse.Token.TokenType.IDENTIFIER;
 import static parse.Token.TokenType.OPERATOR;
+import static parse.error.ErrorDescription.*;
 
 /**
  * Convert the tokens produced by the {@link Lexer} class into a syntax tree.

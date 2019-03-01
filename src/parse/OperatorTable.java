@@ -1,10 +1,11 @@
 package parse;
 
 import expression.operation.*;
+import parse.error.ErrorLog;
 
 import java.util.*;
 
-import static parse.ErrorDescription.UNKNOWN_OPER;
+import static parse.error.ErrorDescription.UNKNOWN_OPER;
 
 /**
  * This class stores valid operators and their precedence levels. It also instantiates

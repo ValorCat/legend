@@ -2,14 +2,14 @@ package statement;
 
 import execute.Environment;
 import expression.Expression;
-import parse.ErrorLog;
 import parse.Parser;
 import parse.Token;
 import parse.Token.TokenType;
+import parse.error.ErrorLog;
 
 import java.util.List;
 
-import static parse.ErrorDescription.BAD_ASSIGN;
+import static parse.error.ErrorDescription.BAD_ASSIGN;
 
 /**
  * @since 1/19/2019

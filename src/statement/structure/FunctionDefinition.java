@@ -7,16 +7,16 @@ import expression.group.ParameterList;
 import expression.group.Parentheses;
 import expression.value.UserDefinedFunction;
 import expression.value.Value;
-import parse.ErrorLog;
 import parse.Parser;
 import parse.Token;
 import parse.Token.TokenType;
+import parse.error.ErrorLog;
 import statement.Statement;
 
 import java.util.List;
 import java.util.StringJoiner;
 
-import static parse.ErrorDescription.BAD_FUNC_DEF;
+import static parse.error.ErrorDescription.BAD_FUNC_DEF;
 
 /**
  * @since 2/16/2019

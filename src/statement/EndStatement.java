@@ -1,15 +1,15 @@
 package statement;
 
 import execute.Environment;
-import parse.ErrorLog;
 import parse.Parser;
 import parse.Token;
+import parse.error.ErrorLog;
 import statement.structure.FlowController;
 
 import java.util.List;
 import java.util.Stack;
 
-import static parse.ErrorDescription.BAD_NESTING;
+import static parse.error.ErrorDescription.BAD_NESTING;
 
 /**
  * @since 1/19/2019

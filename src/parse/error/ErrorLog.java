@@ -1,4 +1,6 @@
-package parse;
+package parse.error;
+
+import parse.Token;
 
 import java.util.LinkedList;
 import java.util.List;

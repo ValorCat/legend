@@ -3,9 +3,9 @@ package statement.structure;
 import execute.Environment;
 import expression.Expression;
 import expression.value.LBoolean;
-import parse.ErrorLog;
 import parse.Parser;
 import parse.Token;
+import parse.error.ErrorLog;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringJoiner;
 
-import static parse.ErrorDescription.BAD_IF;
+import static parse.error.ErrorDescription.BAD_IF;
 
 /**
  * @since 1/27/2019

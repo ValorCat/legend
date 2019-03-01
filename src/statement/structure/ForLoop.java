@@ -3,15 +3,15 @@ package statement.structure;
 import execute.Environment;
 import expression.Expression;
 import expression.value.Value;
-import parse.ErrorLog;
 import parse.Parser;
 import parse.Token;
 import parse.Token.TokenType;
+import parse.error.ErrorLog;
 
 import java.util.List;
 import java.util.Optional;
 
-import static parse.ErrorDescription.BAD_FOR_LOOP;
+import static parse.error.ErrorDescription.BAD_FOR_LOOP;
 
 /**
  * @since 1/24/2019

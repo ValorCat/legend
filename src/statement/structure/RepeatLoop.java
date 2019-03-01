@@ -1,13 +1,13 @@
 package statement.structure;
 
 import execute.Environment;
-import parse.ErrorLog;
 import parse.Parser;
 import parse.Token;
+import parse.error.ErrorLog;
 
 import java.util.List;
 
-import static parse.ErrorDescription.BAD_REPEAT;
+import static parse.error.ErrorDescription.BAD_REPEAT;
 
 /**
  * @since 1/19/2019

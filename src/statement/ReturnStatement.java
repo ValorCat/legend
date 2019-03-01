@@ -3,12 +3,12 @@ package statement;
 import execute.Environment;
 import expression.Expression;
 import expression.value.LNull;
-import parse.ErrorLog;
 import parse.Token;
+import parse.error.ErrorLog;
 
 import java.util.List;
 
-import static parse.ErrorDescription.BAD_RETURN;
+import static parse.error.ErrorDescription.BAD_RETURN;
 
 /**
  * @since 2/16/2019

@@ -2,7 +2,11 @@ import execute.Environment;
 import execute.Executor;
 import expression.value.LNull;
 import expression.value.Value;
-import parse.*;
+import parse.Lexer;
+import parse.Parser;
+import parse.Token;
+import parse.error.ErrorLog;
+import parse.error.ParserException;
 import statement.Statement;
 
 import java.io.File;
