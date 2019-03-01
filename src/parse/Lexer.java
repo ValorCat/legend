@@ -22,6 +22,7 @@ public class Lexer {
     private StringBuilder currToken;
     private char prev;
     private char stringType;
+    private int lineNumber;
 
     /**
      * Convert source code into a 2-dimensional list of tokens, where the rows represent
@@ -64,6 +65,7 @@ public class Lexer {
         currToken = new StringBuilder();
         prev = 0;
         stringType = 0;
+        lineNumber = 1;
     }
 
     /**
@@ -131,10 +133,12 @@ public class Lexer {
                 throw new RuntimeException("Unterminated string literal");
             }
             if (!currStatement.isEmpty()) {
+                currStatement.add(new Token.LineCounter(lineNumber));
                 tokenized.add(currStatement);
                 aggregateGroups(currStatement);
                 currStatement = new ArrayList<>();
             }
+            lineNumber++;
         }
     }
 
@@ -214,10 +218,10 @@ public class Lexer {
      * combine all the tokens inbetween into a single aggregate token.
      * @param tokens the statement to search
      */
-    private static void aggregateGroups(List<Token> tokens) {
+    private void aggregateGroups(List<Token> tokens) {
         Stack<String> delimiters = new Stack<>();
         Stack<Integer> starts = new Stack<>();
-        for (int i = 0; i < tokens.size(); i++) {
+        for (int i = 0; i < tokens.size() - 1; i++) {
             String token = tokens.get(i).VALUE;
             if (token.equals("(")) {
                 delimiters.push("(");

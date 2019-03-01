@@ -1,11 +1,7 @@
 package parse;
 
 import expression.Expression;
-import expression.value.Variable;
-import expression.value.LBoolean;
-import expression.value.LInteger;
-import expression.value.LNull;
-import expression.value.LString;
+import expression.value.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +18,7 @@ import static java.util.Collections.emptyList;
  * @see Parser
  * @since 12/21/2018
  */
-public final class Token {
+public class Token {
 
     public enum TokenType { EXPRESSION, GROUP, IDENTIFIER, LITERAL, OPERATOR, STATEMENT }
 
@@ -135,6 +131,17 @@ public final class Token {
             list.remove(start);
         }
         list.add(start, result);
+    }
+
+    public static class LineCounter extends Token {
+
+        public final int LINE_NUMBER;
+
+        public LineCounter(int lineNumber) {
+            super(null, null, null, null);
+            this.LINE_NUMBER = lineNumber;
+        }
+
     }
 
 }

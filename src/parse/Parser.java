@@ -33,6 +33,7 @@ public class Parser {
      */
     public List<Statement> parse(List<List<Token>> tokens) {
         List<Statement> trees = new ArrayList<>(tokens.size());
+        int lineNumber = 1;
         controlStack = new Stack<>();
         for (address = 0; address < tokens.size(); address++) {
             trees.add(parseStatement(tokens.get(address)));
@@ -144,6 +145,18 @@ public class Parser {
                 tokens.set(i, Token.newExpression("()", value));
             }
         }
+    }
+
+    /**
+     * Retrieve the source file line number that corresponds to
+     * a particular token sequence. The lexer stores a sequence's
+     * line number as a special token at its end.
+     * @param line the token sequence
+     * @return the corresponding line number
+     */
+    private static int getLineNumber(List<Token> line) {
+        Token lastToken = line.remove(line.size() - 1);
+        return ((Token.LineCounter) lastToken).LINE_NUMBER;
     }
 
     /**
