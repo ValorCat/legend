@@ -3,8 +3,8 @@ package statement.structure;
 import execute.Environment;
 import expression.Expression;
 import expression.value.Value;
+import parse.ErrorLog;
 import parse.Parser;
-import parse.ParserError;
 import parse.Token;
 import parse.Token.TokenType;
 
@@ -25,11 +25,11 @@ public class ForLoop implements FlowController {
 
     public ForLoop(List<Token> tokens, Parser parser) {
         if (tokens.size() == 1 || tokens.get(1).TYPE != TokenType.IDENTIFIER) {
-            throw ParserError.error(BAD_FOR_LOOP, "Expected variable name after 'for'");
+            throw ErrorLog.raise(BAD_FOR_LOOP, "Expected variable name after 'for'");
         } else if (tokens.size() == 2 || !tokens.get(2).matches("in")) {
-            throw ParserError.error(BAD_FOR_LOOP, "Expected 'in' after variable '%s'", tokens.get(1));
+            throw ErrorLog.raise(BAD_FOR_LOOP, "Expected 'in' after variable '%s'", tokens.get(1));
         } else if (tokens.size() == 3 || !tokens.get(3).isValue()) {
-            throw ParserError.error(BAD_FOR_LOOP, "Expected loop expression after 'in'");
+            throw ErrorLog.raise(BAD_FOR_LOOP, "Expected loop expression after 'in'");
         }
         variable = tokens.get(1).VALUE;
         iterable = parser.parseFrom(tokens, 3);
@@ -41,7 +41,7 @@ public class ForLoop implements FlowController {
         if (hasNext(env)) {
             env.getControlStack().push(this);
             startAddress = env.getCounter();
-            env.assign(variable, getNext(env));
+            env.assignLocal(variable, getNext(env));
         } else {
             env.setCounter(endAddress + 1);
         }
@@ -50,7 +50,7 @@ public class ForLoop implements FlowController {
     @Override
     public boolean isDone(Environment env) {
         if (hasNext(env)) {
-            env.assign(variable, getNext(env));
+            env.assignLocal(variable, getNext(env));
             env.setCounter(startAddress + 1);
             return false;
         } else {

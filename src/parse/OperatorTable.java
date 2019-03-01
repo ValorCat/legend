@@ -79,7 +79,7 @@ public final class OperatorTable {
             case ",":       new CommaList(tokenPos, tokens); break;
             case "in":      break; // ignore
             default:
-                throw ParserError.error(UNKNOWN_OPER, "Unrecognized operator '%s'", tokens.get(tokenPos));
+                throw ErrorLog.raise(UNKNOWN_OPER, "Unrecognized operator '%s'", tokens.get(tokenPos));
         }
     }
 
@@ -110,7 +110,7 @@ public final class OperatorTable {
     private int getPrecedence(String operator) {
         Integer precedence = implTable.get(operator);
         if (precedence == null) {
-            throw ParserError.error(UNKNOWN_OPER, "Unrecognized operator '%s'", operator);
+            throw ErrorLog.raise(UNKNOWN_OPER, "Unrecognized operator '%s'", operator);
         }
         return precedence;
     }

@@ -1,8 +1,8 @@
 package statement;
 
 import execute.Environment;
+import parse.ErrorLog;
 import parse.Parser;
-import parse.ParserError;
 import parse.Token;
 import statement.structure.FlowController;
 
@@ -18,9 +18,9 @@ public class EndStatement implements Statement {
 
     public EndStatement(List<Token> tokens, Parser parser) {
         if (tokens.size() != 1) {
-            throw ParserError.error(BAD_NESTING, "Unexpected symbol '%s' after 'end'", tokens.get(1));
+            throw ErrorLog.raise(BAD_NESTING, "Unexpected symbol '%s' after 'end'", tokens.get(1));
         } else if (parser.getControlStack().isEmpty()) {
-            throw ParserError.error(BAD_NESTING, "Mismatched 'end'");
+            throw ErrorLog.raise(BAD_NESTING, "Mismatched 'end'");
         }
         FlowController controlStruct = parser.getControlStack().pop();
         controlStruct.setJumpPoint(tokens, parser);

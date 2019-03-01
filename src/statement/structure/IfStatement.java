@@ -3,8 +3,8 @@ package statement.structure;
 import execute.Environment;
 import expression.Expression;
 import expression.value.LBoolean;
+import parse.ErrorLog;
 import parse.Parser;
-import parse.ParserError;
 import parse.Token;
 
 import java.util.LinkedHashMap;
@@ -82,7 +82,7 @@ public class IfStatement implements FlowController {
 
     private void parseIf(List<Token> tokens, Parser parser) {
         if (tokens.size() == 1 || !tokens.get(1).isValue()) {
-            throw ParserError.error(BAD_IF, "Expected boolean expression after 'if'");
+            throw ErrorLog.raise(BAD_IF, "Expected boolean expression after 'if'");
         }
         Expression control = parser.parseFrom(tokens, 1);
         branches.put(control, startAddress);
@@ -90,7 +90,7 @@ public class IfStatement implements FlowController {
 
     private void parseElsif(List<Token> tokens, Parser parser) {
         if (tokens.size() == 1 || !tokens.get(1).isValue()) {
-            throw ParserError.error(BAD_IF, "Expected boolean expression after 'elsif' (did you mean 'else'?)");
+            throw ErrorLog.raise(BAD_IF, "Expected boolean expression after 'elsif' (did you mean 'else'?)");
         }
         Expression control = parser.parseFrom(tokens, 1);
         branches.putIfAbsent(control, parser.getAddress());
@@ -98,7 +98,7 @@ public class IfStatement implements FlowController {
 
     private void parseElse(List<Token> tokens, Parser parser) {
         if (tokens.size() > 1) {
-            throw ParserError.error(BAD_IF, "Unexpected symbol '%s' after 'else' " +
+            throw ErrorLog.raise(BAD_IF, "Unexpected symbol '%s' after 'else' " +
                     "(did you mean 'elsif'?)",tokens.get(1));
         }
         branches.putIfAbsent(LBoolean.TRUE, parser.getAddress());

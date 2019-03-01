@@ -2,8 +2,8 @@ package statement;
 
 import execute.Environment;
 import expression.Expression;
+import parse.ErrorLog;
 import parse.Parser;
-import parse.ParserError;
 import parse.Token;
 import parse.Token.TokenType;
 
@@ -21,9 +21,9 @@ public class Assignment implements Statement {
 
     public Assignment(List<Token> tokens, int pos, Parser parser) {
         if (pos == 0 || tokens.get(pos - 1).TYPE != TokenType.IDENTIFIER) {
-            throw ParserError.error(BAD_ASSIGN, "Missing assignment target on left of '='");
+            throw ErrorLog.raise(BAD_ASSIGN, "Missing assignment target on left of '='");
         } else if (pos == tokens.size() - 1 || !tokens.get(pos + 1).isValue()) {
-            throw ParserError.error(BAD_ASSIGN, "Missing assignment value on right of '='");
+            throw ErrorLog.raise(BAD_ASSIGN, "Missing assignment value on right of '='");
         }
         target = tokens.get(pos - 1).VALUE;
         value = parser.parseFrom(tokens, pos + 1);
@@ -31,7 +31,7 @@ public class Assignment implements Statement {
 
     @Override
     public void execute(Environment env) {
-        env.assign(target, value.evaluate(env));
+        env.assignLocal(target, value.evaluate(env));
     }
 
     @Override

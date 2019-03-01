@@ -7,8 +7,8 @@ import expression.group.ParameterList;
 import expression.group.Parentheses;
 import expression.value.UserDefinedFunction;
 import expression.value.Value;
+import parse.ErrorLog;
 import parse.Parser;
-import parse.ParserError;
 import parse.Token;
 import parse.Token.TokenType;
 import statement.Statement;
@@ -29,9 +29,9 @@ public class FunctionDefinition implements FlowController {
 
     public FunctionDefinition(List<Token> tokens, Parser parser) {
         if (tokens.size() == 1 || tokens.get(1).TYPE != TokenType.IDENTIFIER) {
-            throw ParserError.error(BAD_FUNC_DEF, "Expected function name after 'def'");
+            throw ErrorLog.raise(BAD_FUNC_DEF, "Expected function name after 'def'");
         } else if (tokens.size() == 2 || !tokens.get(2).matches("()")) {
-            throw ParserError.error(BAD_FUNC_DEF, "Expected function parameters after '%s'", tokens.get(1));
+            throw ErrorLog.raise(BAD_FUNC_DEF, "Expected function parameters after '%s'", tokens.get(1));
         }
         name = tokens.get(1).VALUE;
         params = new ParameterList(name, ((Parentheses) parser.parseFrom(tokens, 2)).getContents());

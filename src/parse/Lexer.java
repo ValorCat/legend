@@ -132,7 +132,7 @@ public class Lexer {
     private void breakStatement(char c) {
         if (c == '\n' || c == '~') {
             if (stringType != 0) {
-                ParserError.log(BAD_STRING, lineNumber, "Unterminated string literal");
+                ErrorLog.log(BAD_STRING, lineNumber, "Unterminated string literal");
                 currToken.setLength(0);
                 stringType = 0;
             }
@@ -232,7 +232,7 @@ public class Lexer {
                 starts.push(i);
             } else if (token.equals(")")) {
                 if (delimiters.isEmpty() || !delimiters.pop().equals("(")) {
-                    ParserError.log(BAD_PARENS, lineNumber, "Extraneous ')'");
+                    ErrorLog.log(BAD_PARENS, lineNumber, "Extraneous ')'");
                 } else {
                     int start = starts.pop();
                     List<Token> subTokens = tokens.subList(start + 1, i);
@@ -243,7 +243,7 @@ public class Lexer {
             }
         }
         if (!delimiters.isEmpty()) {
-            ParserError.log(BAD_PARENS, lineNumber, "Missing ')' to close '('");
+            ErrorLog.log(BAD_PARENS, lineNumber, "Missing ')' to close '('");
         }
     }
 

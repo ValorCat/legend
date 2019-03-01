@@ -3,7 +3,7 @@ package statement;
 import execute.Environment;
 import expression.Expression;
 import expression.value.LNull;
-import parse.ParserError;
+import parse.ErrorLog;
 import parse.Token;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class ReturnStatement implements Statement {
 
     public ReturnStatement(List<Token> tokens) {
         if (tokens.size() > 1 && !tokens.get(1).isValue()) {
-            throw ParserError.error(BAD_RETURN, "Expected expression after 'return'");
+            throw ErrorLog.raise(BAD_RETURN, "Expected expression after 'return'");
         }
         value = tokens.size() > 1
                 ? tokens.get(1).asExpression()  // return with a value

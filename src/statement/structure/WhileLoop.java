@@ -3,8 +3,8 @@ package statement.structure;
 import execute.Environment;
 import expression.Expression;
 import expression.value.Value;
+import parse.ErrorLog;
 import parse.Parser;
-import parse.ParserError;
 import parse.Token;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class WhileLoop implements FlowController {
 
     public WhileLoop(List<Token> tokens, Parser parser) {
         if (tokens.size() == 1 || !tokens.get(1).isValue()) {
-            throw ParserError.error(BAD_WHILE_LOOP, "Expected boolean condition after 'while'");
+            throw ErrorLog.raise(BAD_WHILE_LOOP, "Expected boolean condition after 'while'");
         }
         condition = parser.parseFrom(tokens, 1);
     }

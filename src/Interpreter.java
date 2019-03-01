@@ -2,10 +2,7 @@ import execute.Environment;
 import execute.Executor;
 import expression.value.LNull;
 import expression.value.Value;
-import parse.Lexer;
-import parse.Parser;
-import parse.ParserError;
-import parse.Token;
+import parse.*;
 import statement.Statement;
 
 import java.io.File;
@@ -60,12 +57,11 @@ public class Interpreter {
         List<List<Token>> tokens = lexer.tokenize(input);
         List<Statement> statements = parser.parse(tokens);
 
-        if (ParserError.foundErrors()) {
-            List<ParserError> errors = ParserError.getErrors();
+        if (ErrorLog.foundErrors()) {
+            List<ParserException> errors = ErrorLog.getErrors();
             System.err.printf("The interpeter encountered %d error(s) during parsing.\n\n", errors.size());
-            for (ParserError error : errors) {
-                System.err.printf("(line %d) %s\n    Details: %s\n", error.getLineNumber(), error.getMessage(),
-                        error.getDetails());
+            for (ParserException e : errors) {
+                System.err.printf("(line %d) %s\n    Details: %s\n", e.getLineNumber(), e.getMessage(), e.getDetails());
             }
             System.err.println("\nInterpretation aborted.\n");
             return;

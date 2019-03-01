@@ -2,8 +2,8 @@ package statement.structure;
 
 import execute.Environment;
 import expression.operation.Operation;
+import parse.ErrorLog;
 import parse.Parser;
-import parse.ParserError;
 import parse.Token;
 import statement.Statement;
 
@@ -49,7 +49,7 @@ public interface FlowController extends Statement {
     }
 
     static void invalidJumpPoint(Token token) {
-        throw ParserError.error(BAD_JUMP_POINT, "Unexpected keyword '%s'", token);
+        throw ErrorLog.raise(BAD_JUMP_POINT, "Unexpected keyword '%s'", token);
     }
 
 }

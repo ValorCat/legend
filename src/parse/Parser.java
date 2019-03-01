@@ -45,12 +45,12 @@ public class Parser {
             lineNumber = getLineNumber(line);
             try {
                 trees.add(parseStatement(line));
-            } catch (ParserError e) {
+            } catch (ParserException e) {
                 e.setLineNumber(lineNumber);
             }
         }
         if (!controlStack.isEmpty()) {
-            ParserError.log(BAD_NESTING, lineNumber, "Expected 'end' to close '%s'", controlStack.peek().getKeyword());
+            ErrorLog.log(BAD_NESTING, lineNumber, "Expected 'end' to close '%s'", controlStack.peek().getKeyword());
         }
         return trees;
     }
@@ -80,7 +80,7 @@ public class Parser {
             case "while":  statement = new WhileLoop(tokens, this); break;
             case "elsif": case "else":
                 if (controlStack.isEmpty()) {
-                    throw ParserError.error(BAD_JUMP_POINT, "Unexpected keyword '%s'", tokens.get(0));
+                    throw ErrorLog.raise(BAD_JUMP_POINT, "Unexpected keyword '%s'", tokens.get(0));
                 }
                 controlStack.peek().setJumpPoint(tokens, this);
                 break;
@@ -128,7 +128,7 @@ public class Parser {
             // for example: 3 x * 2
             StringJoiner joiner = new StringJoiner(" ");
             expression.forEach(x -> joiner.add(x.VALUE));
-            throw ParserError.error(MISSING_OPER, "Missing operator in expression: %s", joiner);
+            throw ErrorLog.raise(MISSING_OPER, "Missing operator in expression: %s", joiner);
         }
         return expression.get(0).asExpression();
     }

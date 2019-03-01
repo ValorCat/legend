@@ -1,8 +1,8 @@
 package statement.structure;
 
 import execute.Environment;
+import parse.ErrorLog;
 import parse.Parser;
-import parse.ParserError;
 import parse.Token;
 
 import java.util.List;
@@ -18,7 +18,7 @@ public class RepeatLoop implements FlowController {
 
     public RepeatLoop(List<Token> tokens) {
         if (tokens.size() != 1) {
-            throw ParserError.error(BAD_REPEAT, "Unexpected symbol '%s' after 'repeat'", tokens.get(1));
+            throw ErrorLog.raise(BAD_REPEAT, "Unexpected symbol '%s' after 'repeat'", tokens.get(1));
         }
     }
 

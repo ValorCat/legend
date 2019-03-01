@@ -1,31 +1,20 @@
-x = 10
-
-for i in 1 to 3
-    show(i)
-end
-
-def my_func(a, b)
-    return a + b
-end
-
-show('Result is ', my_func(5, 10))
-
-n = 1
-while n % 5 != 0
-    show('n = ', n)
-    n = n + 1
-end
-
-def repeater()
-    i = 0
-    repeat
-        i = i + 1
-        if i >= 5
-            return
-        end
+def test_recursion(n)
+    if n == 0
+        return
+    end
+    for i in 0 to 3
+        show('n = ', n, ', i = ', i)
+        test_recursion(n - 1)
     end
 end
 
-repeater()
-
+test_recursion(3)
 show('Done!')
+
+~ 3 0
+~ 2 0
+~ 1 0
+~ 1 1
+~ 1 2
+~ 1 3
+~ 

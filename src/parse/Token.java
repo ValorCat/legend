@@ -75,7 +75,7 @@ public class Token {
                     return new LString(VALUE);
                 }
             default:
-                throw ParserError.error(MISPLACED_SYMBOL, "Unexpected symbol '%s'", VALUE);
+                throw ErrorLog.raise(MISPLACED_SYMBOL, "Unexpected symbol '%s'", VALUE);
         }
     }
 
