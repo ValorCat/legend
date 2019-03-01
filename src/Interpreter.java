@@ -1,11 +1,12 @@
-import statement.Statement;
-import expression.value.LNull;
-import expression.value.Value;
 import execute.Environment;
 import execute.Executor;
+import expression.value.LNull;
+import expression.value.Value;
 import parse.Lexer;
 import parse.Parser;
+import parse.ParserError;
 import parse.Token;
+import statement.Statement;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +42,8 @@ public class Interpreter {
             throw new RuntimeException("Couldn't locate source file: " + sourceFile.getAbsolutePath());
         }
 
-        if (!sourceFile.getName().endsWith(".leg")) {
+        String fileName = sourceFile.getName();
+        if (!fileName.endsWith(".leg")) {
             throw new RuntimeException("Couldn't read source file: does not end in .leg");
         }
 
@@ -57,6 +59,17 @@ public class Interpreter {
 
         List<List<Token>> tokens = lexer.tokenize(input);
         List<Statement> statements = parser.parse(tokens);
+
+        if (ParserError.foundErrors()) {
+            List<ParserError> errors = ParserError.getErrors();
+            System.err.printf("The interpeter encountered %d error(s) during parsing.\n\n", errors.size());
+            for (ParserError error : errors) {
+                System.err.printf("(line %d) %s\n    Details: %s\n", error.getLineNumber(), error.getMessage(),
+                        error.getDetails());
+            }
+            System.err.println("\nInterpretation aborted.\n");
+            return;
+        }
 
         Environment.GLOBAL.setProgram(statements);
         Executor.execute(Environment.GLOBAL);
