@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static parse.ErrorDescription.MISPLACED_SYMBOL;
 
 /**
  * A token is a fundamental symbol in the source code, such as an operator,
@@ -74,7 +75,7 @@ public class Token {
                     return new LString(VALUE);
                 }
             default:
-                throw new RuntimeException("Unexpected token: " + VALUE + " (type " + TYPE.name() + ")");
+                throw ParserError.error(MISPLACED_SYMBOL, "Unexpected symbol '%s'", VALUE);
         }
     }
 

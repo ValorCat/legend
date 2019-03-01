@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import static parse.ErrorDescription.BAD_PARENS;
+import static parse.ErrorDescription.BAD_STRING;
 import static parse.Token.TokenType.*;
 
 /**
@@ -130,7 +132,9 @@ public class Lexer {
     private void breakStatement(char c) {
         if (c == '\n' || c == '~') {
             if (stringType != 0) {
-                throw new RuntimeException("Unterminated string literal");
+                ParserError.log(BAD_STRING, lineNumber, "Unterminated string literal");
+                currToken.setLength(0);
+                stringType = 0;
             }
             if (!currStatement.isEmpty()) {
                 currStatement.add(new Token.LineCounter(lineNumber));
@@ -228,17 +232,18 @@ public class Lexer {
                 starts.push(i);
             } else if (token.equals(")")) {
                 if (delimiters.isEmpty() || !delimiters.pop().equals("(")) {
-                    throw new RuntimeException("Unexpected ')'");
+                    ParserError.log(BAD_PARENS, lineNumber, "Extraneous ')'");
+                } else {
+                    int start = starts.pop();
+                    List<Token> subTokens = tokens.subList(start + 1, i);
+                    Token gathered = Token.newGroup("()", subTokens);
+                    Token.consolidate(tokens, gathered, start, i - start + 1);
+                    i = start;
                 }
-                int start = starts.pop();
-                List<Token> subTokens = tokens.subList(start + 1, i);
-                Token gathered = Token.newGroup("()", subTokens);
-                Token.consolidate(tokens, gathered, start, i - start + 1);
-                i = start;
             }
         }
         if (!delimiters.isEmpty()) {
-            throw new RuntimeException("Expected ')'");
+            ParserError.log(BAD_PARENS, lineNumber, "Missing ')' to close '('");
         }
     }
 

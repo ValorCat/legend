@@ -2,9 +2,12 @@ package statement.structure;
 
 import execute.Environment;
 import parse.Parser;
+import parse.ParserError;
 import parse.Token;
 
 import java.util.List;
+
+import static parse.ErrorDescription.BAD_REPEAT;
 
 /**
  * @since 1/19/2019
@@ -15,7 +18,7 @@ public class RepeatLoop implements FlowController {
 
     public RepeatLoop(List<Token> tokens) {
         if (tokens.size() != 1) {
-            throw new RuntimeException("Unexpected symbol '" + tokens.get(1).VALUE + "' after 'repeat'");
+            throw ParserError.error(BAD_REPEAT, "Unexpected symbol '%s' after 'repeat'", tokens.get(1));
         }
     }
 
@@ -34,7 +37,7 @@ public class RepeatLoop implements FlowController {
     @Override
     public void setJumpPoint(List<Token> tokens, Parser parser) {
         if (!tokens.get(0).matches("end")) {
-            throw new RuntimeException("Unexpected symbol '" + tokens.get(0).VALUE + "'");
+            FlowController.invalidJumpPoint(tokens.get(0));
         }
     }
 

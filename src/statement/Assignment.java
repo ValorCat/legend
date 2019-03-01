@@ -1,12 +1,15 @@
 package statement;
 
-import expression.Expression;
 import execute.Environment;
+import expression.Expression;
 import parse.Parser;
+import parse.ParserError;
 import parse.Token;
 import parse.Token.TokenType;
 
 import java.util.List;
+
+import static parse.ErrorDescription.BAD_ASSIGN;
 
 /**
  * @since 1/19/2019
@@ -18,9 +21,9 @@ public class Assignment implements Statement {
 
     public Assignment(List<Token> tokens, int pos, Parser parser) {
         if (pos == 0 || tokens.get(pos - 1).TYPE != TokenType.IDENTIFIER) {
-            throw new RuntimeException("Missing assignment target on left of '='");
+            throw ParserError.error(BAD_ASSIGN, "Missing assignment target on left of '='");
         } else if (pos == tokens.size() - 1 || !tokens.get(pos + 1).isValue()) {
-            throw new RuntimeException("Missing assignment value on right of '='");
+            throw ParserError.error(BAD_ASSIGN, "Missing assignment value on right of '='");
         }
         target = tokens.get(pos - 1).VALUE;
         value = parser.parseFrom(tokens, pos + 1);

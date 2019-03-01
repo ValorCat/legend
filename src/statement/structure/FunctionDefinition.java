@@ -1,19 +1,22 @@
 package statement.structure;
 
+import execute.Environment;
+import execute.Executor;
 import expression.group.ArgumentList;
 import expression.group.ParameterList;
 import expression.group.Parentheses;
 import expression.value.UserDefinedFunction;
 import expression.value.Value;
-import execute.Environment;
-import execute.Executor;
 import parse.Parser;
+import parse.ParserError;
 import parse.Token;
 import parse.Token.TokenType;
 import statement.Statement;
 
 import java.util.List;
 import java.util.StringJoiner;
+
+import static parse.ErrorDescription.BAD_FUNC_DEF;
 
 /**
  * @since 2/16/2019
@@ -26,9 +29,9 @@ public class FunctionDefinition implements FlowController {
 
     public FunctionDefinition(List<Token> tokens, Parser parser) {
         if (tokens.size() == 1 || tokens.get(1).TYPE != TokenType.IDENTIFIER) {
-            throw new RuntimeException("Expected function name after 'def'");
+            throw ParserError.error(BAD_FUNC_DEF, "Expected function name after 'def'");
         } else if (tokens.size() == 2 || !tokens.get(2).matches("()")) {
-            throw new RuntimeException("Expected function parameters after '" + tokens.get(1).VALUE + "'");
+            throw ParserError.error(BAD_FUNC_DEF, "Expected function parameters after '%s'", tokens.get(1));
         }
         name = tokens.get(1).VALUE;
         params = new ParameterList(name, ((Parentheses) parser.parseFrom(tokens, 2)).getContents());
@@ -65,7 +68,7 @@ public class FunctionDefinition implements FlowController {
         if (tokens.get(0).matches("end")) {
             this.endAddress = parser.getAddress();
         } else {
-            throw new RuntimeException("Unexpected symbol '" + tokens.get(0).VALUE + "'");
+            FlowController.invalidJumpPoint(tokens.get(0));
         }
     }
 

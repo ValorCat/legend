@@ -1,12 +1,15 @@
 package statement.structure;
 
-import expression.operation.Operation;
 import execute.Environment;
+import expression.operation.Operation;
 import parse.Parser;
+import parse.ParserError;
 import parse.Token;
 import statement.Statement;
 
 import java.util.List;
+
+import static parse.ErrorDescription.BAD_JUMP_POINT;
 
 /**
  * Classes that implement this interface represent flow control structures,
@@ -43,6 +46,10 @@ public interface FlowController extends Statement {
      */
     default String getKeyword() {
         return ((Operation) this).getOperator();
+    }
+
+    static void invalidJumpPoint(Token token) {
+        throw ParserError.error(BAD_JUMP_POINT, "Unexpected keyword '%s'", token);
     }
 
 }

@@ -1,11 +1,10 @@
 package parse;
 
 import expression.operation.*;
-import expression.operation.BinaryOperatorCall;
-import expression.operation.FunctionCall;
-import expression.operation.UnaryOperatorCall;
 
 import java.util.*;
+
+import static parse.ErrorDescription.UNKNOWN_OPER;
 
 /**
  * This class stores valid operators and their precedence levels. It also instantiates
@@ -79,7 +78,8 @@ public final class OperatorTable {
             case ":":       new Mapping(tokenPos, tokens); break;
             case ",":       new CommaList(tokenPos, tokens); break;
             case "in":      break; // ignore
-            default: throw new RuntimeException("Invalid operator '" + tokens.get(tokenPos).VALUE + "'");
+            default:
+                throw ParserError.error(UNKNOWN_OPER, "Unrecognized operator '%s'", tokens.get(tokenPos));
         }
     }
 
@@ -110,7 +110,7 @@ public final class OperatorTable {
     private int getPrecedence(String operator) {
         Integer precedence = implTable.get(operator);
         if (precedence == null) {
-            throw new RuntimeException("Invalid operator '" + operator + "'");
+            throw ParserError.error(UNKNOWN_OPER, "Unrecognized operator '%s'", operator);
         }
         return precedence;
     }

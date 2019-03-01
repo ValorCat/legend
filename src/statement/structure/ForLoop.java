@@ -1,14 +1,17 @@
 package statement.structure;
 
+import execute.Environment;
 import expression.Expression;
 import expression.value.Value;
-import execute.Environment;
 import parse.Parser;
+import parse.ParserError;
 import parse.Token;
 import parse.Token.TokenType;
 
 import java.util.List;
 import java.util.Optional;
+
+import static parse.ErrorDescription.BAD_FOR_LOOP;
 
 /**
  * @since 1/24/2019
@@ -22,11 +25,11 @@ public class ForLoop implements FlowController {
 
     public ForLoop(List<Token> tokens, Parser parser) {
         if (tokens.size() == 1 || tokens.get(1).TYPE != TokenType.IDENTIFIER) {
-            throw new RuntimeException("Expected variable name after 'for'");
+            throw ParserError.error(BAD_FOR_LOOP, "Expected variable name after 'for'");
         } else if (tokens.size() == 2 || !tokens.get(2).matches("in")) {
-            throw new RuntimeException("Expected 'in' after variable '" + tokens.get(1).VALUE + "'");
+            throw ParserError.error(BAD_FOR_LOOP, "Expected 'in' after variable '%s'", tokens.get(1));
         } else if (tokens.size() == 3 || !tokens.get(3).isValue()) {
-            throw new RuntimeException("Expected loop expression after 'in'");
+            throw ParserError.error(BAD_FOR_LOOP, "Expected loop expression after 'in'");
         }
         variable = tokens.get(1).VALUE;
         iterable = parser.parseFrom(tokens, 3);
@@ -60,7 +63,7 @@ public class ForLoop implements FlowController {
         if (tokens.get(0).matches("end")) {
             this.endAddress = parser.getAddress();
         } else {
-            throw new RuntimeException("Unexpected symbol '" + tokens.get(0).VALUE + "'");
+            FlowController.invalidJumpPoint(tokens.get(0));
         }
     }
 

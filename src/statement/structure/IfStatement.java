@@ -1,9 +1,10 @@
 package statement.structure;
 
+import execute.Environment;
 import expression.Expression;
 import expression.value.LBoolean;
-import execute.Environment;
 import parse.Parser;
+import parse.ParserError;
 import parse.Token;
 
 import java.util.LinkedHashMap;
@@ -11,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringJoiner;
+
+import static parse.ErrorDescription.BAD_IF;
 
 /**
  * @since 1/27/2019
@@ -64,7 +67,7 @@ public class IfStatement implements FlowController {
                 parseElse(tokens, parser);
                 break;
             default:
-                throw new RuntimeException("Unexpected symbol '" + tokens.get(0).VALUE + "'");
+                FlowController.invalidJumpPoint(tokens.get(0));
         }
     }
 
@@ -79,7 +82,7 @@ public class IfStatement implements FlowController {
 
     private void parseIf(List<Token> tokens, Parser parser) {
         if (tokens.size() == 1 || !tokens.get(1).isValue()) {
-            throw new RuntimeException("Expected boolean expression after 'if'");
+            throw ParserError.error(BAD_IF, "Expected boolean expression after 'if'");
         }
         Expression control = parser.parseFrom(tokens, 1);
         branches.put(control, startAddress);
@@ -87,7 +90,7 @@ public class IfStatement implements FlowController {
 
     private void parseElsif(List<Token> tokens, Parser parser) {
         if (tokens.size() == 1 || !tokens.get(1).isValue()) {
-            throw new RuntimeException("Expected boolean expression after 'elsif'");
+            throw ParserError.error(BAD_IF, "Expected boolean expression after 'elsif' (did you mean 'else'?)");
         }
         Expression control = parser.parseFrom(tokens, 1);
         branches.putIfAbsent(control, parser.getAddress());
@@ -95,7 +98,8 @@ public class IfStatement implements FlowController {
 
     private void parseElse(List<Token> tokens, Parser parser) {
         if (tokens.size() > 1) {
-            throw new RuntimeException("Unxpected symbol '" + tokens.get(1).VALUE + "' (did you mean 'elsif'?)");
+            throw ParserError.error(BAD_IF, "Unexpected symbol '%s' after 'else' " +
+                    "(did you mean 'elsif'?)",tokens.get(1));
         }
         branches.putIfAbsent(LBoolean.TRUE, parser.getAddress());
     }

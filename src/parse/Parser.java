@@ -2,13 +2,18 @@ package parse;
 
 import expression.Expression;
 import expression.group.Parentheses;
-import statement.*;
+import statement.Assignment;
+import statement.EndStatement;
+import statement.ReturnStatement;
+import statement.Statement;
 import statement.structure.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.StringJoiner;
 
+import static parse.ErrorDescription.*;
 import static parse.Token.TokenType.IDENTIFIER;
 import static parse.Token.TokenType.OPERATOR;
 
@@ -36,10 +41,16 @@ public class Parser {
         int lineNumber = 1;
         controlStack = new Stack<>();
         for (address = 0; address < tokens.size(); address++) {
-            trees.add(parseStatement(tokens.get(address)));
+            List<Token> line = tokens.get(address);
+            lineNumber = getLineNumber(line);
+            try {
+                trees.add(parseStatement(line));
+            } catch (ParserError e) {
+                e.setLineNumber(lineNumber);
+            }
         }
         if (!controlStack.isEmpty()) {
-            throw new RuntimeException("Expected 'end' to close '" + controlStack.peek().getKeyword() + "'");
+            ParserError.log(BAD_NESTING, lineNumber, "Expected 'end' to close '%s'", controlStack.peek().getKeyword());
         }
         return trees;
     }
@@ -50,39 +61,38 @@ public class Parser {
      * @return the parsed statement
      */
     private Statement parseStatement(List<Token> tokens) {
-        Token initial = tokens.get(0);
-        if (initial.TYPE != OPERATOR) {
-            // check if assignment
-            for (int i = 0; i < tokens.size(); i++) {
-                if (tokens.get(i).matches("=")) {
-                    return new Assignment(tokens, i, this);
-                }
-            }
-        } else {
-            // check if flow control statement
-            Statement statement = null;
-            switch (initial.VALUE) {
-                case "def":    statement = new FunctionDefinition(tokens, this); break;
-                case "end":    statement = new EndStatement(tokens, this); break;
-                case "for":    statement = new ForLoop(tokens, this); break;
-                case "if":     statement = new IfStatement(tokens, this); break;
-                case "repeat": statement = new RepeatLoop(tokens); break;
-                case "return": statement = new ReturnStatement(tokens); break;
-                case "while":  statement = new WhileLoop(tokens, this); break;
-                case "elsif": case "else":
-                    if (controlStack.isEmpty()) {
-                        throw new RuntimeException("Unexpected symbol '" + initial.VALUE + "'");
-                    }
-                    controlStack.peek().setJumpPoint(tokens, this);
-                    break;
-            }
-            if (statement != null) {
-                if (statement instanceof FlowController) {
-                    controlStack.push((FlowController) statement);
-                }
-                return statement;
+        // check if assignment
+        for (int i = 0; i < tokens.size(); i++) {
+            if (tokens.get(i).matches("=")) {
+                return new Assignment(tokens, i, this);
             }
         }
+
+        // check if flow control statement
+        Statement statement = null;
+        switch (tokens.get(0).VALUE) {
+            case "def":    statement = new FunctionDefinition(tokens, this); break;
+            case "end":    statement = new EndStatement(tokens, this); break;
+            case "for":    statement = new ForLoop(tokens, this); break;
+            case "if":     statement = new IfStatement(tokens, this); break;
+            case "repeat": statement = new RepeatLoop(tokens); break;
+            case "return": statement = new ReturnStatement(tokens); break;
+            case "while":  statement = new WhileLoop(tokens, this); break;
+            case "elsif": case "else":
+                if (controlStack.isEmpty()) {
+                    throw ParserError.error(BAD_JUMP_POINT, "Unexpected keyword '%s'", tokens.get(0));
+                }
+                controlStack.peek().setJumpPoint(tokens, this);
+                break;
+        }
+
+        if (statement != null) {
+            if (statement instanceof FlowController) {
+                controlStack.push((FlowController) statement);
+            }
+            return statement;
+        }
+
         // statement is expression
         return parseExpression(tokens);
     }
@@ -116,7 +126,9 @@ public class Parser {
         if (expression.size() > 1) {
             // this happens if an operator is missing from the expression
             // for example: 3 x * 2
-            throw new RuntimeException("Expression resolved to multiple values: " + expression);
+            StringJoiner joiner = new StringJoiner(" ");
+            expression.forEach(x -> joiner.add(x.VALUE));
+            throw ParserError.error(MISSING_OPER, "Missing operator in expression: %s", joiner);
         }
         return expression.get(0).asExpression();
     }

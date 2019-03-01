@@ -1,12 +1,15 @@
 package statement.structure;
 
+import execute.Environment;
 import expression.Expression;
 import expression.value.Value;
-import execute.Environment;
 import parse.Parser;
+import parse.ParserError;
 import parse.Token;
 
 import java.util.List;
+
+import static parse.ErrorDescription.BAD_WHILE_LOOP;
 
 /**
  * @since 1/20/2019
@@ -18,7 +21,7 @@ public class WhileLoop implements FlowController {
 
     public WhileLoop(List<Token> tokens, Parser parser) {
         if (tokens.size() == 1 || !tokens.get(1).isValue()) {
-            throw new RuntimeException("Expected boolean condition after 'while'");
+            throw ParserError.error(BAD_WHILE_LOOP, "Expected boolean condition after 'while'");
         }
         condition = parser.parseFrom(tokens, 1);
     }
@@ -48,7 +51,7 @@ public class WhileLoop implements FlowController {
         if (tokens.get(0).matches("end")) {
             this.endAddress = parser.getAddress();
         } else {
-            throw new RuntimeException("Unexpected symbol '" + tokens.get(0).VALUE + "'");
+            FlowController.invalidJumpPoint(tokens.get(0));
         }
     }
 
