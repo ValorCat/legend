@@ -20,7 +20,7 @@ import static java.util.Collections.emptyList;
  */
 public class Token {
 
-    public enum TokenType { EXPRESSION, GROUP, IDENTIFIER, LITERAL, OPERATOR, STATEMENT }
+    public enum TokenType { EXPRESSION, GROUP, IDENTIFIER, LITERAL, OPERATOR }
 
     public final TokenType TYPE;
     public final String VALUE;
@@ -40,8 +40,7 @@ public class Token {
      * @return whether this token is not an operator
      */
     public boolean isValue() {
-        return TYPE != TokenType.OPERATOR
-                && TYPE != TokenType.STATEMENT;
+        return TYPE != TokenType.OPERATOR;
     }
 
     /**
@@ -60,7 +59,7 @@ public class Token {
      */
     public Expression asExpression() {
         switch (TYPE) {
-            case EXPRESSION: case STATEMENT:
+            case EXPRESSION:
                 return EXPRESSION;
             case IDENTIFIER:
                 return new Variable(VALUE);
@@ -109,10 +108,6 @@ public class Token {
 
     public static Token newOperator(String value) {
         return new Token(TokenType.OPERATOR, value, null, emptyList());
-    }
-
-    public static Token newStatement(String value, Expression expr) {
-        return new Token(TokenType.STATEMENT, value, expr, emptyList());
     }
 
     public static Token newToken(TokenType type, String value) {
