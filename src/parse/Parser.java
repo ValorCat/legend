@@ -35,16 +35,16 @@ public class Parser {
 
     /**
      * Convert a stream of tokens into a sequence of syntax trees.
-     * @param tokens the list of tokens
+     * @param stream the list of tokens
      * @return a list of syntax trees
      */
-    public List<Statement> parse(List<List<Token>> tokens) {
-        List<Statement> trees = new ArrayList<>(tokens.size());
+    public List<Statement> parse(List<TokenLine> stream) {
+        List<Statement> trees = new ArrayList<>(stream.size());
         int lineNumber = 1;
         controlStack = new Stack<>();
-        for (address = 0; address < tokens.size(); address++) {
-            List<Token> line = tokens.get(address);
-            lineNumber = getLineNumber(line);
+        for (address = 0; address < stream.size(); address++) {
+            TokenLine line = stream.get(address);
+            lineNumber = line.getLineNumber();
             try {
                 trees.add(parseStatement(line));
             } catch (ParserException e) {
@@ -62,7 +62,7 @@ public class Parser {
      * @param tokens the tokens to convert
      * @return the parsed statement
      */
-    private Statement parseStatement(List<Token> tokens) {
+    private Statement parseStatement(TokenLine tokens) {
         // check if assignment
         for (int i = 0; i < tokens.size(); i++) {
             if (tokens.get(i).matches("=")) {
@@ -119,10 +119,6 @@ public class Parser {
         List<Token> precedence = getPrecedence(expression);
         for (Token operator : precedence) {
             int position = expression.indexOf(operator);
-            if (position < 0) {
-                throw new RuntimeException("Couldn't find operator '" + operator.VALUE + "';\n  expression="
-                        + expression + "\n  precedence=" + precedence);
-            }
             OperatorTable.parseOperation(position, expression);
         }
         if (expression.size() > 1) {
@@ -162,24 +158,13 @@ public class Parser {
     }
 
     /**
-     * Retrieve the source file line number that corresponds to
-     * a particular token sequence. The lexer stores a sequence's
-     * line number as a special token at its end.
-     * @param line the token sequence
-     * @return the corresponding line number
-     */
-    private static int getLineNumber(List<Token> line) {
-        Token lastToken = line.remove(line.size() - 1);
-        return ((Token.LineCounter) lastToken).LINE_NUMBER;
-    }
-
-    /**
      * Return a list of the operators in a statement, sorted by their precedence
      * level from high to low.
      * @param tokens the statement from which the operators should be drawn
      * @return a list of operators sorted by precedence
      */
     private static List<Token> getPrecedence(List<Token> tokens) {
+        // todo use more efficient data structure
         List<Token> ordering = new ArrayList<>();
         for (Token token : tokens) {
             if (token.TYPE == OPERATOR) {

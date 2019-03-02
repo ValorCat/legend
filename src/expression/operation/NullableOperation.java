@@ -1,10 +1,11 @@
 package expression.operation;
 
+import execute.Environment;
 import expression.value.NullableType;
 import expression.value.Type;
 import expression.value.Value;
-import execute.Environment;
 import parse.Token;
+import parse.TokenLine;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class NullableOperation extends Operation {
     }
 
     @Override
-    protected void parse(int pos, List<Token> tokens) {
+    protected void parse(int pos, TokenLine tokens) {
         parseRightUnaryOperation(pos, tokens);
     }
 

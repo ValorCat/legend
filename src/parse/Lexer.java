@@ -20,7 +20,7 @@ import static parse.error.ErrorDescription.BAD_STRING;
  */
 public class Lexer {
 
-    private List<List<Token>> tokenized;
+    private List<TokenLine> tokenized;
     private List<Token> currStatement;
     private StringBuilder currToken;
     private char prev;
@@ -34,7 +34,7 @@ public class Lexer {
      * @param input the raw source code
      * @return a 2-dimensional list of tokens
      */
-    public List<List<Token>> tokenize(String input) {
+    public List<TokenLine> tokenize(String input) {
         initialize();
 
         // add a final newline if it's missing
@@ -138,9 +138,9 @@ public class Lexer {
                 stringType = 0;
             }
             if (!currStatement.isEmpty()) {
-                currStatement.add(new Token.LineCounter(lineNumber));
-                tokenized.add(currStatement);
-                aggregateGroups(currStatement);
+                TokenLine line = new TokenLine(currStatement, lineNumber);
+                aggregateGroups(line);
+                tokenized.add(line);
                 currStatement = new ArrayList<>();
             }
             lineNumber++;
@@ -221,13 +221,13 @@ public class Lexer {
     /**
      * Search a finished statement for matching pairs of (), [], or {}, and
      * combine all the tokens inbetween into a single aggregate token.
-     * @param tokens the statement to search
+     * @param line the statement to search
      */
-    private void aggregateGroups(List<Token> tokens) {
+    private void aggregateGroups(TokenLine line) {
         Stack<String> delimiters = new Stack<>();
         Stack<Integer> starts = new Stack<>();
-        for (int i = 0; i < tokens.size() - 1; i++) {
-            String token = tokens.get(i).VALUE;
+        for (int i = 0; i < line.size(); i++) {
+            String token = line.get(i).VALUE;
             if (token.equals("(")) {
                 delimiters.push("(");
                 starts.push(i);
@@ -236,9 +236,9 @@ public class Lexer {
                     ErrorLog.log(BAD_PARENS, lineNumber, "Extraneous ')'");
                 } else {
                     int start = starts.pop();
-                    List<Token> subTokens = tokens.subList(start + 1, i);
-                    Token gathered = Token.newGroup("()", subTokens);
-                    Token.consolidate(tokens, gathered, start, i - start + 1);
+                    TokenLine sublist = line.subList(start + 1, i);
+                    Token gathered = Token.newGroup("()", sublist);
+                    line.consolidate(gathered, start, i - start + 1);
                     i = start;
                 }
             }

@@ -4,7 +4,7 @@ import expression.value.LNull;
 import expression.value.Value;
 import parse.Lexer;
 import parse.Parser;
-import parse.Token;
+import parse.TokenLine;
 import parse.error.ErrorLog;
 import parse.error.ParserException;
 import statement.Statement;
@@ -47,8 +47,8 @@ public class Interpreter {
         if (!fileName.endsWith(".leg")) {
             throw new RuntimeException("Couldn't read source file: does not end in .leg");
         }
-
         String input;
+
         try {
             input = new String(Files.readAllBytes(sourceFile.toPath()));
         } catch (IOException e) {
@@ -58,7 +58,7 @@ public class Interpreter {
         Lexer lexer = new Lexer();
         Parser parser = new Parser();
 
-        List<List<Token>> tokens = lexer.tokenize(input);
+        List<TokenLine> tokens = lexer.tokenize(input);
         List<Statement> statements = parser.parse(tokens);
 
         if (ErrorLog.foundErrors()) {

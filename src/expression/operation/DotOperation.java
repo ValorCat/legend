@@ -1,11 +1,12 @@
 package expression.operation;
 
+import execute.Environment;
 import expression.Expression;
 import expression.value.Attribute;
 import expression.value.NativeFunction;
 import expression.value.Value;
-import execute.Environment;
 import parse.Token;
+import parse.TokenLine;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class DotOperation extends Operation {
     }
 
     @Override
-    protected void parse(int pos, List<Token> tokens) {
+    protected void parse(int pos, TokenLine tokens) {
         super.parse(pos, tokens);
 
         // ensure that second operand is an identifier

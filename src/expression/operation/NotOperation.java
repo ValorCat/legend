@@ -1,9 +1,10 @@
 package expression.operation;
 
+import execute.Environment;
 import expression.value.LBoolean;
 import expression.value.Value;
-import execute.Environment;
 import parse.Token;
+import parse.TokenLine;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class NotOperation extends Operation {
     }
 
     @Override
-    protected void parse(int pos, List<Token> tokens) {
+    protected void parse(int pos, TokenLine tokens) {
         parseLeftUnaryOperation(pos, tokens);
     }
 

@@ -2,6 +2,7 @@ package expression.operation;
 
 import expression.Expression;
 import parse.Token;
+import parse.TokenLine;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +19,7 @@ public abstract class Operation implements Expression {
     public Operation(int position, List<Token> tokens) {
         this.operator = tokens.get(position).VALUE;
         this.operands = Collections.emptyList();
-        parse(position, tokens);
+        parse(position, (TokenLine) tokens);
     }
 
     public Operation(String operator, List<Expression> operands) {
@@ -26,7 +27,7 @@ public abstract class Operation implements Expression {
         this.operands = operands;
     }
 
-    protected void parse(int pos, List<Token> tokens) {
+    protected void parse(int pos, TokenLine tokens) {
         // can be overridden in subclasses to implement custom parsing
         parseBinaryOperation(pos, tokens);
     }
@@ -54,7 +55,7 @@ public abstract class Operation implements Expression {
         return operator + joiner;
     }
 
-    private void parseBinaryOperation(int pos, List<Token> tokens) {
+    private void parseBinaryOperation(int pos, TokenLine tokens) {
         String operator = tokens.get(pos).VALUE;
 
         // check that there are values on each side
@@ -67,25 +68,25 @@ public abstract class Operation implements Expression {
 
         // convert this operation into a tree
         operands = List.of(left.asExpression(), right.asExpression());
-        Token.consolidate(tokens, Token.newExpression(operator, this), pos - 1, 3);
+        tokens.consolidate(Token.newExpression(operator, this), pos - 1, 3);
     }
 
-    protected void parseLeftUnaryOperation(int pos, List<Token> tokens) {
+    protected void parseLeftUnaryOperation(int pos, TokenLine tokens) {
         String operator = tokens.get(pos).VALUE;
         if (pos == tokens.size() - 1 || !tokens.get(pos + 1).isValue()) {
             throw new RuntimeException("Operator '" + operator + "' requires a value on the left");
         }
         operands = List.of(tokens.get(pos + 1).asExpression());
-        Token.consolidate(tokens, Token.newExpression(operator, this), pos, 2);
+        tokens.consolidate(Token.newExpression(operator, this), pos, 2);
     }
 
-    protected void parseRightUnaryOperation(int pos, List<Token> tokens) {
+    protected void parseRightUnaryOperation(int pos, TokenLine tokens) {
         String operator = tokens.get(pos).VALUE;
         if (pos == 0 || !tokens.get(pos - 1).isValue()) {
             throw new RuntimeException("Operator '" + operator + "' requires a value on the right");
         }
         operands = List.of(tokens.get(pos - 1).asExpression());
-        Token.consolidate(tokens, Token.newExpression(operator, this), pos - 1, 2);
+        tokens.consolidate(Token.newExpression(operator, this), pos - 1, 2);
     }
 
 }

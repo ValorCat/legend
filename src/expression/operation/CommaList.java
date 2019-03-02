@@ -1,9 +1,10 @@
 package expression.operation;
 
+import execute.Environment;
 import expression.Expression;
 import expression.value.Value;
-import execute.Environment;
 import parse.Token;
+import parse.TokenLine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class CommaList extends Operation {
     }
 
     @Override
-    protected void parse(int pos, List<Token> tokens) {
+    protected void parse(int pos, TokenLine tokens) {
         super.parse(pos, tokens);
         if (operands.get(0).matches(",")) {
             List<Expression> newOperands = new ArrayList<>(operands.get(0).getChildren());

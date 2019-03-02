@@ -4,10 +4,6 @@ import expression.Expression;
 import expression.value.*;
 import parse.error.ErrorLog;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Collections.emptyList;
 import static parse.error.ErrorDescription.MISPLACED_SYMBOL;
 
 /**
@@ -20,17 +16,17 @@ import static parse.error.ErrorDescription.MISPLACED_SYMBOL;
  * @see Parser
  * @since 12/21/2018
  */
-public class Token {
+public final class Token {
 
     public enum TokenType { EXPRESSION, GROUP, IDENTIFIER, LITERAL, OPERATOR }
 
     public final TokenType TYPE;
     public final String VALUE;
     public final Expression EXPRESSION;
-    public final List<Token> CHILDREN;
+    public final TokenLine CHILDREN;
 
     /* Use the static factory methods to create new tokens */
-    private Token(TokenType type, String value, Expression expression, List<Token> tokens) {
+    private Token(TokenType type, String value, Expression expression, TokenLine tokens) {
         TYPE = type;
         VALUE = value;
         EXPRESSION = expression;
@@ -101,44 +97,19 @@ public class Token {
     }
 
     public static Token newExpression(String value, Expression expr) {
-        return new Token(TokenType.EXPRESSION, value, expr, emptyList());
+        return new Token(TokenType.EXPRESSION, value, expr, TokenLine.EMPTY);
     }
 
-    public static Token newGroup(String wrappers, List<Token> children) {
-        return new Token(TokenType.GROUP, wrappers, null, new ArrayList<>(children));
+    public static Token newGroup(String wrappers, TokenLine children) {
+        return new Token(TokenType.GROUP, wrappers, null, children.copy());
     }
 
     public static Token newOperator(String value) {
-        return new Token(TokenType.OPERATOR, value, null, emptyList());
+        return new Token(TokenType.OPERATOR, value, null, TokenLine.EMPTY);
     }
 
     public static Token newToken(TokenType type, String value) {
-        return new Token(type, value, null, emptyList());
-    }
-
-    /**
-     * Replace all the tokens between two indices in a list with a single token.
-     * @param list the list to modify
-     * @param result the replacement token
-     * @param start the first index to remove
-     * @param length the number of elements to remove after {@code start}
-     */
-    public static void consolidate(List<Token> list, Token result, int start, int length) {
-        for (int i = 0; i < length; i++) {
-            list.remove(start);
-        }
-        list.add(start, result);
-    }
-
-    public static class LineCounter extends Token {
-
-        public final int LINE_NUMBER;
-
-        public LineCounter(int lineNumber) {
-            super(null, null, null, null);
-            this.LINE_NUMBER = lineNumber;
-        }
-
+        return new Token(type, value, null, TokenLine.EMPTY);
     }
 
 }
