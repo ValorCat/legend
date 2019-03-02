@@ -56,6 +56,11 @@ public class WhileLoop implements FlowController {
     }
 
     @Override
+    public String getKeyword() {
+        return "while";
+    }
+
+    @Override
     public String toString() {
         return "while(" + condition + ")";
     }

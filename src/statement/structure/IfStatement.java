@@ -72,6 +72,11 @@ public class IfStatement implements FlowController {
     }
 
     @Override
+    public String getKeyword() {
+        return "if";
+    }
+
+    @Override
     public String toString() {
         StringJoiner joiner = new StringJoiner(" ");
         for (Entry<Expression, Integer> branch : branches.entrySet()) {

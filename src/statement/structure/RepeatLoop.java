@@ -42,6 +42,11 @@ public class RepeatLoop implements FlowController {
     }
 
     @Override
+    public String getKeyword() {
+        return "repeat";
+    }
+
+    @Override
     public String toString() {
         return "repeat()";
     }

@@ -1,7 +1,6 @@
 package statement.structure;
 
 import execute.Environment;
-import expression.operation.Operation;
 import parse.Parser;
 import parse.Token;
 import parse.error.ErrorLog;
@@ -44,9 +43,7 @@ public interface FlowController extends Statement {
      * as 'if' or 'for'. This is displayed in appropriate error messages.
      * @return the keyword associated with this structure
      */
-    default String getKeyword() {
-        return ((Operation) this).getOperator();
-    }
+    String getKeyword();
 
     static void invalidJumpPoint(Token token) {
         throw ErrorLog.raise(BAD_JUMP_POINT, "Unexpected keyword '%s'", token);

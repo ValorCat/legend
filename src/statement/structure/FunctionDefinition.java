@@ -73,6 +73,11 @@ public class FunctionDefinition implements FlowController {
     }
 
     @Override
+    public String getKeyword() {
+        return "def";
+    }
+
+    @Override
     public String toString() {
         StringJoiner joiner = new StringJoiner(" ");
         for (String param : params.getParamNames()) {

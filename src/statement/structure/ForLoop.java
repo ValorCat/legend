@@ -67,6 +67,11 @@ public class ForLoop implements FlowController {
         }
     }
 
+    @Override
+    public String getKeyword() {
+        return "for";
+    }
+
     public String toString() {
         return "for(" + variable + " " + iterable + ")";
     }
