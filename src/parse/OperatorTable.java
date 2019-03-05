@@ -2,9 +2,11 @@ package parse;
 
 import expression.operation.*;
 import parse.error.ErrorLog;
+import parse.error.ParserException;
 
 import java.util.*;
 
+import static parse.error.ErrorDescription.BAD_ASSIGN;
 import static parse.error.ErrorDescription.UNKNOWN_OPER;
 
 /**
@@ -58,7 +60,8 @@ public final class OperatorTable {
      * @param tokens the list of tokens
      */
     public static void parseOperation(int tokenPos, List<Token> tokens) {
-        switch (tokens.get(tokenPos).VALUE) {
+        Token token = tokens.get(tokenPos);
+        switch (token.VALUE) {
             case ".":       new DotOperation(tokenPos, tokens); break;
             case "call":    new FunctionCall(tokenPos, tokens); break;
             case "#":       new LengthOperation(tokenPos, tokens); break;
@@ -79,8 +82,7 @@ public final class OperatorTable {
             case ":":       new Mapping(tokenPos, tokens); break;
             case ",":       new CommaList(tokenPos, tokens); break;
             case "in":      break; // ignore
-            default:
-                throw ErrorLog.raise(UNKNOWN_OPER, "Unrecognized operator '%s'", tokens.get(tokenPos));
+            default:        throw getException(token.VALUE);
         }
     }
 
@@ -111,7 +113,7 @@ public final class OperatorTable {
     private int getPrecedence(String operator) {
         Integer precedence = implTable.get(operator);
         if (precedence == null) {
-            throw ErrorLog.raise(UNKNOWN_OPER, "Unrecognized operator '%s'", operator);
+            throw getException(operator);
         }
         return precedence;
     }
@@ -130,6 +132,13 @@ public final class OperatorTable {
             }
         }
         return temp;
+    }
+
+    private static ParserException getException(String operator) {
+        if (operator.equals("=")) {
+            return ErrorLog.raise(BAD_ASSIGN, "Cannot use '=' in an expression (did you mean ':='?)");
+        }
+        return ErrorLog.raise(UNKNOWN_OPER, "Unrecognized operator '%s'", operator);
     }
 
 }

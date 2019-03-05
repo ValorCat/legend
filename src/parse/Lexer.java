@@ -104,16 +104,22 @@ public class Lexer {
             currToken.deleteCharAt(0);
         } else if (stringType == 0) {
             // we are not in a string
-            if (isValue(prev) && !isValue(c)) {
-                if (isKeyword(currToken) || isContextKeyword(currToken, currStatement)) {
-                    type = OPERATOR;
-                } else if (isLiteral(currToken)) {
-                    type = LITERAL;
-                } else {
-                    type = IDENTIFIER;
+            if (isValue(prev)) {
+                if (!isValue(c)) {
+                    if (isKeyword(currToken) || isContextKeyword(currToken, currStatement)) {
+                        type = OPERATOR;
+                    } else if (isLiteral(currToken)) {
+                        type = LITERAL;
+                    } else {
+                        type = IDENTIFIER;
+                    }
                 }
-            } else if (isSymbol(prev) && !isLongSymbol(prev, c)) {
-                type = OPERATOR;
+            } else if (isSymbol(prev)) {
+                if (!isLongSymbol(prev, c)) {
+                    type = OPERATOR;
+                }
+            } else if (prev != 0 && !Character.isWhitespace(prev) && prev != '\'') {
+                type = INVALID;
             }
         }
 
@@ -183,7 +189,7 @@ public class Lexer {
      * @return whether the character is punctuation
      */
     private static boolean isSymbol(char c) {
-        return "!@#$%^&*()-=+[]{};:,.<>/?".indexOf(c) >= 0;
+        return "#%^*()-=+:,.<>/?".indexOf(c) >= 0;
     }
 
     /**
@@ -234,6 +240,8 @@ public class Lexer {
             } else if (token.equals(")")) {
                 if (delimiters.isEmpty() || !delimiters.pop().equals("(")) {
                     ErrorLog.log(BAD_PARENS, lineNumber, "Extraneous ')'");
+                    line.remove(i);
+                    i--;
                 } else {
                     int start = starts.pop();
                     TokenLine sublist = line.subList(start + 1, i);
@@ -244,7 +252,16 @@ public class Lexer {
             }
         }
         if (!delimiters.isEmpty()) {
-            ErrorLog.log(BAD_PARENS, lineNumber, "Missing ')' to close '('");
+            if (delimiters.size() == 1) {
+                ErrorLog.log(BAD_PARENS, lineNumber, "Missing ')' to close '('");
+            } else {
+                ErrorLog.log(BAD_PARENS, lineNumber, "Missing %d of ')' to close '('", delimiters.size());
+            }
+            // fix the parentheses so more errors aren't raised
+            for (int i = 0; i < delimiters.size(); i++) {
+                line.add(Token.newOperator(")"));
+            }
+            aggregateGroups(line);
         }
     }
 
