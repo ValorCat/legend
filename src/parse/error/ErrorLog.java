@@ -2,7 +2,8 @@ package parse.error;
 
 import parse.Token;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  */
 public final class ErrorLog {
 
-    private static List<ParserException> errors = new LinkedList<>();
+    private static List<ParserException> errors = new ArrayList<>();
 
     public static void log(ErrorDescription desc, int lineNumber, String message, Object... arguments) {
         ParserException e = raise(desc, message, arguments);
@@ -33,6 +34,7 @@ public final class ErrorLog {
     }
 
     public static List<ParserException> getErrors() {
+        errors.sort(Comparator.comparing(ParserException::getLineNumber));
         return errors;
     }
 

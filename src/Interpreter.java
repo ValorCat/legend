@@ -65,7 +65,7 @@ public class Interpreter {
             List<ParserException> errors = ErrorLog.getErrors();
             System.err.printf("The interpeter encountered %d error(s) during parsing.\n\n", errors.size());
             for (ParserException e : errors) {
-                System.err.printf("(line %d) %s\n    Details: %s\n", e.getLineNumber(), e.getMessage(), e.getDetails());
+                System.err.printf("(line %d) %s\n", e.getLineNumber(), e.getMessage());
             }
             System.err.println("\nInterpretation aborted.\n");
             return;
