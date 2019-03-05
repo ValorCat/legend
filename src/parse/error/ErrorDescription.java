@@ -21,6 +21,8 @@ public enum ErrorDescription {
     BAD_NESTING(
             "Every control structure ('if', 'for', 'def', etc.) must be accompanied by a corresponding 'end' " +
             "statement. An 'end' must appear alone on its own line. "),
+    BAD_OPERANDS(
+            "The operator does not have the correct number of operands."),
     BAD_PARENS(
             "The interpreter found mismatched parentheses. Make sure that every opening parenthesis has a " +
             "corresponding closing parenthesis on the same line."),
