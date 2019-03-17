@@ -77,7 +77,7 @@ public abstract class Operation implements Expression {
     protected void parseLeftUnaryOperation(int pos, TokenLine tokens) {
         String operator = tokens.get(pos).VALUE;
         if (pos == tokens.size() - 1 || !tokens.get(pos + 1).isValue()) {
-            throw ErrorLog.raise(BAD_OPERANDS, "The '%s' operator requires a value on the left", operator);
+            throw ErrorLog.raise(BAD_OPERANDS, "The '%s' operator requires a value on the right", operator);
         }
         operands = List.of(tokens.get(pos + 1).asExpression());
         tokens.consolidate(Token.newExpression(operator, this), pos, 2);
@@ -86,7 +86,7 @@ public abstract class Operation implements Expression {
     protected void parseRightUnaryOperation(int pos, TokenLine tokens) {
         String operator = tokens.get(pos).VALUE;
         if (pos == 0 || !tokens.get(pos - 1).isValue()) {
-            throw ErrorLog.raise(BAD_OPERANDS, "The '%s' operator requires a value on the right", operator);
+            throw ErrorLog.raise(BAD_OPERANDS, "The '%s' operator requires a value on the left", operator);
         }
         operands = List.of(tokens.get(pos - 1).asExpression());
         tokens.consolidate(Token.newExpression(operator, this), pos - 1, 2);
