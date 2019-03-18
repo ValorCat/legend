@@ -2,6 +2,8 @@ package parse;
 
 import expression.Expression;
 import expression.group.Parentheses;
+import expression.group.SquareBrackets;
+import parse.Token.TokenType;
 import parse.error.ErrorLog;
 import parse.error.ParserException;
 import statement.Assignment;
@@ -147,12 +149,16 @@ public class Parser {
     private void resolveGroups(List<Token> tokens) {
         for (int i = 0; i < tokens.size(); i++) {
             Token token = tokens.get(i);
-            if (token.matches("()")) {
+            if (token.TYPE == TokenType.GROUP) {
                 Expression value = parseExpression(token.CHILDREN);
                 if (value != Parentheses.EMPTY_PARENS) {
-                    value = new Parentheses(value);
+                    if (token.VALUE.equals("()")) {
+                        value = new Parentheses(value);
+                    } else if (token.VALUE.equals("[]")) {
+                        value = new SquareBrackets(value);
+                    }
                 }
-                tokens.set(i, Token.newExpression("()", value));
+                tokens.set(i, Token.newExpression(token.VALUE, value));
             }
         }
     }
@@ -189,6 +195,8 @@ public class Parser {
                 Token next = tokens.get(i + 1);
                 if (next.matches("()") && (i == 0 || !tokens.get(i - 1).matches("def"))) {
                     tokens.add(i + 1, Token.newOperator("call"));
+                } else if (next.matches("[]")) {
+                    tokens.add(i + 1, Token.newOperator("index"));
                 } else if (next.TYPE == IDENTIFIER) {
                     if (distanceFromEnd == 1 || !tokens.get(i + 2).isValue()) {
                         tokens.add(i + 1, Token.newOperator("unop"));

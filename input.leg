@@ -1,3 +1,7 @@
+x = List('a', 'b', 'c')
+show(x[1])
+show('abcdefg'[3])
+
 def test_recursion(n)
     if n == 0
         return

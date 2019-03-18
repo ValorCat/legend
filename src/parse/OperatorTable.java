@@ -24,7 +24,7 @@ public final class OperatorTable {
     during tokenization and their corresponding operators are inserted implicitly.
      */
     private static final OperatorTable OPERATORS = defineOperations(new String[][] {
-            {".", "call"},      // high precedence
+            {".", "call", "index"}, // high precedence
             {"#", "?"},
             {"unop", "biop"},
             {"not"},
@@ -37,7 +37,7 @@ public final class OperatorTable {
             {":="},
             {":"},
             {","},
-            {"in"}              // low precedence
+            {"in"}                  // low precedence
     });
 
     /*
@@ -64,6 +64,7 @@ public final class OperatorTable {
         switch (token.VALUE) {
             case ".":       new DotOperation(tokenPos, tokens); break;
             case "call":    new FunctionCall(tokenPos, tokens); break;
+            case "index":   new IndexOperation(tokenPos, tokens); break;
             case "#":       new LengthOperation(tokenPos, tokens); break;
             case "?":       new NullableOperation(tokenPos, tokens); break;
             case "unop":    new UnaryOperatorCall(tokenPos, tokens); break;

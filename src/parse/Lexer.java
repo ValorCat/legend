@@ -20,6 +20,8 @@ import static parse.error.ErrorDescription.BAD_STRING;
  */
 public class Lexer {
 
+    private static final String SYMBOLS = "#%^*()-=+[]:,.<>/?";
+
     private List<TokenLine> tokenized;
     private List<Token> currStatement;
     private StringBuilder currToken;
@@ -189,7 +191,7 @@ public class Lexer {
      * @return whether the character is punctuation
      */
     private static boolean isSymbol(char c) {
-        return "#%^*()-=+:,.<>/?".indexOf(c) >= 0;
+        return SYMBOLS.indexOf(c) >= 0;
     }
 
     /**
@@ -234,35 +236,47 @@ public class Lexer {
         Stack<Integer> starts = new Stack<>();
         for (int i = 0; i < line.size(); i++) {
             String token = line.get(i).VALUE;
-            if (token.equals("(")) {
-                delimiters.push("(");
-                starts.push(i);
-            } else if (token.equals(")")) {
-                if (delimiters.isEmpty() || !delimiters.pop().equals("(")) {
-                    ErrorLog.log(BAD_PARENS, lineNumber, "Extraneous ')'");
-                    line.remove(i);
-                    i--;
-                } else {
-                    int start = starts.pop();
-                    TokenLine sublist = line.subList(start + 1, i);
-                    Token gathered = Token.newGroup("()", sublist);
-                    line.consolidate(gathered, start, i - start + 1);
-                    i = start;
-                }
+            switch (token) {
+                case "(": case "[":
+                    delimiters.push(getMatchingWrapper(token));
+                    starts.push(i);
+                    break;
+                case ")": case "]":
+                    if (delimiters.isEmpty() || !delimiters.pop().equals(token)) {
+                        ErrorLog.log(BAD_PARENS, lineNumber, "Extraneous '%s'", token);
+                        line.remove(i);
+                        i--;
+                    } else {
+                        int start = starts.pop();
+                        TokenLine sublist = line.subList(start + 1, i);
+                        Token gathered = Token.newGroup(getMatchingWrapper(token) + token, sublist);
+                        line.consolidate(gathered, start, i - start + 1);
+                        i = start;
+                    }
             }
         }
         if (!delimiters.isEmpty()) {
-            if (delimiters.size() == 1) {
-                ErrorLog.log(BAD_PARENS, lineNumber, "Missing ')' to close '('");
-            } else {
-                ErrorLog.log(BAD_PARENS, lineNumber, "Missing %d of ')' to close '('", delimiters.size());
-            }
-            // fix the parentheses so more errors aren't raised
-            for (int i = 0; i < delimiters.size(); i++) {
-                line.add(Token.newOperator(")"));
+            String found = delimiters.peek();
+            String missing = getMatchingWrapper(found);
+            ErrorLog.log(BAD_PARENS, lineNumber, "Missing '%s' to close '%s'", missing, found);
+            // fix the mismatch so more errors aren't raised
+            while (!delimiters.isEmpty()) {
+                line.add(Token.newOperator(getMatchingWrapper(delimiters.pop())));
             }
             aggregateGroups(line);
         }
+    }
+
+    private static String getMatchingWrapper(String symbol) {
+        switch (symbol) {
+            case "(": return ")";
+            case "[": return "]";
+            case "{": return "{";
+            case ")": return "(";
+            case "]": return "[";
+            case "}": return "{";
+        }
+        throw new IllegalArgumentException("Not a wrapper: " + symbol);
     }
 
 }
