@@ -85,14 +85,14 @@ public class ForLoop implements FlowController {
     }
 
     private static Value getIterator(Value iterable, Environment env) {
-        Optional<Value> maybeIterator = iterable.getOptionalAttribute("iterator");
-        if (!maybeIterator.isPresent()) {
-            throw new RuntimeException("Expected for loop target to have 'iterator' method, got value of type '"
+        Optional<Value> maybeIterator = iterable.getOptionalAttribute("_loop");
+        if (maybeIterator.isEmpty()) {
+            throw new RuntimeException("Expected for loop target to have '_loop' method, got value of type '"
                     + iterable.type().getName() + "' instead");
         }
-        Value iterator = iterable.callMethod("iterator", env);
+        Value iterator = iterable.callMethod("_loop", env);
         if (!iterator.isType("Iterator")) {
-            throw new RuntimeException("Expected for loop target's 'iterator' method to return an iterator, got "
+            throw new RuntimeException("Expected for loop target's '_loop' method to return an iterator, got "
                     + "value of type '" + iterator.type().getName() + "' instead");
         }
         return iterator;

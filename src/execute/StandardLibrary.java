@@ -58,7 +58,7 @@ public final class StandardLibrary {
                 }).shared("show", (args, env) -> {
                     System.out.println(args.target().getAttribute("*list").asNative());
                     return LNull.NULL;
-                }).shared("iterator", (args, env) -> type("Iterator").instantiate(new ArgumentList(
+                }).shared("_loop", (args, env) -> type("Iterator").instantiate(new ArgumentList(
                         args.target(), new LInteger(0),
                         new NativeFunction("has_next", (_args, _env) -> {
                             int index = _args.target().getAttribute("position").asInteger();
@@ -93,7 +93,7 @@ public final class StandardLibrary {
                     int left = args.target().getAttribute("left").asInteger();
                     int right = args.target().getAttribute("right").asInteger();
                     return LBoolean.resolve(value >= left && value <= right);
-                }).shared("iterator", (args, env) -> type("Iterator").instantiate(new ArgumentList(
+                }).shared("_loop", (args, env) -> type("Iterator").instantiate(new ArgumentList(
                         args.target(), args.target().getAttribute("left"),
                         new NativeFunction("has_next", (_args, _env) -> {
                             int current = _args.target().getAttribute("position").asInteger();
@@ -113,7 +113,7 @@ public final class StandardLibrary {
                     return new LInteger(right - left + 1);
                 }));
         define(create("String")
-                .shared("iterator", (args, env) -> type("Iterator").instantiate(new ArgumentList(
+                .shared("_loop", (args, env) -> type("Iterator").instantiate(new ArgumentList(
                         args.target(), new LInteger(0),
                         new NativeFunction("has_next", (_args, _env) -> {
                             int current = _args.target().getAttribute("position").asInteger();
