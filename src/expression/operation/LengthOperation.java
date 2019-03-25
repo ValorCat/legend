@@ -25,13 +25,9 @@ public class LengthOperation extends Operation {
     @Override
     public Value evaluate(Environment env) {
         Value operand = operands.get(0).evaluate(env);
-        Value method = operand.getOptionalAttribute("_size").orElseThrow(
-                () -> new RuntimeException("Cannot use '#' operator on value of type '"
-                        + operand.type().getName() + "' with no '_size' method")
-        );
         ArgumentList args = new ArgumentList();
         args.setTarget(operand);
-        return FunctionCall.call(method, args, env);
+        return operand.callMetamethod("_size", args, env, "target of # operator");
     }
 
 }

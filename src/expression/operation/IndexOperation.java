@@ -20,13 +20,9 @@ public class IndexOperation extends Operation {
     public Value evaluate(Environment env) {
         Value target = operands.get(0).evaluate(env);
         Value index = operands.get(1).getChildren().get(0).evaluate(env);
-        Value method = target.getOptionalAttribute("_index").orElseThrow(
-                () -> new RuntimeException("Cannot index with [] on value of type '"
-                        + target.type().getName() + "' with no '_index' method")
-        );
         ArgumentList args = new ArgumentList(index);
         args.setTarget(target);
-        return FunctionCall.call(method, args, env);
+        return target.callMetamethod("_index", args, env, "target of [] expression");
     }
 
 }

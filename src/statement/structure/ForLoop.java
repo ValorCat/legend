@@ -2,6 +2,7 @@ package statement.structure;
 
 import execute.Environment;
 import expression.Expression;
+import expression.group.ArgumentList;
 import expression.value.Value;
 import parse.Parser;
 import parse.Token;
@@ -9,7 +10,6 @@ import parse.Token.TokenType;
 import parse.error.ErrorLog;
 
 import java.util.List;
-import java.util.Optional;
 
 import static parse.error.ErrorDescription.BAD_FOR_LOOP;
 
@@ -85,12 +85,7 @@ public class ForLoop implements FlowController {
     }
 
     private static Value getIterator(Value iterable, Environment env) {
-        Optional<Value> maybeIterator = iterable.getOptionalAttribute("_loop");
-        if (maybeIterator.isEmpty()) {
-            throw new RuntimeException("Expected for loop target to have '_loop' method, got value of type '"
-                    + iterable.type().getName() + "' instead");
-        }
-        Value iterator = iterable.callMethod("_loop", env);
+        Value iterator = iterable.callMetamethod("_loop", new ArgumentList(), env, "for loop target");
         if (!iterator.isType("Iterator")) {
             throw new RuntimeException("Expected for loop target's '_loop' method to return an iterator, got "
                     + "value of type '" + iterator.type().getName() + "' instead");

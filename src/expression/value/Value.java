@@ -1,12 +1,10 @@
 package expression.value;
 
-import expression.group.ArgumentList;
-import expression.Expression;
-import expression.operation.FunctionCall;
 import execute.Environment;
 import execute.StandardLibrary;
-
-import java.util.Optional;
+import expression.Expression;
+import expression.group.ArgumentList;
+import expression.operation.FunctionCall;
 
 /**
  * @since 12/24/2018
@@ -59,10 +57,6 @@ public abstract class Value implements Expression {
         return type().getAttribute(name, this);
     }
 
-    public Optional<Value> getOptionalAttribute(String name) {
-        return type().getOptionalAttribute(name, this);
-    }
-
     public void setAttribute(String name, Value value) {
         type().setAttribute(name, this, value);
     }
@@ -72,6 +66,16 @@ public abstract class Value implements Expression {
         ArgumentList argList = new ArgumentList(args);
         argList.setTarget(this);
         return FunctionCall.call(method, argList, env);
+    }
+
+    public Value callMetamethod(String name, ArgumentList args, Environment env, String targetDesc) {
+        Value method = type().getOptionalAttribute(name, this).orElseThrow(
+                () -> new RuntimeException("Expected " + targetDesc + " to have metamethod '" + name + "'"));
+        if (!method.isType("Function")) {
+            throw new RuntimeException("Expected " + targetDesc + " to have metamethod '" + name + "' but found type "
+                    + method.type().getName());
+        }
+        return FunctionCall.call(method, args, env);
     }
 
     public Value[] getAttributes() {
