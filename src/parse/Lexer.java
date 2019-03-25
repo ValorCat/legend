@@ -102,7 +102,7 @@ public class Lexer {
         TokenType type = null;
         if (stringType == c) {
             // we are at the end of a string
-            type = LITERAL;
+            type = c == '\'' ? LITERAL : PRINT_STRING;
             currToken.deleteCharAt(0);
         } else if (stringType == 0) {
             // we are not in a string
@@ -120,7 +120,7 @@ public class Lexer {
                 if (!isLongSymbol(prev, c)) {
                     type = OPERATOR;
                 }
-            } else if (prev != 0 && !Character.isWhitespace(prev) && prev != '\'') {
+            } else if (prev != 0 && !Character.isWhitespace(prev) && prev != '\'' && prev != '"') {
                 type = INVALID;
             }
         }

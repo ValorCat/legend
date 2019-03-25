@@ -6,10 +6,7 @@ import expression.group.SquareBrackets;
 import parse.Token.TokenType;
 import parse.error.ErrorLog;
 import parse.error.ParserException;
-import statement.Assignment;
-import statement.EndStatement;
-import statement.ReturnStatement;
-import statement.Statement;
+import statement.*;
 import statement.structure.*;
 
 import java.util.ArrayList;
@@ -65,10 +62,13 @@ public class Parser {
      * @return the parsed statement
      */
     private Statement parseStatement(TokenLine tokens) {
-        // check if assignment
+        // check if assignment or print string
         for (int i = 0; i < tokens.size(); i++) {
-            if (tokens.get(i).matches("=")) {
+            Token token = tokens.get(i);
+            if (token.matches("=")) {
                 return new Assignment(tokens, i, this);
+            } else if (token.TYPE == TokenType.PRINT_STRING) {
+                return new PrintString(tokens, i);
             }
         }
 

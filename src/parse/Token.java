@@ -18,7 +18,7 @@ import static parse.error.ErrorDescription.MISPLACED_SYMBOL;
  */
 public final class Token {
 
-    public enum TokenType { EXPRESSION, GROUP, IDENTIFIER, INVALID, LITERAL, OPERATOR }
+    public enum TokenType { EXPRESSION, GROUP, IDENTIFIER, INVALID, LITERAL, OPERATOR, PRINT_STRING }
 
     public final TokenType TYPE;
     public final String VALUE;

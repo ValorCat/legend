@@ -26,6 +26,8 @@ public enum ErrorDescription {
     BAD_PARENS(
             "The interpreter found mismatched parentheses. Make sure that every opening parenthesis has a " +
             "corresponding closing parenthesis on the same line."),
+    BAD_PRINT_STRING(
+            "A print string cannot be used in an expression."),
     BAD_REPEAT(
             "The 'repeat' keyword begins an infinite loop block."),
     BAD_RETURN(

@@ -1,7 +1,3 @@
-x = List('a', 'b', 'c')
-show(x[1])
-show('abcdefg'[3])
-
 def test_recursion(n)
     if n == 0
         return
@@ -13,7 +9,7 @@ def test_recursion(n)
 end
 
 test_recursion(3)
-show('Done!')
+"Done!"
 
 ~ 3 0
 ~ 2 0
