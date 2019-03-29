@@ -2,9 +2,7 @@ package execute;
 
 import expression.value.LNull;
 import expression.value.Value;
-import expression.value.type.BuiltinType;
 import expression.value.type.Type;
-import library.*;
 import statement.Statement;
 import statement.structure.FlowController;
 
@@ -18,21 +16,6 @@ import java.util.*;
  */
 public class Environment {
 
-    private static final Map<String, BuiltinType> BUILTIN_TYPES = new HashMap<>();
-
-    private static final BuiltinType[] BUILTIN_TYPE_ARRAY = {
-            new BooleanType(),
-            new FunctionType(),
-            new IntegerType(),
-            new IteratorType(),
-            new ListType(),
-            new library.NativeType(),
-            new NullType(),
-            new RangeType(),
-            new StringType(),
-            new TypeType()
-    };
-
     /*
     The global environment is the default environment, and directly or
     indirectly the parent of all other environments.
@@ -44,21 +27,6 @@ public class Environment {
     // todo actual garbage collection
      */
     private static List<Value> memory = new ArrayList<>();
-
-    static {
-        // add the standard library types to the global environment
-        for (BuiltinType type : BUILTIN_TYPE_ARRAY) {
-            BUILTIN_TYPES.put(type.getName(), type);
-            GLOBAL.assignLocal(type.getName(), type);
-        }
-    }
-
-    public static BuiltinType getType(String name) {
-        if (BUILTIN_TYPES.containsKey(name)) {
-            return BUILTIN_TYPES.get(name);
-        }
-        throw new RuntimeException("No such type '" + name + "' in the standard library");
-    }
 
     private Environment parent;
     private Map<String, Integer> namespace;
@@ -100,7 +68,7 @@ public class Environment {
     public void assign(String name, Value value) {
         Environment env = findName(name).orElse(this);
         env.assignLocal(name, value);
-        if (value.type() == getType("Type")) {
+        if (value.type() == TypeLibrary.getType("Type")) {
             // todo deanonymize functions
             ((Type) value).deanonymize(name);
         }

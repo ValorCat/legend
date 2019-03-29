@@ -1,6 +1,7 @@
 package expression.value.type;
 
 import execute.Environment;
+import execute.TypeLibrary;
 import expression.group.ArgumentList;
 import expression.value.Value;
 
@@ -105,7 +106,7 @@ public abstract class Type extends Value {
     }
 
     public static Type of(String name) {
-        return Environment.getType(name);
+        return TypeLibrary.getType(name);
     }
 
     private static Map<String, Integer> buildPersonalMap(String[] names) {
