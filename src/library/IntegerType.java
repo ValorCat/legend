@@ -2,8 +2,11 @@ package library;
 
 import execute.Environment;
 import expression.group.ArgumentList;
-import expression.value.NativeType;
-import expression.value.*;
+import expression.value.LNull;
+import expression.value.Value;
+import expression.value.function.NativeFunction;
+import expression.value.type.NativeType;
+import expression.value.type.Type;
 
 public class IntegerType extends NativeType {
 

@@ -1,7 +1,11 @@
 package parse;
 
 import expression.Expression;
-import expression.value.*;
+import expression.Variable;
+import expression.value.LBoolean;
+import expression.value.LInteger;
+import expression.value.LNull;
+import expression.value.LString;
 import parse.error.ErrorLog;
 
 import static parse.error.ErrorDescription.MISPLACED_SYMBOL;

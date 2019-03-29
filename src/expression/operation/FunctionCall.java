@@ -1,12 +1,12 @@
 package expression.operation;
 
+import execute.Environment;
 import expression.group.ArgumentList;
 import expression.group.Parentheses;
 import expression.value.Attribute;
-import expression.value.LFunction;
-import expression.value.Type;
 import expression.value.Value;
-import execute.Environment;
+import expression.value.function.LFunction;
+import expression.value.type.Type;
 import parse.Token;
 
 import java.util.List;

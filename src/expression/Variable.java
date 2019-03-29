@@ -1,7 +1,7 @@
-package expression.value;
+package expression;
 
-import expression.Expression;
 import execute.Environment;
+import expression.value.Value;
 
 /**
  * @since 12/23/2018

@@ -1,4 +1,4 @@
-package expression.value;
+package expression.value.type;
 
 public class LazyType {
 

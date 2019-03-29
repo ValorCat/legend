@@ -3,9 +3,9 @@ package library;
 import execute.Environment;
 import expression.group.ArgumentList;
 import expression.value.LNull;
-import expression.value.NativeFunction;
-import expression.value.NativeType;
 import expression.value.Value;
+import expression.value.function.NativeFunction;
+import expression.value.type.NativeType;
 
 public class FunctionType extends NativeType {
 

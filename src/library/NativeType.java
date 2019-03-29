@@ -1,6 +1,6 @@
 package library;
 
-public class NativeType extends expression.value.NativeType {
+public class NativeType extends expression.value.type.NativeType {
 
     public NativeType() {
         super("*Native");

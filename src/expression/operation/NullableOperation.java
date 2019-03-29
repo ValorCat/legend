@@ -1,9 +1,9 @@
 package expression.operation;
 
 import execute.Environment;
-import expression.value.NullableType;
-import expression.value.Type;
 import expression.value.Value;
+import expression.value.type.NullableType;
+import expression.value.type.Type;
 import parse.Token;
 import parse.TokenLine;
 

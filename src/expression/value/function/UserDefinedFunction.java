@@ -1,8 +1,9 @@
-package expression.value;
+package expression.value.function;
 
-import expression.group.ArgumentList;
-import statement.structure.FunctionDefinition;
 import execute.Environment;
+import expression.group.ArgumentList;
+import expression.value.Value;
+import statement.structure.FunctionDefinition;
 
 /**
  * @since 2/16/2019

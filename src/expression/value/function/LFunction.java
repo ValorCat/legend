@@ -1,7 +1,8 @@
-package expression.value;
+package expression.value.function;
 
 import execute.Environment;
 import expression.group.ArgumentList;
+import expression.value.Value;
 
 /**
  * @since 12/24/2018

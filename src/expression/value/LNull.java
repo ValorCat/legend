@@ -1,5 +1,7 @@
 package expression.value;
 
+import expression.value.type.Type;
+
 /**
  * @since 2/9/2019
  */

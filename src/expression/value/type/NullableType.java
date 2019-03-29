@@ -1,7 +1,9 @@
-package expression.value;
+package expression.value.type;
 
 import execute.Environment;
 import expression.group.ArgumentList;
+import expression.value.LNull;
+import expression.value.Value;
 
 /**
  * @since 2/26/2019

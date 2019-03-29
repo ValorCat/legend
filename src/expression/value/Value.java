@@ -4,6 +4,8 @@ import execute.Environment;
 import expression.Expression;
 import expression.group.ArgumentList;
 import expression.operation.FunctionCall;
+import expression.value.type.LazyType;
+import expression.value.type.Type;
 
 /**
  * @since 12/24/2018

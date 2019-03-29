@@ -3,8 +3,8 @@ package expression.operation;
 import execute.Environment;
 import expression.Expression;
 import expression.value.Attribute;
-import expression.value.NativeFunction;
 import expression.value.Value;
+import expression.value.function.NativeFunction;
 import parse.Token;
 import parse.TokenLine;
 

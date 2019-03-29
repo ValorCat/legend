@@ -1,9 +1,9 @@
 package execute;
 
 import expression.value.LNull;
-import expression.value.NativeType;
-import expression.value.Type;
 import expression.value.Value;
+import expression.value.type.NativeType;
+import expression.value.type.Type;
 import library.*;
 import statement.Statement;
 import statement.structure.FlowController;
