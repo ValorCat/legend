@@ -6,21 +6,21 @@ import expression.group.ArgumentList;
 import expression.value.LNull;
 import expression.value.LString;
 import expression.value.Value;
-import expression.value.function.NativeFunction;
-import expression.value.type.NativeType;
+import expression.value.function.BuiltinFunction;
+import expression.value.type.BuiltinType;
 import expression.value.type.Type;
 import expression.value.type.UserDefinedType;
 
 import java.util.Scanner;
 
-public class TypeType extends NativeType {
+public class TypeType extends BuiltinType {
 
     private static Scanner scanner;
 
     public TypeType() {
         super("Type",
-                new NativeFunction("read", TypeType::read),
-                new NativeFunction("show", TypeType::show));
+                new BuiltinFunction("read", TypeType::read),
+                new BuiltinFunction("show", TypeType::show));
     }
 
     @Override

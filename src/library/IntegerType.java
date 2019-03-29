@@ -4,16 +4,16 @@ import execute.Environment;
 import expression.group.ArgumentList;
 import expression.value.LNull;
 import expression.value.Value;
-import expression.value.function.NativeFunction;
-import expression.value.type.NativeType;
+import expression.value.function.BuiltinFunction;
+import expression.value.type.BuiltinType;
 import expression.value.type.Type;
 
-public class IntegerType extends NativeType {
+public class IntegerType extends BuiltinType {
 
     public IntegerType() {
         super("Integer",
-                new NativeFunction("show", IntegerType::show),
-                new NativeFunction("to", IntegerType::to));
+                new BuiltinFunction("show", IntegerType::show),
+                new BuiltinFunction("to", IntegerType::to));
     }
 
     private static Value show(ArgumentList args, Environment env) {

@@ -3,19 +3,19 @@ package library;
 import execute.Environment;
 import expression.group.ArgumentList;
 import expression.value.*;
+import expression.value.function.BuiltinFunction;
 import expression.value.function.LFunction;
-import expression.value.function.NativeFunction;
-import expression.value.type.NativeType;
+import expression.value.type.BuiltinType;
 import expression.value.type.Type;
 
-public class StringType extends NativeType {
+public class StringType extends BuiltinType {
 
     public StringType() {
         super("String",
-                new NativeFunction("show", StringType::show),
-                new NativeFunction("_index", StringType::metaIndex),
-                new NativeFunction("_loop", StringType::metaLoop),
-                new NativeFunction("_size", StringType::metaSize));
+                new BuiltinFunction("show", StringType::show),
+                new BuiltinFunction("_index", StringType::metaIndex),
+                new BuiltinFunction("_loop", StringType::metaLoop),
+                new BuiltinFunction("_size", StringType::metaSize));
     }
 
     private static Value show(ArgumentList args, Environment env) {
@@ -33,12 +33,12 @@ public class StringType extends NativeType {
     }
 
     private static Value metaLoop(ArgumentList args, Environment env) {
-        LFunction hasNext = new NativeFunction("has_next", (_args, _env) -> {
+        LFunction hasNext = new BuiltinFunction("has_next", (_args, _env) -> {
             int current = _args.target().getAttribute("position").asInteger();
             int size = _args.target().getAttribute("values").asString().length();
             return LBoolean.resolve(current < size);
         });
-        LFunction getNext = new NativeFunction("next", (_args, _env) -> {
+        LFunction getNext = new BuiltinFunction("next", (_args, _env) -> {
             int current = _args.target().getAttribute("position").asInteger();
             String string = _args.target().getAttribute("values").asString();
             _args.target().setAttribute("position", new LInteger(current + 1));

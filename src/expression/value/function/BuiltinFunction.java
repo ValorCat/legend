@@ -9,19 +9,19 @@ import java.util.function.BiFunction;
 /**
  * @since 12/24/2018
  */
-public class NativeFunction extends LFunction {
+public class BuiltinFunction extends LFunction {
 
     @FunctionalInterface
     public interface FunctionBody extends BiFunction<ArgumentList, Environment, Value> {}
 
     private FunctionBody body;
 
-    public NativeFunction(FunctionBody body) {
+    public BuiltinFunction(FunctionBody body) {
         super();
         this.body = body;
     }
 
-    public NativeFunction(String name, FunctionBody body) {
+    public BuiltinFunction(String name, FunctionBody body) {
         super(name);
         this.body = body;
     }
@@ -32,7 +32,7 @@ public class NativeFunction extends LFunction {
 
     @Override
     public boolean equals(Value other) {
-        return other instanceof NativeFunction && body == ((NativeFunction) other).body;
+        return other instanceof BuiltinFunction && body == ((BuiltinFunction) other).body;
     }
 
     @Override

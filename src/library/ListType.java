@@ -3,9 +3,9 @@ package library;
 import execute.Environment;
 import expression.group.ArgumentList;
 import expression.value.*;
+import expression.value.function.BuiltinFunction;
 import expression.value.function.LFunction;
-import expression.value.function.NativeFunction;
-import expression.value.type.NativeType;
+import expression.value.type.BuiltinType;
 import expression.value.type.Type;
 
 import java.util.ArrayList;
@@ -14,21 +14,21 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.ToIntFunction;
 
-public class ListType extends NativeType {
+public class ListType extends BuiltinType {
 
     public ListType() {
         super("List", new String[] {"*list"},
-                new NativeFunction("max", ListType::max),
-                new NativeFunction("show", ListType::show),
-                new NativeFunction("_index", ListType::metaIndex),
-                new NativeFunction("_loop", ListType::metaLoop),
-                new NativeFunction("_size", ListType::metaSize));
+                new BuiltinFunction("max", ListType::max),
+                new BuiltinFunction("show", ListType::show),
+                new BuiltinFunction("_index", ListType::metaIndex),
+                new BuiltinFunction("_loop", ListType::metaLoop),
+                new BuiltinFunction("_size", ListType::metaSize));
     }
 
     @Override
     protected Value initialize(ArgumentList args, Environment env) {
         List<Value> javaList = new ArrayList<>(Arrays.asList(args.args()));
-        return new LObject(Type.of("List"), new NativeValue(javaList));
+        return new LObject(Type.of("List"), new LNative(javaList));
     }
 
     private static Value max(ArgumentList args, Environment env) {
@@ -67,13 +67,13 @@ public class ListType extends NativeType {
     }
 
     private static Value metaLoop(ArgumentList args, Environment env) {
-        LFunction hasNext = new NativeFunction("has_next", (_args, _env) -> {
+        LFunction hasNext = new BuiltinFunction("has_next", (_args, _env) -> {
             int index = _args.target().getAttribute("position").asInteger();
             Object javaList = _args.target().getAttribute("values").getAttribute("*list").asNative();
             int size = ((Collection) javaList).size();
             return LBoolean.resolve(index < size);
         });
-        LFunction getNext = new NativeFunction("next", (_args, _env) -> {
+        LFunction getNext = new BuiltinFunction("next", (_args, _env) -> {
             int index = _args.target().getAttribute("position").asInteger();
             Object javaList = _args.target().getAttribute("values").getAttribute("*list").asNative();
             _args.target().setAttribute("position", new LInteger(index + 1));

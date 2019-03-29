@@ -9,13 +9,13 @@ import expression.value.function.LFunction;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class NativeType extends Type {
+public abstract class BuiltinType extends Type {
 
-    public NativeType(String name, LFunction... methods) {
+    public BuiltinType(String name, LFunction... methods) {
         this(name, new String[0], methods);
     }
 
-    public NativeType(String name, String[] personal, LFunction... methods) {
+    public BuiltinType(String name, String[] personal, LFunction... methods) {
         super(name, personal, toSharedMap(methods));
     }
 

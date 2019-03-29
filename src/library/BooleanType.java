@@ -4,14 +4,14 @@ import execute.Environment;
 import expression.group.ArgumentList;
 import expression.value.LNull;
 import expression.value.Value;
-import expression.value.function.NativeFunction;
-import expression.value.type.NativeType;
+import expression.value.function.BuiltinFunction;
+import expression.value.type.BuiltinType;
 
-public class BooleanType extends NativeType {
+public class BooleanType extends BuiltinType {
 
     public BooleanType() {
         super("Boolean",
-                new NativeFunction("show", BooleanType::show));
+                new BuiltinFunction("show", BooleanType::show));
     }
 
     private static Value show(ArgumentList args, Environment env) {

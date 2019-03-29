@@ -4,7 +4,7 @@ import execute.Environment;
 import expression.Expression;
 import expression.value.Attribute;
 import expression.value.Value;
-import expression.value.function.NativeFunction;
+import expression.value.function.BuiltinFunction;
 import parse.Token;
 import parse.TokenLine;
 
@@ -32,7 +32,7 @@ public class DotOperation extends Operation {
     public Value evaluate(Environment env) {
         String attribute = operands.get(1).getIdentifier();
         if (operands.get(0).matches("_")) {
-            return new NativeFunction((args, _env) -> args.arg(0).getAttribute(attribute));
+            return new BuiltinFunction((args, _env) -> args.arg(0).getAttribute(attribute));
         } else {
             Value target = operands.get(0).evaluate(env);
             return new Attribute(target, target.getAttribute(attribute));

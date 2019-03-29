@@ -3,11 +3,11 @@ package expression.value;
 /**
  * @since 2/9/2019
  */
-public class NativeValue extends Value {
+public class LNative extends Value {
 
     private Object value;
 
-    public NativeValue(Object javaValue) {
+    public LNative(Object javaValue) {
         super("*Native");
         this.value = javaValue;
     }
@@ -19,7 +19,7 @@ public class NativeValue extends Value {
 
     @Override
     public boolean equals(Value other) {
-        return (this == other) || (type() == other.type() && value.equals(((NativeValue) other).value));
+        return (this == other) || (type() == other.type() && value.equals(((LNative) other).value));
     }
 
 }

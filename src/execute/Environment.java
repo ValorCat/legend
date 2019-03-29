@@ -2,7 +2,7 @@ package execute;
 
 import expression.value.LNull;
 import expression.value.Value;
-import expression.value.type.NativeType;
+import expression.value.type.BuiltinType;
 import expression.value.type.Type;
 import library.*;
 import statement.Statement;
@@ -18,9 +18,9 @@ import java.util.*;
  */
 public class Environment {
 
-    public static final Map<String, NativeType> BUILTIN_TYPES = new HashMap<>();
+    private static final Map<String, BuiltinType> BUILTIN_TYPES = new HashMap<>();
 
-    private static final NativeType[] BUILTIN_TYPE_ARRAY = {
+    private static final BuiltinType[] BUILTIN_TYPE_ARRAY = {
             new BooleanType(),
             new FunctionType(),
             new IntegerType(),
@@ -47,13 +47,13 @@ public class Environment {
 
     static {
         // add the standard library types to the global environment
-        for (NativeType type : BUILTIN_TYPE_ARRAY) {
+        for (BuiltinType type : BUILTIN_TYPE_ARRAY) {
             BUILTIN_TYPES.put(type.getName(), type);
             GLOBAL.assignLocal(type.getName(), type);
         }
     }
 
-    public static NativeType getType(String name) {
+    public static BuiltinType getType(String name) {
         if (BUILTIN_TYPES.containsKey(name)) {
             return BUILTIN_TYPES.get(name);
         }
