@@ -23,15 +23,30 @@ public final class StandardLibrary {
 
     static {
         // create is TypeBuilder.create
-        define(create("Boolean"));
-        define(create("Function"));
+        define(create("Boolean")
+                .shared("show", (args, env) -> {
+                    System.out.println(args.target());
+                    return LNull.NULL;
+                }));
+        define(create("Function")
+                .shared("show", (args, env) -> {
+                    System.out.println(args.target());
+                    return LNull.NULL;
+                }));
         define(create("Integer")
-                .shared("to", (args, env) -> {
+                .shared("show", (args, env) -> {
+                    System.out.println(args.target());
+                    return LNull.NULL;
+                }).shared("to", (args, env) -> {
                     ArgumentList bounds = new ArgumentList(args.target(), args.arg(0));
                     return type("Range").instantiate(bounds, env);
                 }));
         define(create("Iterator")
-                .personal("values", "position", "has_next", "next"));
+                .personal("values", "position", "has_next", "next")
+                .shared("show", (args, env) -> {
+                    System.out.println(args.target());
+                    return LNull.NULL;
+                }));
         define(create("List")
                 .personal("*list")
                 .initializer((args, env) -> {
@@ -85,7 +100,11 @@ public final class StandardLibrary {
                 }).shared("_size", (args, env) -> new LInteger(((Collection) args.target().getAttribute("*list")
                         .asNative()).size())));
         define(create("*Native"));
-        define(create("*Null"));
+        define(create("*Null")
+                .shared("show", (args, env) -> {
+                    System.out.println(args.target());
+                    return LNull.NULL;
+                }));
         define(create("Range")
                 .personal("left", "right")
                 .shared("contains", (args, env) -> {
@@ -93,6 +112,9 @@ public final class StandardLibrary {
                     int left = args.target().getAttribute("left").asInteger();
                     int right = args.target().getAttribute("right").asInteger();
                     return LBoolean.resolve(value >= left && value <= right);
+                }).shared("show", (args, env) -> {
+                    System.out.println(args.target());
+                    return LNull.NULL;
                 }).shared("_loop", (args, env) -> type("Iterator").instantiate(new ArgumentList(
                         args.target(), args.target().getAttribute("left"),
                         new NativeFunction("has_next", (_args, _env) -> {
@@ -113,7 +135,10 @@ public final class StandardLibrary {
                     return new LInteger(right - left + 1);
                 }));
         define(create("String")
-                .shared("_loop", (args, env) -> type("Iterator").instantiate(new ArgumentList(
+                .shared("show", (args, env) -> {
+                    System.out.println(args.target());
+                    return LNull.NULL;
+                }).shared("_loop", (args, env) -> type("Iterator").instantiate(new ArgumentList(
                         args.target(), new LInteger(0),
                         new NativeFunction("has_next", (_args, _env) -> {
                             int current = _args.target().getAttribute("position").asInteger();
@@ -140,7 +165,18 @@ public final class StandardLibrary {
                 .initializer((args, env) -> {
                     String[] attributes = args.keywords().keySet().toArray(new String[0]);
                     // todo use attribute types/bounds
-                    return new Type(attributes);
+                    return new UserDefinedType(attributes);
+                }).shared("read", (args, env) -> {
+                    if (args.size() > 0) {
+                        System.out.print(((LString) args.arg(0)).getValue());
+                    }
+                    if (!args.target().equals(type("String"))) {
+                        throw new RuntimeException("Reading non-string types is not yet implemented");
+                    }
+                    return new LString(input().nextLine());
+                }).shared("show", (args, env) -> {
+                    System.out.println(args.target());
+                    return LNull.NULL;
                 }));
     }
 
@@ -150,41 +186,6 @@ public final class StandardLibrary {
         }
         throw new RuntimeException("No such type '" + type + "' in the standard library");
     }
-
-    public static final LFunction[] FUNCTIONS = {
-            define("autosave", (args, env) -> args.arg(0)), // todo autosave
-
-            define("exit", (args, env) -> {
-                System.exit(0);
-                return LNull.NULL;
-            }),
-
-            define("read", (args, env) -> {
-                if (args.size() > 0) {
-                    System.out.print(((LString) args.arg(0)).getValue());
-                }
-                return new LString(input().nextLine());
-            }),
-
-            define("show", (args, env) -> {
-                for (Value arg : args.args()) {
-                    System.out.print(arg.asString());
-                }
-                System.out.println();
-                return LNull.NULL;
-            }),
-
-            define("showenv", (args, env) -> {
-                System.out.println("==[ Environment ]==================================");
-                for (Map.Entry<String, Integer> pair : env.getNamespace().entrySet()) {
-                    Value value = env.fetch(pair.getKey());
-                    System.out.printf("\t%-8s 0x%04X  %-6s  %s\n", pair.getKey(), pair.getValue(),
-                            value.type().getName(), value);
-                }
-                System.out.println("===================================================");
-                return LNull.NULL;
-            })
-    };
 
     private StandardLibrary() {}
 
@@ -200,17 +201,6 @@ public final class StandardLibrary {
     private static void define(TypeBuilder builder) {
         Type type = builder.build();
         TYPES.put(type.getName(), type);
-    }
-
-    /**
-     * Construct a new built-in function for the standard library's
-     * function list.
-     * @param name the function's name
-     * @param body the function's body
-     * @return a new function value
-     */
-    private static LFunction define(String name, FunctionBody body) {
-        return new NativeFunction(name, body);
     }
 
 }

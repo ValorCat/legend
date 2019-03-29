@@ -34,10 +34,6 @@ public class Environment {
         for (Map.Entry<String, Type> type : StandardLibrary.TYPES.entrySet()) {
             GLOBAL.assign(type.getKey(), type.getValue());
         }
-
-        for (LFunction func : StandardLibrary.FUNCTIONS) {
-            GLOBAL.assign(func.getName(), func);
-        }
     }
 
     private Environment parent;
