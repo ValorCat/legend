@@ -1,7 +1,6 @@
 package expression.value;
 
 import execute.Environment;
-import execute.StandardLibrary;
 import expression.Expression;
 import expression.group.ArgumentList;
 import expression.operation.FunctionCall;
@@ -11,11 +10,16 @@ import expression.operation.FunctionCall;
  */
 public abstract class Value implements Expression {
 
-    private Type type;
+    private LazyType type;
     private Value[] attributes;
 
+    public Value(String type, Value... attributes) {
+        this.type = new LazyType(type);
+        this.attributes = attributes;
+    }
+
     public Value(Type type, Value... attributes) {
-        this.type = type;
+        this.type = type.asLazy();
         this.attributes = attributes;
     }
 
@@ -41,16 +45,16 @@ public abstract class Value implements Expression {
     }
 
     public Type type() {
-        if (type == null) type = StandardLibrary.type("Type");
-        return type;
+        return type.get();
     }
 
     public boolean isType(String type) {
         return type().matches(type);
     }
 
+    // todo eliminate setType
     public void setType(Type type) {
-        this.type = type;
+        this.type = type.asLazy();
     }
 
     public Value getAttribute(String name) {
@@ -69,17 +73,30 @@ public abstract class Value implements Expression {
     }
 
     public Value callMetamethod(String name, ArgumentList args, Environment env, String targetDesc) {
-        Value method = type().getOptionalAttribute(name, this).orElseThrow(
-                () -> new RuntimeException("Expected " + targetDesc + " to have metamethod '" + name + "'"));
+        Value method;
+        try {
+            method = type().getAttribute(name, this);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Expected " + targetDesc + " to have metamethod '" + name + "'");
+        }
         if (!method.isType("Function")) {
             throw new RuntimeException("Expected " + targetDesc + " to have metamethod '" + name + "' but found type "
                     + method.type().getName());
         }
+        args.setTarget(this);
         return FunctionCall.call(method, args, env);
     }
 
     public Value[] getAttributes() {
         return attributes;
+    }
+
+    public Value getAttribute(int index) {
+        return attributes[index];
+    }
+
+    public void setAttribute(int index, Value value) {
+        attributes[index] = value;
     }
 
     public boolean hasOwner() {

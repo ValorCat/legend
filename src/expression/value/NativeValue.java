@@ -1,7 +1,5 @@
 package expression.value;
 
-import execute.StandardLibrary;
-
 /**
  * @since 2/9/2019
  */
@@ -10,7 +8,7 @@ public class NativeValue extends Value {
     private Object value;
 
     public NativeValue(Object javaValue) {
-        super(StandardLibrary.type("*Native"));
+        super("*Native");
         this.value = javaValue;
     }
 

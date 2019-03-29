@@ -1,7 +1,5 @@
 package expression.value;
 
-import execute.StandardLibrary;
-
 /**
  * @since 12/24/2018
  */
@@ -10,7 +8,7 @@ public class LString extends Value {
     private String value;
 
     public LString(String value) {
-        super(StandardLibrary.type("String"));
+        super("String");
         this.value = value;
     }
 

@@ -1,7 +1,5 @@
 package expression.value;
 
-import execute.StandardLibrary;
-
 /**
  * @since 12/24/2018
  */
@@ -10,7 +8,7 @@ public class LInteger extends Value {
     private int value;
 
     public LInteger(int value) {
-        super(StandardLibrary.type("Integer"));
+        super("Integer");
         this.value = value;
     }
 

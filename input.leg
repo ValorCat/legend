@@ -3,7 +3,7 @@ def test_recursion(n)
         return
     end
     for i in 0 to 3
-        show('n = ', n, ', i = ', i)
+        ('n = ' :: n :: ', i = ' :: i) show
         test_recursion(n - 1)
     end
 end

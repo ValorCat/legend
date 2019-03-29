@@ -1,11 +1,12 @@
 package execute;
 
-import statement.structure.FlowController;
-import statement.Statement;
-import expression.value.LFunction;
 import expression.value.LNull;
+import expression.value.NativeType;
 import expression.value.Type;
 import expression.value.Value;
+import library.*;
+import statement.Statement;
+import statement.structure.FlowController;
 
 import java.util.*;
 
@@ -16,6 +17,21 @@ import java.util.*;
  * @since 12/23/2018
  */
 public class Environment {
+
+    public static final Map<String, NativeType> BUILTIN_TYPES = new HashMap<>();
+
+    private static final NativeType[] BUILTIN_TYPE_ARRAY = {
+            new BooleanType(),
+            new FunctionType(),
+            new IntegerType(),
+            new IteratorType(),
+            new ListType(),
+            new library.NativeType(),
+            new NullType(),
+            new RangeType(),
+            new StringType(),
+            new TypeType()
+    };
 
     /*
     The global environment is the default environment, and directly or
@@ -30,10 +46,18 @@ public class Environment {
     private static List<Value> memory = new ArrayList<>();
 
     static {
-        // add the standard library types and functions to the global environment
-        for (Map.Entry<String, Type> type : StandardLibrary.TYPES.entrySet()) {
-            GLOBAL.assign(type.getKey(), type.getValue());
+        // add the standard library types to the global environment
+        for (NativeType type : BUILTIN_TYPE_ARRAY) {
+            BUILTIN_TYPES.put(type.getName(), type);
+            GLOBAL.assignLocal(type.getName(), type);
         }
+    }
+
+    public static NativeType getType(String name) {
+        if (BUILTIN_TYPES.containsKey(name)) {
+            return BUILTIN_TYPES.get(name);
+        }
+        throw new RuntimeException("No such type '" + name + "' in the standard library");
     }
 
     private Environment parent;
@@ -76,7 +100,7 @@ public class Environment {
     public void assign(String name, Value value) {
         Environment env = findName(name).orElse(this);
         env.assignLocal(name, value);
-        if (value.type() == StandardLibrary.type("Type")) {
+        if (value.type() == getType("Type")) {
             // todo deanonymize functions
             ((Type) value).deanonymize(name);
         }
@@ -98,7 +122,7 @@ public class Environment {
      */
     public Value fetch(String name) {
         Optional<Environment> definingEnv = findName(name);
-        if (!definingEnv.isPresent()) {
+        if (definingEnv.isEmpty()) {
             throw new RuntimeException("Variable '" + name + "' is not defined");
         }
         int address = definingEnv.get().namespace.get(name);

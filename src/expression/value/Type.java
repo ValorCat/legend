@@ -1,8 +1,7 @@
 package expression.value;
 
-import expression.group.ArgumentList;
-import expression.value.NativeFunction.FunctionBody;
 import execute.Environment;
+import expression.group.ArgumentList;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,47 +10,32 @@ import java.util.Optional;
 /**
  * @since 12/23/2018
  */
-public class Type extends Value {
+public abstract class Type extends Value {
 
-    private String name;
-    private Map<String, Integer> personalAttributes; // todo avoid Integer -> int unboxing
-    private Map<String, Value> sharedAttributes;
-    private FunctionBody initializer;
-    private boolean anonymous;
+    protected String name;
+    private Map<String, Integer> personal;
+    private Map<String, Value> shared;
 
-    public Type(String[] attrNames) {
-        this("(anonymous type)", null, attrNames, Map.of());
-        this.anonymous = true;
-    }
-
-    public Type(String name, FunctionBody init, String[] personal, Map<String, Value> shared) {
-        super(null);
+    public Type(String name, String[] personal, Map<String, Value> shared) {
+        super("Type");
         this.name = name;
-        this.initializer = init;
-        this.personalAttributes = new HashMap<>(personal.length);
-        for (int i = 0; i < personal.length; i++) {
-            this.personalAttributes.put(personal[i], i);
-        }
-        this.sharedAttributes = shared;
-        this.anonymous = false;
+        this.personal = buildPersonalMap(personal);
+        this.shared = shared;
     }
 
     public Type(Type other) {
-        super(null);
+        super("Type");
         this.name = other.name;
-        this.initializer = other.initializer;
-        this.personalAttributes = other.personalAttributes;
-        this.sharedAttributes = other.sharedAttributes;
-        this.anonymous = false;
+        this.personal = other.personal;
+        this.shared = other.shared;
     }
 
-    public boolean encompasses(Type other) {
-        return this == other;
-    }
+    public abstract Value instantiate(ArgumentList args, Environment env);
+    public abstract void deanonymize(String name);
 
     @Override
     public boolean matches(String name) {
-        return getName().equals(name);
+        return this.name.equals(name);
     }
 
     @Override
@@ -63,49 +47,24 @@ public class Type extends Value {
         return name;
     }
 
-    public void deanonymize(String name) {
-        if (anonymous) {
-            this.name = name;
-            this.anonymous = false;
-        }
+    public Value getAttribute(String attribute, Value target) {
+        return getPersonal(target, attribute)
+                .or(() -> getShared(attribute))
+                .orElseThrow(() -> new RuntimeException("Type '" + name + "' has no attribute '" + attribute + "'"));
     }
 
-    public Value getAttribute(String attribute, Value object) {
-        Value value = findAttribute(attribute, object);
-        if (value != null) {
-            return value;
-        }
-        throw new RuntimeException("Type '" + name + "' has no attribute '" + attribute + "'");
-    }
-
-    public Optional<Value> getOptionalAttribute(String attribute, Value object) {
-        return Optional.ofNullable(findAttribute(attribute, object));
-    }
-
-    public void setAttribute(String attribute, Value object, Value value) {
-        Integer index = personalAttributes.get(attribute);
-        if (index != null) {
-            object.getAttributes()[index] = value;
-        } else if (sharedAttributes.containsKey(attribute)) {
-            sharedAttributes.put(attribute, value);
-        } else {
-            // todo handle inherited attributes
+    public void setAttribute(String attribute, Value target, Value value) {
+        if (!setPersonal(target, attribute, value) && !setShared(attribute, value)) {
             throw new RuntimeException("Type '" + name + "' has no attribute '" + attribute + "'");
         }
     }
 
-    public Value instantiate(ArgumentList args, Environment env) {
-        if (initializer == null) {
-            if (!args.keywords().isEmpty()) {
-                throw new RuntimeException("Type '" + getName() + "' does not accept keyword arguments");
-            }
-            // todo check params = args
-            return new LObject(this, args.args());
-        } else {
-            Value instance = initializer.apply(args, env);
-            instance.setType(this);
-            return instance;
-        }
+    public boolean encompasses(Type other) {
+        return this == other;
+    }
+
+    public LazyType asLazy() {
+        return new LazyType(this);
     }
 
     @Override
@@ -118,14 +77,42 @@ public class Type extends Value {
         return "type[" + getName() + "]";
     }
 
-    private Value findAttribute(String name, Value object) {
-        Integer index = personalAttributes.get(name);
-        if (index != null) {
-            return object.getAttributes()[index];
-        }
-        // todo handle inherited attributes
-        return sharedAttributes.get(name);
+    private Optional<Value> getPersonal(Value target, String attribute) {
+        return Optional.ofNullable(personal.get(attribute))
+                .map(target::getAttribute);
     }
 
+    private boolean setPersonal(Value target, String attribute, Value value) {
+        Integer index = personal.get(attribute);
+        if (index != null) {
+            target.setAttribute(index, value);
+            return true;
+        }
+        return false;
+    }
+
+    private Optional<Value> getShared(String attribute) {
+        return Optional.ofNullable(shared.get(attribute));
+    }
+
+    protected boolean setShared(String attribute, Value value) {
+        if (shared.containsKey(attribute)) {
+            shared.put(attribute, value);
+            return true;
+        }
+        return false;
+    }
+
+    public static Type of(String name) {
+        return Environment.getType(name);
+    }
+
+    private static Map<String, Integer> buildPersonalMap(String[] names) {
+        Map<String, Integer> map = new HashMap<>();
+        for (int i = 0; i < names.length; i++) {
+            map.put(names[i], i);
+        }
+        return map;
+    }
 
 }

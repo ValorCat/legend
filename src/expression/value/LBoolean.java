@@ -1,7 +1,5 @@
 package expression.value;
 
-import execute.StandardLibrary;
-
 /**
  * @since 12/28/2018
  */
@@ -18,7 +16,7 @@ public final class LBoolean extends Value {
     private String string;
 
     private LBoolean(boolean value) {
-        super(StandardLibrary.type("Boolean"));
+        super("Boolean");
         this.value = value;
         this.string = String.valueOf(value);
     }

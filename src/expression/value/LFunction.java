@@ -1,8 +1,7 @@
 package expression.value;
 
-import expression.group.ArgumentList;
 import execute.Environment;
-import execute.StandardLibrary;
+import expression.group.ArgumentList;
 
 /**
  * @since 12/24/2018
@@ -16,7 +15,7 @@ public abstract class LFunction extends Value {
     }
 
     public LFunction(String name) {
-        super(StandardLibrary.type("Function"));
+        super("Function");
         this.name = name;
     }
 

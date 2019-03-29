@@ -1,7 +1,5 @@
 package expression.value;
 
-import execute.StandardLibrary;
-
 /**
  * @since 2/9/2019
  */
@@ -11,7 +9,7 @@ public final class LNull extends Value {
     public static Type NULL_TYPE = NULL.type();
 
     private LNull() {
-        super(StandardLibrary.type("*Null"));
+        super("*Null");
     }
 
     @Override
