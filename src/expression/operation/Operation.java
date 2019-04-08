@@ -12,6 +12,8 @@ import java.util.StringJoiner;
 import static parse.error.ErrorDescription.BAD_OPERANDS;
 
 /**
+ * Classes that extend Operation represent binary and unary operations in
+ * the parsed syntax tree.
  * @since 12/23/2018
  */
 public abstract class Operation implements Expression {

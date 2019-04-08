@@ -28,15 +28,15 @@ public class Environment {
      */
     private static List<Value> memory = new ArrayList<>();
 
-    private Environment parent;
-    private Map<String, Integer> namespace;
-    private Stack<FlowController> controlStack;
+    private Environment parent;                     // parent scope from which variables are inherited
+    private Map<String, Integer> namespace;         // variable name-to-value mappings
+    private Stack<FlowController> controlStack;     // flow control structure stack
 
-    private List<Statement> statements;
-    private int programCounter;
-    private int addressOffset;
-    private boolean programCounterChanged;
-    private Value returnValue;
+    private List<Statement> statements;             // current list of instructions in this scope
+    private int programCounter;                     // index of current instruction
+    private int addressOffset;                      // local index offset from global instruction list
+    private boolean programCounterChanged;          // whether a jump has occurred
+    private Value returnValue;                      // this scope's return value, if any
 
     private Environment(List<Statement> statements, int startAddress, Environment parent) {
         this.parent = parent;
@@ -54,6 +54,7 @@ public class Environment {
     }
 
     public Environment(List<Statement> statements, int startAddress) {
+        // todo set correct parent env for nested function definitions
         this(statements, startAddress, GLOBAL);
     }
 
@@ -68,7 +69,7 @@ public class Environment {
     public void assign(String name, Value value) {
         Environment env = findName(name).orElse(this);
         env.assignLocal(name, value);
-        if (value.type() == TypeLibrary.getType("Type")) {
+        if (value.type() == Type.of("Type")) {
             // todo deanonymize functions
             ((Type) value).deanonymize(name);
         }
@@ -100,10 +101,6 @@ public class Environment {
                     + Integer.toHexString(address) + ") points to null");
         }
         return value;
-    }
-
-    public Map<String, Integer> getNamespace() {
-        return namespace;
     }
 
     public Stack<FlowController> getControlStack() {

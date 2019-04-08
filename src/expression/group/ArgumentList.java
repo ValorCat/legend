@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Represent a sequence of positional and/or keyword arguments in a
+ * function call. If the function is a method, this class also stores
+ * the method target (the object it is called upon).
+ * @see expression.operation.FunctionCall
+ * @see expression.value.function.LFunction
  * @since 12/24/2018
  */
 public class ArgumentList {
