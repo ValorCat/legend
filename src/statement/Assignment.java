@@ -1,6 +1,6 @@
 package statement;
 
-import execute.Environment;
+import execute.Scope;
 import expression.Expression;
 import parse.Parser;
 import parse.Token;
@@ -30,8 +30,8 @@ public class Assignment implements Statement {
     }
 
     @Override
-    public void execute(Environment env) {
-        env.assignLocal(target, value.evaluate(env));
+    public void execute(Scope scope) {
+        scope.setVariable(target, value.evaluate(scope));
     }
 
     @Override

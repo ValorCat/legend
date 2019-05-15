@@ -1,7 +1,7 @@
 package library;
 
 
-import execute.Environment;
+import execute.Scope;
 import expression.group.ArgumentList;
 import expression.value.LNull;
 import expression.value.LString;
@@ -24,13 +24,13 @@ public class TypeType extends BuiltinType {
     }
 
     @Override
-    protected Value initialize(ArgumentList args, Environment env) {
+    protected Value initialize(ArgumentList args, Scope scope) {
         String[] attributes = args.keywords().keySet().toArray(new String[0]);
         // todo use attribute types/bounds
         return new UserDefinedType(attributes);
     }
 
-    private static Value read(ArgumentList args, Environment env) {
+    private static Value read(ArgumentList args, Scope scope) {
         if (args.size() > 0) {
             System.out.print(((LString) args.arg(0)).getValue());
         }
@@ -43,7 +43,7 @@ public class TypeType extends BuiltinType {
         return new LString(scanner.nextLine());
     }
 
-    private static Value show(ArgumentList args, Environment env) {
+    private static Value show(ArgumentList args, Scope scope) {
         System.out.println(args.target());
         return LNull.NULL;
     }

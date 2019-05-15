@@ -1,6 +1,7 @@
 package instruction;
 
-import execute.Environment;
+import execute.Program;
+import execute.Scope;
 import expression.Expression;
 
 public class ReturnInstruction implements Instruction {
@@ -12,11 +13,11 @@ public class ReturnInstruction implements Instruction {
     }
 
     @Override
-    public void execute(Environment env) {
+    public void execute(Scope scope) {
         if (value != null) {
-            env.setReturnValue(value.evaluate(env));
+            scope.setReturnValue(value.evaluate(scope));
         }
-        env.setCounter(env.getReturnStack().pop());
+        Program.PROGRAM.setCounter(scope.getReturnAddress());
     }
 
 }

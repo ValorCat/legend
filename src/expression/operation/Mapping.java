@@ -1,7 +1,7 @@
 package expression.operation;
 
+import execute.Scope;
 import expression.value.Value;
-import execute.Environment;
 import parse.Token;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class Mapping extends Operation {
     }
 
     @Override
-    public Value evaluate(Environment env) {
+    public Value evaluate(Scope scope) {
         throw new RuntimeException("Unexpected ':' in expression");
     }
 

@@ -1,6 +1,7 @@
 package instruction;
 
-import execute.Environment;
+import execute.Program;
+import execute.Scope;
 import expression.Expression;
 
 public class PushStackInstruction implements Instruction {
@@ -12,8 +13,8 @@ public class PushStackInstruction implements Instruction {
     }
 
     @Override
-    public void execute(Environment env) {
-        env.getStack().push(value.evaluate(env));
+    public void execute(Scope scope) {
+        Program.PROGRAM.getStack().push(value.evaluate(scope));
     }
 
 }

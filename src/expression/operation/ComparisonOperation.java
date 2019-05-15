@@ -1,8 +1,8 @@
 package expression.operation;
 
+import execute.Scope;
 import expression.value.LBoolean;
 import expression.value.Value;
-import execute.Environment;
 import parse.Token;
 
 import java.util.List;
@@ -26,9 +26,9 @@ public class ComparisonOperation extends Operation {
     }
 
     @Override
-    public Value evaluate(Environment env) {
-        int left = operands.get(0).evaluate(env).asInteger();
-        int right = operands.get(1).evaluate(env).asInteger();
+    public Value evaluate(Scope scope) {
+        int left = operands.get(0).evaluate(scope).asInteger();
+        int right = operands.get(1).evaluate(scope).asInteger();
         boolean result = OPERATIONS.get(operator).test(left, right);
         return LBoolean.resolve(result);
     }

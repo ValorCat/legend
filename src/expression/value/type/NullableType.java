@@ -1,6 +1,6 @@
 package expression.value.type;
 
-import execute.Environment;
+import execute.Scope;
 import expression.group.ArgumentList;
 import expression.value.LNull;
 import expression.value.Value;
@@ -18,8 +18,8 @@ public class NullableType extends Type {
     }
 
     @Override
-    public Value instantiate(ArgumentList args, Environment env) {
-        return wrappedType.instantiate(args, env);
+    public Value instantiate(ArgumentList args, Scope scope) {
+        return wrappedType.instantiate(args, scope);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class NullableType extends Type {
 
     @Override
     public boolean encompasses(Type other) {
-        return wrappedType.encompasses(other) || other == LNull.NULL_TYPE;
+        return wrappedType.encompasses(other) || other == LNull.NULL.type();
     }
 
     @Override

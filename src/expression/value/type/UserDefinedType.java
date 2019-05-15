@@ -1,6 +1,6 @@
 package expression.value.type;
 
-import execute.Environment;
+import execute.Scope;
 import expression.group.ArgumentList;
 import expression.value.LObject;
 import expression.value.Value;
@@ -20,7 +20,7 @@ public class UserDefinedType extends Type {
     }
 
     @Override
-    public Value instantiate(ArgumentList args, Environment env) {
+    public Value instantiate(ArgumentList args, Scope scope) {
         if (!args.keywords().isEmpty()) {
             throw new RuntimeException("Type '" + getName() + "' does not accept keyword arguments");
         }

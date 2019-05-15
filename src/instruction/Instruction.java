@@ -1,9 +1,9 @@
 package instruction;
 
-import execute.Environment;
+import execute.Scope;
 
 public interface Instruction {
 
-    void execute(Environment env);
+    void execute(Scope scope);
 
 }

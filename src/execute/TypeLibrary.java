@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * Maintain the list of built-in datatypes. These are loaded into the global
- * environment at runtime when this class is loaded.
+ * namespace at runtime when this class is loaded.
  * @see library
  * @since 3/28/19
  */
@@ -32,11 +32,11 @@ public class TypeLibrary {
        O(1) type name resolution */
     private static final Map<String, BuiltinType> BUILTIN_TYPES = new HashMap<>();
 
-    static {
-        // add the standard library types to the global environment
+    public static void updateNamespace(Scope namespace) {
+        // add the standard library types to the global namespace
         for (BuiltinType type : BUILTIN_TYPE_ARRAY) {
             BUILTIN_TYPES.put(type.getName(), type);
-            Environment.GLOBAL.assignLocal(type.getName(), type);
+            namespace.setLocalVariable(type.getName(), type);
         }
     }
 

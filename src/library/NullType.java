@@ -1,6 +1,6 @@
 package library;
 
-import execute.Environment;
+import execute.Scope;
 import expression.group.ArgumentList;
 import expression.value.LNull;
 import expression.value.Value;
@@ -14,7 +14,7 @@ public class NullType extends BuiltinType {
                 new BuiltinFunction("show", NullType::show));
     }
 
-    private static Value show(ArgumentList args, Environment env) {
+    private static Value show(ArgumentList args, Scope scope) {
         System.out.println(args.target());
         return LNull.NULL;
     }

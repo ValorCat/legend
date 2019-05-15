@@ -1,6 +1,7 @@
 package statement;
 
-import execute.Environment;
+import execute.Program;
+import execute.Scope;
 import parse.Parser;
 import parse.Token;
 import parse.error.ErrorLog;
@@ -27,9 +28,9 @@ public class EndStatement implements Statement {
     }
 
     @Override
-    public void execute(Environment env) {
-        Stack<FlowController> stack = env.getControlStack();
-        if (stack.peek().isDone(env)) {
+    public void execute(Scope scope) {
+        Stack<FlowController> stack = Program.PROGRAM.getControlStack();
+        if (stack.peek().isDone(scope)) {
             stack.pop();
         }
     }

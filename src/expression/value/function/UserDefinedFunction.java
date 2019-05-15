@@ -1,6 +1,6 @@
 package expression.value.function;
 
-import execute.Environment;
+import execute.Scope;
 import expression.group.ArgumentList;
 import expression.value.Value;
 import statement.structure.FunctionDefinition;
@@ -18,8 +18,8 @@ public class UserDefinedFunction extends LFunction {
     }
 
     @Override
-    public Value call(ArgumentList args, Environment env) {
-        return body.call(args, env);
+    public Value call(ArgumentList args, Scope scope) {
+        return body.call(args);
     }
 
     @Override

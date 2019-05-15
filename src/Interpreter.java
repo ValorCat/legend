@@ -1,5 +1,4 @@
-import execute.Environment;
-import execute.Executor;
+import execute.Program;
 import expression.value.LNull;
 import expression.value.Value;
 import parse.Lexer;
@@ -21,7 +20,7 @@ import java.util.List;
  * Interpretation is a three-step process:
  * <ol><li>The source code is divided into tokens and statements by the {@link Lexer} class.
  * <li>The statements are parsed into syntax trees by the {@link parse.Parser} class.
- * <li>The syntax trees are traversed and executed by the {@link execute.Executor} class.</ol>
+ * <li>The syntax trees are traversed and executed by the {@link execute.Program} class.</ol>
  * @since 1/15/2019
  */
 public class Interpreter {
@@ -71,10 +70,9 @@ public class Interpreter {
             return;
         }
 
-        Environment.GLOBAL.setProgram(statements);
-        Executor.execute(Environment.GLOBAL);
+        Program.PROGRAM = new Program(statements);
+        Value returnValue = Program.PROGRAM.execute();
 
-        Value returnValue = Environment.GLOBAL.getReturnValue();
         if (returnValue != LNull.NULL) {
             System.out.println("Program returned value: " + returnValue.asString());
         }

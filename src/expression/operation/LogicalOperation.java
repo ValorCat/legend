@@ -1,8 +1,8 @@
 package expression.operation;
 
+import execute.Scope;
 import expression.value.LBoolean;
 import expression.value.Value;
-import execute.Environment;
 import parse.Token;
 
 import java.util.List;
@@ -25,9 +25,9 @@ public class LogicalOperation extends Operation {
     }
 
     @Override
-    public Value evaluate(Environment env) {
-        boolean left = operands.get(0).evaluate(env).asBoolean();
-        boolean right = operands.get(1).evaluate(env).asBoolean();
+    public Value evaluate(Scope scope) {
+        boolean left = operands.get(0).evaluate(scope).asBoolean();
+        boolean right = operands.get(1).evaluate(scope).asBoolean();
         boolean result = OPERATIONS.get(operator).test(left, right);
         return LBoolean.resolve(result);
     }

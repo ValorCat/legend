@@ -1,6 +1,6 @@
 package library;
 
-import execute.Environment;
+import execute.Scope;
 import expression.group.ArgumentList;
 import expression.value.*;
 import expression.value.function.BuiltinFunction;
@@ -26,12 +26,12 @@ public class ListType extends BuiltinType {
     }
 
     @Override
-    protected Value initialize(ArgumentList args, Environment env) {
+    protected Value initialize(ArgumentList args, Scope scope) {
         List<Value> javaList = new ArrayList<>(Arrays.asList(args.args()));
         return new LObject(Type.of("List"), new LNative(javaList));
     }
 
-    private static Value max(ArgumentList args, Environment env) {
+    private static Value max(ArgumentList args, Scope scope) {
         Value[] list = args.target().getAttributes();
         if (list.length == 0) {
             throw new RuntimeException("Cannot compute maximum of empty list");
@@ -39,7 +39,7 @@ public class ListType extends BuiltinType {
         ToIntFunction<Value> comparator = Value::asInteger;
         if (args.size() >= 1) {
             LFunction keyExtractor = ((LFunction) args.arg(0));
-            comparator = e -> keyExtractor.call(env, e).asInteger();
+            comparator = e -> keyExtractor.call(scope, e).asInteger();
         }
         Value max = list[0];
         int maxComparison = comparator.applyAsInt(max);
@@ -51,12 +51,12 @@ public class ListType extends BuiltinType {
         return max;
     }
 
-    private static Value show(ArgumentList args, Environment env) {
+    private static Value show(ArgumentList args, Scope scope) {
         System.out.println(args.target().getAttribute("*list").asNative());
         return LNull.NULL;
     }
 
-    private static Value metaIndex(ArgumentList args, Environment env) {
+    private static Value metaIndex(ArgumentList args, Scope scope) {
         int index = args.arg(0).asInteger();
         List list = (List) args.target().getAttribute("*list").asNative();
         if (index >= 0 && index < list.size()) {
@@ -66,14 +66,14 @@ public class ListType extends BuiltinType {
                 + list.size() + " item(s)");
     }
 
-    private static Value metaLoop(ArgumentList args, Environment env) {
-        LFunction hasNext = new BuiltinFunction("has_next", (_args, _env) -> {
+    private static Value metaLoop(ArgumentList args, Scope scope) {
+        LFunction hasNext = new BuiltinFunction("has_next", (_args, _scope) -> {
             int index = _args.target().getAttribute("position").asInteger();
             Object javaList = _args.target().getAttribute("values").getAttribute("*list").asNative();
             int size = ((Collection) javaList).size();
             return LBoolean.resolve(index < size);
         });
-        LFunction getNext = new BuiltinFunction("next", (_args, _env) -> {
+        LFunction getNext = new BuiltinFunction("next", (_args, _scope) -> {
             int index = _args.target().getAttribute("position").asInteger();
             Object javaList = _args.target().getAttribute("values").getAttribute("*list").asNative();
             _args.target().setAttribute("position", new LInteger(index + 1));
@@ -81,10 +81,10 @@ public class ListType extends BuiltinType {
             return (Value) (((List) javaList).get(index));
         });
         return Type.of("Iterator").instantiate(
-                new ArgumentList(args.target(), new LInteger(0), hasNext, getNext), env);
+                new ArgumentList(args.target(), new LInteger(0), hasNext, getNext), scope);
     }
 
-    private static Value metaSize(ArgumentList args, Environment env) {
+    private static Value metaSize(ArgumentList args, Scope scope) {
         return new LInteger(((Collection) args.target().getAttribute("*list").asNative()).size());
     }
 

@@ -1,6 +1,6 @@
 package instruction;
 
-import execute.Environment;
+import execute.Scope;
 import expression.Expression;
 
 public class EvaluateInstruction implements Instruction {
@@ -12,8 +12,8 @@ public class EvaluateInstruction implements Instruction {
     }
 
     @Override
-    public void execute(Environment env) {
-        value.evaluate(env);
+    public void execute(Scope scope) {
+        value.evaluate(scope);
     }
 
 }

@@ -1,6 +1,6 @@
 package statement;
 
-import execute.Environment;
+import execute.Scope;
 import parse.Token;
 import parse.error.ErrorLog;
 
@@ -21,7 +21,7 @@ public class PrintString implements Statement {
     }
 
     @Override
-    public void execute(Environment env) {
+    public void execute(Scope scope) {
         System.out.println(content);
     }
 

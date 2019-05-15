@@ -1,6 +1,7 @@
 package statement.structure;
 
-import execute.Environment;
+import execute.Program;
+import execute.Scope;
 import expression.Expression;
 import expression.value.LBoolean;
 import parse.Parser;
@@ -30,19 +31,19 @@ public class IfStatement implements FlowController {
     }
 
     @Override
-    public void execute(Environment env) {
-        if (env.getCounter() != startAddress) {
+    public void execute(Scope scope) {
+        if (Program.PROGRAM.getCounter() != startAddress) {
             // we're at an elsif or else branch, which means we finished the
             // branch that executed, so we can jump straight to the end
-            env.setCounter(endAddress);
+            Program.PROGRAM.setCounter(endAddress);
         } else {
             // if we don't find a branch to jump to, we should go to the end
-            env.setCounter(endAddress);
-            env.getControlStack().push(this);
+            Program.PROGRAM.setCounter(endAddress);
+            Program.PROGRAM.getControlStack().push(this);
             for (Entry<Expression, Integer> branch : branches.entrySet()) {
-                if (branch.getKey().evaluate(env).asBoolean()) {
+                if (branch.getKey().evaluate(scope).asBoolean()) {
                     // a branch was found, so we'll jump there instead
-                    env.setCounter(branch.getValue() + 1);
+                    Program.PROGRAM.setCounter(branch.getValue() + 1);
                     break;
                 }
             }
@@ -50,7 +51,7 @@ public class IfStatement implements FlowController {
     }
 
     @Override
-    public boolean isDone(Environment env) {
+    public boolean isDone(Scope scope) {
         return true;
     }
 

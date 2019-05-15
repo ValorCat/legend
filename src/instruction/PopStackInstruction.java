@@ -1,12 +1,13 @@
 package instruction;
 
-import execute.Environment;
+import execute.Program;
+import execute.Scope;
 
 public class PopStackInstruction implements Instruction {
 
     @Override
-    public void execute(Environment env) {
-        env.getStack().pop();
+    public void execute(Scope scope) {
+        Program.PROGRAM.getStack().pop();
     }
 
 }

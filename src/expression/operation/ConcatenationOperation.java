@@ -1,8 +1,8 @@
 package expression.operation;
 
+import execute.Scope;
 import expression.value.LString;
 import expression.value.Value;
-import execute.Environment;
 import parse.Token;
 
 import java.util.List;
@@ -17,9 +17,9 @@ public class ConcatenationOperation extends Operation {
     }
 
     @Override
-    public Value evaluate(Environment env) {
-        Value left = operands.get(0).evaluate(env);
-        Value right = operands.get(1).evaluate(env);
+    public Value evaluate(Scope scope) {
+        Value left = operands.get(0).evaluate(scope);
+        Value right = operands.get(1).evaluate(scope);
         return new LString(left.asString() + right.asString());
     }
 

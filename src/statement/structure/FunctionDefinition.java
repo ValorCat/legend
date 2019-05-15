@@ -1,7 +1,7 @@
 package statement.structure;
 
-import execute.Environment;
-import execute.Executor;
+import execute.Program;
+import execute.Scope;
 import expression.group.ArgumentList;
 import expression.group.ParameterList;
 import expression.group.Parentheses;
@@ -11,7 +11,6 @@ import parse.Parser;
 import parse.Token;
 import parse.Token.TokenType;
 import parse.error.ErrorLog;
-import statement.Statement;
 
 import java.util.List;
 import java.util.StringJoiner;
@@ -25,6 +24,7 @@ public class FunctionDefinition implements FlowController {
 
     private String name;
     private ParameterList params;
+    private Scope parentScope;
     private int startAddress, endAddress;
 
     public FunctionDefinition(List<Token> tokens, Parser parser) {
@@ -43,24 +43,24 @@ public class FunctionDefinition implements FlowController {
     is executed later, the call method is run instead.
      */
     @Override
-    public void execute(Environment env) {
-        startAddress = env.getCounter();
-        env.assign(name, new UserDefinedFunction(name, this));
-        env.setCounter(endAddress + 1);
+    public void execute(Scope scope) {
+        parentScope = scope;
+        startAddress = Program.PROGRAM.getCounter();
+        Program.PROGRAM.getControlStack().push(this);
+        scope.setLocalVariable(name, new UserDefinedFunction(name, this));
+        Program.PROGRAM.setCounter(endAddress + 1);
     }
 
-    public Value call(ArgumentList args, Environment env) {
-        List<Statement> body = env.getSubroutine(startAddress + 1, endAddress);
-        Environment newScope = new Environment(body, startAddress + 1);
-        params.accept(args, newScope);
-        Executor.execute(newScope);
-        return newScope.getReturnValue();
+    public Value call(ArgumentList args) {
+        Scope newScope = new Scope(parentScope, Program.PROGRAM.getCounter());
+        params.accept(args, parentScope, newScope);
+        return Program.PROGRAM.executeSubroutine(startAddress + 1, endAddress, newScope);
     }
 
-    /* This method should never be called. */
     @Override
-    public boolean isDone(Environment env) {
-        throw new IllegalStateException("Cannot call isDone() on user-defined function");
+    public boolean isDone(Scope scope) {
+        Program.PROGRAM.setCounter(scope.getReturnAddress());
+        return true;
     }
 
     @Override

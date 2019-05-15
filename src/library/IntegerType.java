@@ -1,6 +1,6 @@
 package library;
 
-import execute.Environment;
+import execute.Scope;
 import expression.group.ArgumentList;
 import expression.value.LNull;
 import expression.value.Value;
@@ -16,14 +16,14 @@ public class IntegerType extends BuiltinType {
                 new BuiltinFunction("to", IntegerType::to));
     }
 
-    private static Value show(ArgumentList args, Environment env) {
+    private static Value show(ArgumentList args, Scope scope) {
         System.out.println(args.target());
         return LNull.NULL;
     }
 
-    private static Value to(ArgumentList args, Environment env) {
+    private static Value to(ArgumentList args, Scope scope) {
         ArgumentList bounds = new ArgumentList(args.target(), args.arg(0));
-        return Type.of("Range").instantiate(bounds, env);
+        return Type.of("Range").instantiate(bounds, scope);
     }
 
 }

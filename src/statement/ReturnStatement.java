@@ -1,6 +1,7 @@
 package statement;
 
-import execute.Environment;
+import execute.Program;
+import execute.Scope;
 import expression.Expression;
 import expression.value.LNull;
 import parse.Token;
@@ -28,9 +29,9 @@ public class ReturnStatement implements Statement {
 
 
     @Override
-    public void execute(Environment env) {
-        env.setReturnValue(value.evaluate(env));
-        env.setCounter(Integer.MAX_VALUE);
+    public void execute(Scope scope) {
+        scope.setReturnValue(value.evaluate(scope));
+        Program.PROGRAM.setCounter(scope.getReturnAddress());
     }
 
     @Override

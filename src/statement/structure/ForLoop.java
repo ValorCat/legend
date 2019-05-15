@@ -1,6 +1,7 @@
 package statement.structure;
 
-import execute.Environment;
+import execute.Program;
+import execute.Scope;
 import expression.Expression;
 import expression.group.ArgumentList;
 import expression.value.Value;
@@ -36,22 +37,22 @@ public class ForLoop implements FlowController {
     }
 
     @Override
-    public void execute(Environment env) {
-        iterator = getIterator(iterable.evaluate(env), env);
-        if (hasNext(env)) {
-            env.getControlStack().push(this);
-            startAddress = env.getCounter();
-            env.assignLocal(variable, getNext(env));
+    public void execute(Scope scope) {
+        iterator = getIterator(iterable.evaluate(scope), scope);
+        if (hasNext(scope)) {
+            Program.PROGRAM.getControlStack().push(this);
+            startAddress = Program.PROGRAM.getCounter();
+            scope.setLocalVariable(variable, getNext(scope));
         } else {
-            env.setCounter(endAddress + 1);
+            Program.PROGRAM.setCounter(endAddress + 1);
         }
     }
 
     @Override
-    public boolean isDone(Environment env) {
-        if (hasNext(env)) {
-            env.assignLocal(variable, getNext(env));
-            env.setCounter(startAddress + 1);
+    public boolean isDone(Scope scope) {
+        if (hasNext(scope)) {
+            scope.setLocalVariable(variable, getNext(scope));
+            Program.PROGRAM.setCounter(startAddress + 1);
             return false;
         } else {
             return true;
@@ -76,16 +77,16 @@ public class ForLoop implements FlowController {
         return "for(" + variable + " " + iterable + ")";
     }
 
-    private boolean hasNext(Environment env) {
-        return iterator.callMethod("has_next", env).asBoolean();
+    private boolean hasNext(Scope scope) {
+        return iterator.callMethod("has_next", scope).asBoolean();
     }
 
-    private Value getNext(Environment env) {
-        return iterator.callMethod("next", env);
+    private Value getNext(Scope scope) {
+        return iterator.callMethod("next", scope);
     }
 
-    private static Value getIterator(Value iterable, Environment env) {
-        Value iterator = iterable.callMetamethod("_loop", new ArgumentList(), env, "for loop target");
+    private static Value getIterator(Value iterable, Scope scope) {
+        Value iterator = iterable.callMetamethod("_loop", new ArgumentList(), scope, "for loop target");
         if (!iterator.isType("Iterator")) {
             throw new RuntimeException("Expected for loop target's '_loop' method to return an iterator, got "
                     + "value of type '" + iterator.type().getName() + "' instead");

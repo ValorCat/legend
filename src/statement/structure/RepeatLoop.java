@@ -1,6 +1,7 @@
 package statement.structure;
 
-import execute.Environment;
+import execute.Program;
+import execute.Scope;
 import parse.Parser;
 import parse.Token;
 import parse.error.ErrorLog;
@@ -23,14 +24,14 @@ public class RepeatLoop implements FlowController {
     }
 
     @Override
-    public void execute(Environment env) {
-        env.getControlStack().push(this);
-        startIndex = env.getCounter();
+    public void execute(Scope scope) {
+        Program.PROGRAM.getControlStack().push(this);
+        startIndex = Program.PROGRAM.getCounter();
     }
 
     @Override
-    public boolean isDone(Environment env) {
-        env.setCounter(startIndex + 1);
+    public boolean isDone(Scope scope) {
+        Program.PROGRAM.setCounter(startIndex + 1);
         return false;
     }
 

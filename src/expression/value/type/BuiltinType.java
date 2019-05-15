@@ -1,6 +1,6 @@
 package expression.value.type;
 
-import execute.Environment;
+import execute.Scope;
 import expression.group.ArgumentList;
 import expression.value.LObject;
 import expression.value.Value;
@@ -20,8 +20,8 @@ public abstract class BuiltinType extends Type {
     }
 
     @Override
-    public Value instantiate(ArgumentList args, Environment env) {
-        Value instance = initialize(args, env);
+    public Value instantiate(ArgumentList args, Scope scope) {
+        Value instance = initialize(args, scope);
         if (instance == null) {
             return new LObject(this, args.args());
         }
@@ -37,7 +37,7 @@ public abstract class BuiltinType extends Type {
     @Override
     public void deanonymize(String name) {}
 
-    protected Value initialize(ArgumentList args, Environment env) {
+    protected Value initialize(ArgumentList args, Scope scope) {
         if (!args.keywords().isEmpty()) {
             throw new RuntimeException("Type '" + getName() + "' does not accept keyword arguments");
         }

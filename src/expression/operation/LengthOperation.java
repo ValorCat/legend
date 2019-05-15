@@ -1,6 +1,6 @@
 package expression.operation;
 
-import execute.Environment;
+import execute.Scope;
 import expression.group.ArgumentList;
 import expression.value.Value;
 import parse.Token;
@@ -23,11 +23,11 @@ public class LengthOperation extends Operation {
     }
 
     @Override
-    public Value evaluate(Environment env) {
-        Value operand = operands.get(0).evaluate(env);
+    public Value evaluate(Scope scope) {
+        Value operand = operands.get(0).evaluate(scope);
         ArgumentList args = new ArgumentList();
         args.setTarget(operand);
-        return operand.callMetamethod("_size", args, env, "target of # operator");
+        return operand.callMetamethod("_size", args, scope, "target of # operator");
     }
 
 }

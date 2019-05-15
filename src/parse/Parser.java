@@ -86,8 +86,9 @@ public class Parser {
                 if (controlStack.isEmpty()) {
                     throw ErrorLog.raise(BAD_JUMP_POINT, "Unexpected keyword '%s'", tokens.get(0));
                 }
-                controlStack.peek().setJumpPoint(tokens, this);
-                break;
+                FlowController struct = controlStack.peek();
+                struct.setJumpPoint(tokens, this);
+                return struct;
         }
 
         if (statement != null) {

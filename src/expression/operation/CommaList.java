@@ -1,6 +1,6 @@
 package expression.operation;
 
-import execute.Environment;
+import execute.Scope;
 import expression.Expression;
 import expression.value.Value;
 import parse.Token;
@@ -29,7 +29,7 @@ public class CommaList extends Operation {
     }
 
     @Override
-    public Value evaluate(Environment env) {
+    public Value evaluate(Scope scope) {
         throw new RuntimeException("Unexpected ',' in expression");
     }
 

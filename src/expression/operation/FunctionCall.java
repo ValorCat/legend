@@ -1,6 +1,6 @@
 package expression.operation;
 
-import execute.Environment;
+import execute.Scope;
 import expression.group.ArgumentList;
 import expression.group.Parentheses;
 import expression.value.Attribute;
@@ -21,21 +21,21 @@ public class FunctionCall extends Operation {
     }
 
     @Override
-    public Value evaluate(Environment env) {
-        Value executable = operands.get(0).evaluate(env);
-        ArgumentList arguments = new ArgumentList((Parentheses) operands.get(1), env);
+    public Value evaluate(Scope scope) {
+        Value executable = operands.get(0).evaluate(scope);
+        ArgumentList arguments = new ArgumentList((Parentheses) operands.get(1), scope);
         if (executable.hasOwner()) {
             arguments.setTarget(executable.getOwner());
             executable = ((Attribute) executable).getValue();
         }
-        return call(executable, arguments, env);
+        return call(executable, arguments, scope);
     }
 
-    public static Value call(Value executable, ArgumentList args, Environment env) {
+    public static Value call(Value executable, ArgumentList args, Scope scope) {
         if (executable.isType("Function")) {
-            return ((LFunction) executable).call(args, env);
+            return ((LFunction) executable).call(args, scope);
         } else if (executable.isType("Type")) {
-            return ((Type) executable).instantiate(args, env);
+            return ((Type) executable).instantiate(args, scope);
         }
         throw new RuntimeException("Cannot execute object of type '" + executable.type().getName() + "'");
     }

@@ -1,9 +1,9 @@
 package expression.operation;
 
+import execute.Scope;
 import expression.group.ArgumentList;
 import expression.value.Attribute;
 import expression.value.Value;
-import execute.Environment;
 import parse.Token;
 
 import java.util.List;
@@ -18,11 +18,11 @@ public class BinaryOperatorCall extends Operation {
     }
 
     @Override
-    public Value evaluate(Environment env) {
+    public Value evaluate(Scope scope) {
         // X biop Y is equivalent to X(Y)
 
-        Value executable = operands.get(0).evaluate(env);
-        Value arg = operands.get(1).evaluate(env);
+        Value executable = operands.get(0).evaluate(scope);
+        Value arg = operands.get(1).evaluate(scope);
         ArgumentList arguments = new ArgumentList(arg);
 
         if (executable.hasOwner()) {
@@ -30,7 +30,7 @@ public class BinaryOperatorCall extends Operation {
             executable = ((Attribute) executable).getValue();
         }
 
-        return FunctionCall.call(executable, arguments, env);
+        return FunctionCall.call(executable, arguments, scope);
     }
 
 }

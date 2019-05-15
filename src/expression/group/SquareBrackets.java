@@ -1,6 +1,6 @@
 package expression.group;
 
-import execute.Environment;
+import execute.Scope;
 import expression.Expression;
 import expression.value.Value;
 
@@ -18,8 +18,8 @@ public class SquareBrackets implements Expression {
     }
 
     @Override
-    public Value evaluate(Environment env) {
-        contents.evaluate(env);
+    public Value evaluate(Scope scope) {
+        contents.evaluate(scope);
         throw new RuntimeException("Missing index target before []");
     }
 

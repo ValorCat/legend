@@ -1,6 +1,6 @@
 package instruction;
 
-import execute.Environment;
+import execute.Scope;
 
 public class PrintInstruction implements Instruction {
 
@@ -11,7 +11,7 @@ public class PrintInstruction implements Instruction {
     }
 
     @Override
-    public void execute(Environment env) {
+    public void execute(Scope scope) {
         System.out.println(value);
     }
 

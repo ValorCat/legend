@@ -1,6 +1,6 @@
 package expression.group;
 
-import execute.Environment;
+import execute.Scope;
 import expression.Expression;
 import expression.operation.FunctionCall;
 import expression.value.Value;
@@ -34,7 +34,7 @@ public class ParameterList {
         }
     }
 
-    public void accept(ArgumentList args, Environment env) {
+    public void accept(ArgumentList args, Scope defScope, Scope funcScope) {
         if (args.size() != params.length) {
             throw new RuntimeException(String.format("Function '%s' requires %d arguments but received %d",
                     name, params.length, args.size()));
@@ -42,13 +42,13 @@ public class ParameterList {
         for (int i = 0; i < args.size(); i++) {
             Value arg = args.arg(i);
             if (bounds[i] != null) {
-                Value bound = bounds[i].evaluate(env);
-                if (!withinBound(arg, bound, env)) {
+                Value bound = bounds[i].evaluate(defScope);
+                if (!withinBound(arg, bound, defScope)) {
                     throw new RuntimeException(String.format("Argument #%d (%s) of function '%s' is out of bounds: %s",
                             i + 1, arg.asString(), name, bound.asString()));
                 }
             }
-            env.assignLocal(params[i], args.arg(i));
+            funcScope.setLocalVariable(params[i], args.arg(i));
         }
     }
 
@@ -56,12 +56,12 @@ public class ParameterList {
         return params;
     }
 
-    private boolean withinBound(Value value, Expression boundExpr, Environment env) {
-        Value bound = boundExpr.evaluate(env);
+    private boolean withinBound(Value value, Expression boundExpr, Scope scope) {
+        Value bound = boundExpr.evaluate(scope);
         switch (bound.type().getName()) {
             case "Type":     return ((Type) bound).encompasses(value.type());
-            case "Range":    return bound.callMethod("contains", env, value).asBoolean();
-            case "Function": return FunctionCall.call(bound, new ArgumentList(value), env).asBoolean();
+            case "Range":    return bound.callMethod("contains", scope, value).asBoolean();
+            case "Function": return FunctionCall.call(bound, new ArgumentList(value), scope).asBoolean();
             default: throw new RuntimeException(String.format("Invalid bound '%s' (type %s) for function '%s'",
                     bound, bound.type().getName(), name));
         }

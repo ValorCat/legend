@@ -1,6 +1,6 @@
 package statement.structure;
 
-import execute.Environment;
+import execute.Scope;
 import parse.Parser;
 import parse.Token;
 import parse.error.ErrorLog;
@@ -22,10 +22,10 @@ public interface FlowController extends Statement {
      * Check if this flow control structure is done and should be popped
      * from the stack. This is called when an 'end' statement is reached
      * during execution.
-     * @param env the environment
+     * @param scope the scope
      * @return whether this structure is done
      */
-    boolean isDone(Environment env);
+    boolean isDone(Scope scope);
 
     /**
      * Add a new jump destination to this flow control structure. A jump

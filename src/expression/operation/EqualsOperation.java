@@ -1,8 +1,8 @@
 package expression.operation;
 
+import execute.Scope;
 import expression.value.LBoolean;
 import expression.value.Value;
-import execute.Environment;
 import parse.Token;
 
 import java.util.List;
@@ -20,9 +20,9 @@ public class EqualsOperation extends Operation {
     }
 
     @Override
-    public Value evaluate(Environment env) {
-        Value left = operands.get(0).evaluate(env);
-        Value right = operands.get(1).evaluate(env);
+    public Value evaluate(Scope scope) {
+        Value left = operands.get(0).evaluate(scope);
+        Value right = operands.get(1).evaluate(scope);
         if (left.type() == right.type()) {
             // operands are same type, so we can do (left==right) XOR (negate)
             return LBoolean.resolve(left.equals(right) != NEGATE);

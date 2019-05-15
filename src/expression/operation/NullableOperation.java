@@ -1,6 +1,6 @@
 package expression.operation;
 
-import execute.Environment;
+import execute.Scope;
 import expression.value.Value;
 import expression.value.type.NullableType;
 import expression.value.type.Type;
@@ -24,8 +24,8 @@ public class NullableOperation extends Operation {
     }
 
     @Override
-    public Value evaluate(Environment env) {
-        Value type = operands.get(0).evaluate(env);
+    public Value evaluate(Scope scope) {
+        Value type = operands.get(0).evaluate(scope);
         if (!type.isType("Type")) {
             throw new RuntimeException("Cannot apply '?' operator to object of type '" + type.type().getName() + "'");
         }

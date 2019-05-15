@@ -1,8 +1,8 @@
 package expression;
 
-import statement.Statement;
+import execute.Scope;
 import expression.value.Value;
-import execute.Environment;
+import statement.Statement;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,10 +16,10 @@ public interface Expression extends Statement {
 
     /**
      * Execute this expression, also executing any sub-expressions as necessary.
-     * @param env the environment in which to execute this expression
+     * @param scope the scope in which to execute this expression
      * @return the value that this expression resolved to
      */
-    Value evaluate(Environment env);
+    Value evaluate(Scope scope);
 
     /**
      * Determine if this expression's root is equal to a particular string.
@@ -48,8 +48,8 @@ public interface Expression extends Statement {
     }
 
     @Override
-    default void execute(Environment env) {
-        evaluate(env);
+    default void execute(Scope scope) {
+        evaluate(scope);
     }
 
 }

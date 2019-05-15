@@ -1,6 +1,6 @@
 package expression.value;
 
-import execute.Environment;
+import execute.Scope;
 import expression.Expression;
 import expression.group.ArgumentList;
 import expression.operation.FunctionCall;
@@ -26,7 +26,7 @@ public abstract class Value implements Expression {
     }
 
     @Override
-    public Value evaluate(Environment env) {
+    public Value evaluate(Scope scope) {
         return this;
     }
 
@@ -67,14 +67,14 @@ public abstract class Value implements Expression {
         type().setAttribute(name, this, value);
     }
 
-    public Value callMethod(String name, Environment env, Value... args) {
+    public Value callMethod(String name, Scope scope, Value... args) {
         Value method = getAttribute(name);
         ArgumentList argList = new ArgumentList(args);
         argList.setTarget(this);
-        return FunctionCall.call(method, argList, env);
+        return FunctionCall.call(method, argList, scope);
     }
 
-    public Value callMetamethod(String name, ArgumentList args, Environment env, String targetDesc) {
+    public Value callMetamethod(String name, ArgumentList args, Scope scope, String targetDesc) {
         Value method;
         try {
             method = type().getAttribute(name, this);
@@ -86,7 +86,7 @@ public abstract class Value implements Expression {
                     + method.type().getName());
         }
         args.setTarget(this);
-        return FunctionCall.call(method, args, env);
+        return FunctionCall.call(method, args, scope);
     }
 
     public Value[] getAttributes() {

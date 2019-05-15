@@ -1,8 +1,8 @@
 package expression.operation;
 
+import execute.Scope;
 import expression.group.ArgumentList;
 import expression.value.Value;
-import execute.Environment;
 import parse.Token;
 
 import java.util.List;
@@ -17,17 +17,17 @@ public class UnaryOperatorCall extends Operation {
     }
 
     @Override
-    public Value evaluate(Environment env) {
+    public Value evaluate(Scope scope) {
         // X unop Y is equivalent to X.Y()
 
-        Value target = operands.get(0).evaluate(env);
+        Value target = operands.get(0).evaluate(scope);
         String attribute = operands.get(1).getIdentifier();
 
         Value executable = target.getAttribute(attribute);
         ArgumentList arguments = new ArgumentList();
         arguments.setTarget(target);
 
-        return FunctionCall.call(executable, arguments, env);
+        return FunctionCall.call(executable, arguments, scope);
     }
 
 }

@@ -1,6 +1,6 @@
 package expression;
 
-import execute.Environment;
+import execute.Scope;
 import expression.value.Value;
 
 /**
@@ -15,8 +15,8 @@ public class Variable implements Expression {
     }
 
     @Override
-    public Value evaluate(Environment env) {
-        return env.fetch(name);
+    public Value evaluate(Scope scope) {
+        return scope.getVariableValue(name);
     }
 
     @Override

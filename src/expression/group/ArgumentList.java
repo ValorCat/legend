@@ -1,6 +1,6 @@
 package expression.group;
 
-import execute.Environment;
+import execute.Scope;
 import expression.Expression;
 import expression.value.Value;
 
@@ -28,14 +28,14 @@ public class ArgumentList {
         this.keywords = Map.of();
     }
 
-    public ArgumentList(Parentheses args, Environment env) {
+    public ArgumentList(Parentheses args, Scope scope) {
         List<Value> argsList = new ArrayList<>();
         keywords = new HashMap<>();
         for (Expression child : args.getContents()) {
             if (child.matches(":")) {
-                handleKeyword(child, env);
+                handleKeyword(child, scope);
             } else if (keywords.isEmpty()) {
-                handleArgument(child, env, argsList);
+                handleArgument(child, scope, argsList);
             } else {
                 throw new RuntimeException("Sequential args must precede keyword args");
             }
@@ -43,13 +43,13 @@ public class ArgumentList {
         this.args = argsList.toArray(new Value[0]);
     }
 
-    private void handleArgument(Expression expr, Environment env, List<Value> argsList) {
-        argsList.add(expr.evaluate(env));
+    private void handleArgument(Expression expr, Scope scope, List<Value> argsList) {
+        argsList.add(expr.evaluate(scope));
     }
 
-    private void handleKeyword(Expression expr, Environment env) {
+    private void handleKeyword(Expression expr, Scope scope) {
         List<Expression> children = expr.getChildren();
-        keywords.put(children.get(0).getIdentifier(), children.get(1).evaluate(env));
+        keywords.put(children.get(0).getIdentifier(), children.get(1).evaluate(scope));
     }
 
     public Value arg(int index) {

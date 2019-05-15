@@ -1,9 +1,9 @@
 package expression.group;
 
+import execute.Scope;
 import expression.Expression;
 import expression.operation.CommaList;
 import expression.value.Value;
-import execute.Environment;
 
 import java.util.List;
 
@@ -19,8 +19,8 @@ public class Parentheses implements Expression {
     }
 
     @Override
-    public Value evaluate(Environment env) {
-        return contents.evaluate(env);
+    public Value evaluate(Scope scope) {
+        return contents.evaluate(scope);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class Parentheses implements Expression {
     public static final Parentheses EMPTY_PARENS = new Parentheses(null) {
 
         @Override
-        public Value evaluate(Environment env) {
+        public Value evaluate(Scope scope) {
             throw new RuntimeException("Unexpected symbol '()'");
         }
 

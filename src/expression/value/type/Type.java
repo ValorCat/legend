@@ -1,6 +1,6 @@
 package expression.value.type;
 
-import execute.Environment;
+import execute.Scope;
 import execute.TypeLibrary;
 import expression.group.ArgumentList;
 import expression.value.Value;
@@ -32,7 +32,7 @@ public abstract class Type extends Value {
         this.shared = other.shared;
     }
 
-    public abstract Value instantiate(ArgumentList args, Environment env);
+    public abstract Value instantiate(ArgumentList args, Scope scope);
     public abstract void deanonymize(String name);
 
     @Override

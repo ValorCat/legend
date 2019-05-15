@@ -1,6 +1,6 @@
 package expression.value.function;
 
-import execute.Environment;
+import execute.Scope;
 import expression.group.ArgumentList;
 import expression.value.Value;
 
@@ -12,7 +12,7 @@ import java.util.function.BiFunction;
 public class BuiltinFunction extends LFunction {
 
     @FunctionalInterface
-    public interface FunctionBody extends BiFunction<ArgumentList, Environment, Value> {}
+    public interface FunctionBody extends BiFunction<ArgumentList, Scope, Value> {}
 
     private FunctionBody body;
 
@@ -26,8 +26,8 @@ public class BuiltinFunction extends LFunction {
         this.body = body;
     }
 
-    public Value call(ArgumentList args, Environment env) {
-        return body.apply(args, env);
+    public Value call(ArgumentList args, Scope scope) {
+        return body.apply(args, scope);
     }
 
     @Override

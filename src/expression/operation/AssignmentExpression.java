@@ -1,6 +1,6 @@
 package expression.operation;
 
-import execute.Environment;
+import execute.Scope;
 import expression.Expression;
 import expression.value.Value;
 import parse.Token;
@@ -34,9 +34,9 @@ public class AssignmentExpression extends Operation {
     }
 
     @Override
-    public Value evaluate(Environment env) {
-        Value result = value.evaluate(env);
-        env.assign(target, result);
+    public Value evaluate(Scope scope) {
+        Value result = value.evaluate(scope);
+        scope.setVariable(target, result);
         return result;
     }
 

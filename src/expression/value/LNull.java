@@ -1,14 +1,11 @@
 package expression.value;
 
-import expression.value.type.Type;
-
 /**
  * @since 2/9/2019
  */
 public final class LNull extends Value {
 
     public static LNull NULL = new LNull();
-    public static Type NULL_TYPE = NULL.type();
 
     private LNull() {
         super("*Null");

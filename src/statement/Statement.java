@@ -1,6 +1,6 @@
 package statement;
 
-import execute.Environment;
+import execute.Scope;
 
 /**
  * Classes that implement Statement represent a single statement type, like
@@ -9,6 +9,6 @@ import execute.Environment;
  */
 public interface Statement {
 
-    void execute(Environment env);
+    void execute(Scope scope);
 
 }

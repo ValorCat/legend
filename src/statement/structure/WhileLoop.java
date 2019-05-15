@@ -1,6 +1,7 @@
 package statement.structure;
 
-import execute.Environment;
+import execute.Program;
+import execute.Scope;
 import expression.Expression;
 import expression.value.Value;
 import parse.Parser;
@@ -28,19 +29,19 @@ public class WhileLoop implements FlowController {
 
 
     @Override
-    public void execute(Environment env) {
-        if (checkCondition(env)) {
-            env.getControlStack().push(this);
-            startAddress = env.getCounter();
+    public void execute(Scope scope) {
+        if (checkCondition(scope)) {
+            Program.PROGRAM.getControlStack().push(this);
+            startAddress = Program.PROGRAM.getCounter();
         } else {
-            env.setCounter(endAddress + 1);
+            Program.PROGRAM.setCounter(endAddress + 1);
         }
     }
 
     @Override
-    public boolean isDone(Environment env) {
-        if (checkCondition(env)) {
-            env.setCounter(startAddress + 1);
+    public boolean isDone(Scope scope) {
+        if (checkCondition(scope)) {
+            Program.PROGRAM.setCounter(startAddress + 1);
             return false;
         }
         return true;
@@ -65,8 +66,8 @@ public class WhileLoop implements FlowController {
         return "while(" + condition + ")";
     }
 
-    private boolean checkCondition(Environment env) {
-        Value result = condition.evaluate(env);
+    private boolean checkCondition(Scope scope) {
+        Value result = condition.evaluate(scope);
         if (!result.isType("Boolean")) {
             throw new RuntimeException("While loop expected boolean condition, got type '"
                     + result.type().getName() + "'");

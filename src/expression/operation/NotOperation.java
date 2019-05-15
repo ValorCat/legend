@@ -1,6 +1,6 @@
 package expression.operation;
 
-import execute.Environment;
+import execute.Scope;
 import expression.value.LBoolean;
 import expression.value.Value;
 import parse.Token;
@@ -23,8 +23,8 @@ public class NotOperation extends Operation {
     }
 
     @Override
-    public Value evaluate(Environment env) {
-        return LBoolean.resolve(operands.get(0).evaluate(env).asBoolean());
+    public Value evaluate(Scope scope) {
+        return LBoolean.resolve(operands.get(0).evaluate(scope).asBoolean());
     }
 
 }
