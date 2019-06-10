@@ -4,7 +4,7 @@ import compiletime.Parser;
 import compiletime.TokenLine;
 import compiletime.error.ErrorLog;
 import compiletime.statement.Statement;
-import compiletime.statement.block.clause.ClauseData;
+import compiletime.statement.block.clause.Clause;
 import runtime.instruction.Instruction;
 import runtime.instruction.JumpInstruction;
 import runtime.instruction.JumpUnlessInstruction;
@@ -28,13 +28,13 @@ public class IfStatement implements BlockStatementType {
     }
 
     @Override
-    public List<Instruction> build(List<ClauseData> clauses) {
+    public List<Instruction> build(List<Clause> clauses) {
         // todo assert that if there is an 'else' clause, it occurs only once and at the end
         int remaining = computeCompiledSize(clauses);
         List<Instruction> compiled = new ArrayList<>(remaining);
-        for (ClauseData clause : clauses) {
+        for (Clause clause : clauses) {
             remaining -= clause.BODY.size() + 2;
-            if (clause.TYPE.equals("else")) {
+            if (clause.NAME.equals("else")) {
                 compiled.addAll(clause.BODY);
             } else {
                 int offset = remaining > 0 ? 2 : 1;
@@ -54,16 +54,16 @@ public class IfStatement implements BlockStatementType {
     }
 
     @Override
-    public String getKeyword() {
+    public String getName() {
         return "if";
     }
 
-    private static int computeCompiledSize(List<ClauseData> clauses) {
+    private static int computeCompiledSize(List<Clause> clauses) {
         int size = 0;
-        for (ClauseData clause : clauses) {
+        for (Clause clause : clauses) {
             size += clause.BODY.size() + 2;
         }
-        if (clauses.get(clauses.size() - 1).TYPE.equals("else")) {
+        if (clauses.get(clauses.size() - 1).NAME.equals("else")) {
             size -= 1;
         }
         return size;

@@ -40,7 +40,7 @@ public class PrintStringStatement implements BasicStatementType {
     }
 
     @Override
-    public String getKeyword() {
+    public String getName() {
         return "<print>";
     }
 }

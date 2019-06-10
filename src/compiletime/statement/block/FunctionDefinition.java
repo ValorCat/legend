@@ -6,7 +6,7 @@ import compiletime.TokenLine;
 import compiletime.error.ErrorLog;
 import compiletime.expression.group.Parentheses;
 import compiletime.statement.Statement;
-import compiletime.statement.block.clause.ClauseData;
+import compiletime.statement.block.clause.Clause;
 import runtime.instruction.DefineFunctionInstruction;
 import runtime.instruction.Instruction;
 import runtime.instruction.JumpInstruction;
@@ -33,7 +33,7 @@ public class FunctionDefinition implements BlockStatementType {
     }
 
     @Override
-    public List<Instruction> build(List<ClauseData> clauses) {
+    public List<Instruction> build(List<Clause> clauses) {
         String name = clauses.get(0).HEADER.STRING;
         Parentheses params = (Parentheses) clauses.get(0).HEADER.EXPRESSION;
         List<Instruction> body = clauses.get(0).BODY;
@@ -49,7 +49,7 @@ public class FunctionDefinition implements BlockStatementType {
     }
 
     @Override
-    public String getKeyword() {
+    public String getName() {
         return "def";
     }
 

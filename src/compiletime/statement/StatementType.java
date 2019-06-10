@@ -17,11 +17,11 @@ public interface StatementType {
 
     Statement parse(TokenLine tokens, Parser parser);
     List<Instruction> compile(Statement stmt, Compiler compiler);
-    String getKeyword();
+    String getName();
 
     default boolean matches(TokenLine tokens) {
         Token initial = tokens.get(0);
-        return initial.TYPE == TokenType.OPERATOR && initial.matches(getKeyword());
+        return initial.TYPE == TokenType.OPERATOR && initial.matches(getName());
     }
 
     List<StatementType> STATEMENT_TYPES = List.of(

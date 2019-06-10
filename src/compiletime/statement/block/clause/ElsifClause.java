@@ -18,7 +18,7 @@ public class ElsifClause implements ClauseStatementType {
     }
 
     @Override
-    public String getKeyword() {
+    public String getName() {
         return "elsif";
     }
 

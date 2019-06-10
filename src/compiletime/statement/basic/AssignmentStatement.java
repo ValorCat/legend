@@ -39,7 +39,7 @@ public class AssignmentStatement implements BasicStatementType {
     }
 
     @Override
-    public String getKeyword() {
+    public String getName() {
         return "=";
     }
 }

@@ -5,7 +5,7 @@ import compiletime.Parser;
 import compiletime.TokenLine;
 import compiletime.statement.Statement;
 import compiletime.statement.StatementType;
-import compiletime.statement.block.clause.ClauseData;
+import compiletime.statement.block.clause.Clause;
 import runtime.instruction.Instruction;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
 public interface BlockStatementType extends StatementType {
 
     Statement parseHeader(TokenLine tokens, Parser parser);
-    List<Instruction> build(List<ClauseData> clauses);
+    List<Instruction> build(List<Clause> clauses);
 
     default boolean allowsClause(String keyword) {
         return false;

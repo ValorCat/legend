@@ -19,7 +19,7 @@ public class ElseClause implements ClauseStatementType {
     }
 
     @Override
-    public String getKeyword() {
+    public String getName() {
         return "else";
     }
 

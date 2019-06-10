@@ -5,7 +5,7 @@ import compiletime.TokenLine;
 import compiletime.error.ErrorLog;
 import compiletime.expression.Expression;
 import compiletime.statement.Statement;
-import compiletime.statement.block.clause.ClauseData;
+import compiletime.statement.block.clause.Clause;
 import runtime.instruction.Instruction;
 import runtime.instruction.JumpInstruction;
 import runtime.instruction.JumpUnlessInstruction;
@@ -28,7 +28,7 @@ public class WhileLoop implements BlockStatementType {
     }
 
     @Override
-    public List<Instruction> build(List<ClauseData> clauses) {
+    public List<Instruction> build(List<Clause> clauses) {
         Expression condition = clauses.get(0).HEADER.EXPRESSION;
         List<Instruction> body = clauses.get(0).BODY;
         return asList(body.size() + 2,
@@ -38,7 +38,7 @@ public class WhileLoop implements BlockStatementType {
     }
 
     @Override
-    public String getKeyword() {
+    public String getName() {
         return "while";
     }
 

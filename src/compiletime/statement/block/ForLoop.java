@@ -8,7 +8,7 @@ import compiletime.expression.Expression;
 import compiletime.expression.StackValue;
 import compiletime.expression.operation.UnaryOperatorCall;
 import compiletime.statement.Statement;
-import compiletime.statement.block.clause.ClauseData;
+import compiletime.statement.block.clause.Clause;
 import runtime.instruction.*;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class ForLoop implements BlockStatementType {
     }
 
     @Override
-    public List<Instruction> build(List<ClauseData> clauses) {
+    public List<Instruction> build(List<Clause> clauses) {
         String variable = clauses.get(0).HEADER.STRING;
         Expression iterable = clauses.get(0).HEADER.EXPRESSION;
         List<Instruction> body = clauses.get(0).BODY;
@@ -47,7 +47,7 @@ public class ForLoop implements BlockStatementType {
     }
 
     @Override
-    public String getKeyword() {
+    public String getName() {
         return "for";
     }
 

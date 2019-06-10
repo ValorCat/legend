@@ -4,7 +4,7 @@ import compiletime.Parser;
 import compiletime.TokenLine;
 import compiletime.error.ErrorLog;
 import compiletime.statement.Statement;
-import compiletime.statement.block.clause.ClauseData;
+import compiletime.statement.block.clause.Clause;
 import runtime.instruction.Instruction;
 import runtime.instruction.JumpInstruction;
 
@@ -26,7 +26,7 @@ public class RepeatLoop implements BlockStatementType {
     }
 
     @Override
-    public List<Instruction> build(List<ClauseData> clauses) {
+    public List<Instruction> build(List<Clause> clauses) {
         List<Instruction> body = clauses.get(0).BODY;
         return asList(body.size() + 1,
                 body,
@@ -34,7 +34,7 @@ public class RepeatLoop implements BlockStatementType {
     }
 
     @Override
-    public String getKeyword() {
+    public String getName() {
         return "repeat";
     }
 

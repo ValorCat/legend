@@ -5,14 +5,14 @@ import runtime.instruction.Instruction;
 
 import java.util.List;
 
-public class ClauseData {
+public class Clause {
 
-    public final String TYPE;
+    public final String NAME;
     public final Statement HEADER;
     public final List<Instruction> BODY;
 
-    public ClauseData(String type, Statement header, List<Instruction> body) {
-        this.TYPE = type;
+    public Clause(Statement header, List<Instruction> body) {
+        this.NAME = header.TYPE.getName();
         this.HEADER = header;
         this.BODY = body;
     }

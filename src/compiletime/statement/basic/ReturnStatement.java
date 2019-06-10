@@ -33,7 +33,7 @@ public class ReturnStatement implements BasicStatementType {
     }
 
     @Override
-    public String getKeyword() {
+    public String getName() {
         return "return";
     }
 }

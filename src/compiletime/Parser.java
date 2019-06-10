@@ -45,11 +45,11 @@ public class Parser {
     private void checkEnclosingStructure(StatementType type, TokenLine line) {
         if (controlStack.isEmpty()) {
             throw ErrorLog.raise(BAD_JUMP_POINT, "'%s' statement must be inside a control structure",
-                    type.getKeyword());
-        } else if (!controlStack.peek().allowsClause(type.getKeyword())) {
-            String structType = controlStack.peek().getKeyword();
+                    type.getName());
+        } else if (!controlStack.peek().allowsClause(type.getName())) {
+            String structType = controlStack.peek().getName();
             ErrorLog.log(BAD_JUMP_POINT, line.getLineNumber(), "Structure '%s' does not support '%s' clauses",
-                    structType, type.getKeyword());
+                    structType, type.getName());
         }
     }
 
@@ -57,7 +57,7 @@ public class Parser {
         if (!controlStack.isEmpty()) {
             int lastLineNumber = tokens.get(tokens.size() - 1).getLineNumber();
             ErrorLog.log(BAD_NESTING, lastLineNumber, "Expected 'end' to close '%s'",
-                    controlStack.peek().getKeyword());
+                    controlStack.peek().getName());
         }
     }
 

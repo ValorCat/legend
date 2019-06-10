@@ -271,7 +271,7 @@ public class Lexer {
         switch (symbol) {
             case "(": return ")";
             case "[": return "]";
-            case "{": return "{";
+            case "{": return "}";
             case ")": return "(";
             case "]": return "[";
             case "}": return "{";

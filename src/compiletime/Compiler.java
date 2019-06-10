@@ -3,7 +3,7 @@ package compiletime;
 import compiletime.statement.Statement;
 import compiletime.statement.basic.EndStatement;
 import compiletime.statement.block.BlockStatementType;
-import compiletime.statement.block.clause.ClauseData;
+import compiletime.statement.block.clause.Clause;
 import compiletime.statement.block.clause.ClauseStatementType;
 import runtime.instruction.Instruction;
 
@@ -34,13 +34,13 @@ public class Compiler {
     }
 
     public List<Instruction> compileBlockStatement(Statement header) {
-        List<ClauseData> clauses = new ArrayList<>(1);
+        List<Clause> clauses = new ArrayList<>(1);
         List<Instruction> baseClauseBody = compileBlock();
-        clauses.add(new ClauseData("base", header, baseClauseBody));
+        clauses.add(new Clause(header, baseClauseBody));
         while (!atEnd()) {
             Statement clauseHeader = statements.get(address);
             List<Instruction> clauseBody = compileBlock();
-            clauses.add(new ClauseData(clauseHeader.TYPE.getKeyword(), clauseHeader, clauseBody));
+            clauses.add(new Clause(clauseHeader, clauseBody));
         }
         return ((BlockStatementType) header.TYPE).build(clauses);
     }

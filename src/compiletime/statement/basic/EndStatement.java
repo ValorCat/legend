@@ -37,7 +37,7 @@ public class EndStatement implements BasicStatementType {
     }
 
     @Override
-    public String getKeyword() {
+    public String getName() {
         return "end";
     }
 }
