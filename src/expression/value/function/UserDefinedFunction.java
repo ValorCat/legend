@@ -1,30 +1,41 @@
 package expression.value.function;
 
+import execute.Program;
 import execute.Scope;
 import expression.group.ArgumentList;
+import expression.group.ParameterList;
+import expression.group.Parentheses;
 import expression.value.Value;
-import statement.structure.FunctionDefinition;
 
 /**
  * @since 2/16/2019
  */
 public class UserDefinedFunction extends LFunction {
 
-    private FunctionDefinition body;
+    private Scope parentScope;
+    private ParameterList params;
+    private int beginAddress;
 
-    public UserDefinedFunction(String name, FunctionDefinition body) {
+    public UserDefinedFunction(String name, Parentheses params, Scope parentScope, int beginAddress) {
         super(name);
-        this.body = body;
+        this.parentScope = parentScope;
+        this.params = new ParameterList(name, params.getContents());
+        this.beginAddress = beginAddress;
     }
 
     @Override
     public Value call(ArgumentList args, Scope scope) {
-        return body.call(args);
+        Scope newScope = new Scope(parentScope);
+        params.accept(args, parentScope, newScope);
+        int returnAddress = Program.PROGRAM.getCounter();
+        Value returnValue = Program.PROGRAM.executeSubroutine(beginAddress, newScope);
+        Program.PROGRAM.setCounter(returnAddress + 1);
+        return returnValue;
     }
 
     @Override
     public boolean equals(Value other) {
-        return other instanceof UserDefinedFunction && body == ((UserDefinedFunction) other).body;
+        return other instanceof UserDefinedFunction && beginAddress == ((UserDefinedFunction) other).beginAddress;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package instruction;
 
-import execute.Program;
 import execute.Scope;
 import expression.Expression;
 
@@ -19,7 +18,7 @@ public class ReturnInstruction implements Instruction {
         if (value != null) {
             scope.setReturnValue(value.evaluate(scope));
         }
-        Program.PROGRAM.setCounter(scope.getReturnAddress());
+        scope.setReturnFlag();
     }
 
     @Override

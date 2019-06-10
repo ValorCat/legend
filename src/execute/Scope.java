@@ -12,17 +12,16 @@ public class Scope {
 
     private final Scope parent;
     private final Map<String, Integer> namespace;
-    private final int returnAddress;
     private Value returnValue;
+    private boolean returned;
 
     public Scope() {
-        this(null, Integer.MAX_VALUE);
+        this(null);
     }
 
-    public Scope(Scope parent, int returnAddress) {
+    public Scope(Scope parent) {
         this.parent = parent;
         this.namespace = new HashMap<>();
-        this.returnAddress = returnAddress;
     }
 
     /**
@@ -70,16 +69,20 @@ public class Scope {
         return value;
     }
 
-    public int getReturnAddress() {
-        return returnAddress;
-    }
-
     public Value getReturnValue() {
         return returnValue == null ? LNull.NULL : returnValue;
     }
 
     public void setReturnValue(Value returnValue) {
         this.returnValue = returnValue;
+    }
+
+    public boolean hasReturned() {
+        return returned;
+    }
+
+    public void setReturnFlag() {
+        this.returned = true;
     }
 
     /**

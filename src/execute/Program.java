@@ -31,12 +31,12 @@ public class Program {
     }
 
     public Value execute() {
-        return executeSubroutine(0, program.size(), globalNamespace);
+        return executeSubroutine(0, globalNamespace);
     }
 
-    public Value executeSubroutine(int startAddress, int endAddress, Scope scope) {
+    public Value executeSubroutine(int startAddress, Scope scope) {
         counter = startAddress;
-        while (counter <= endAddress) {
+        while (!scope.hasReturned() && counter < program.size()) {
             program.get(counter).execute(scope);
             if (!counterMoved) {
                 counter++;
