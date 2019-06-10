@@ -3,6 +3,7 @@ package execute;
 import expression.value.Value;
 import instruction.Instruction;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
@@ -17,7 +18,7 @@ public class Program {
     private Scope globalNamespace;
 
     public Program(List<Instruction> program) {
-        this.program = program;
+        this.program = Collections.unmodifiableList(program);
         this.counter = 0;
         this.counterMoved = false;
         this.stack = new Stack<>();
@@ -30,8 +31,9 @@ public class Program {
     }
 
     public Value executeSubroutine(int startAddress, Scope scope) {
+        int lineCount = program.size();
         counter = startAddress;
-        while (!scope.hasReturned() && counter < program.size()) {
+        while (!scope.hasReturned() && counter < lineCount) {
             program.get(counter).execute(scope);
             if (!counterMoved) {
                 counter++;

@@ -28,10 +28,10 @@ public class WhileLoop implements BlockStatement {
     }
 
     @Override
-    public List<Instruction> compile(List<ClauseData> clauses) {
+    public List<Instruction> build(List<ClauseData> clauses) {
         Expression condition = clauses.get(0).DATA.EXPRESSION;
         List<Instruction> body = clauses.get(0).BODY;
-        return build(body.size() + 2,
+        return asList(body.size() + 2,
                 new JumpUnlessInstruction(body.size() + 2, condition),
                 body,
                 new JumpInstruction(-body.size() - 1));

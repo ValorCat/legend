@@ -9,7 +9,6 @@ import parse.error.ErrorLog;
 import parse.error.ParserException;
 import statement.Statement;
 import statement.StatementData;
-import statement.basic.BasicStatement;
 import statement.block.BlockStatement;
 import statement.block.clause.BlockClauseStatement;
 import statement.block.clause.ClauseData;
@@ -34,71 +33,70 @@ import static parse.error.ErrorDescription.*;
  */
 public class Parser {
 
-    private int address, lineNumber;
+    private int address;
+    private List<TokenLine> lines;
     private Stack<BlockStatement> controlStack;
 
     /**
      * Convert a stream of tokens into a sequence of syntax trees.
-     * @param stream the list of tokens
+     * @param tokens the list of tokens
      * @return a list of syntax trees
      */
-    public List<Instruction> parse(List<TokenLine> stream) {
-        controlStack = new Stack<>();
+    public List<Instruction> parse(List<TokenLine> tokens) {
         address = -1;
-        List<Instruction> output = parseBlock(stream, 0);
+        lines = tokens;
+        controlStack = new Stack<>();
+        List<Instruction> output = parseBlock(0);
         if (!controlStack.isEmpty()) {
-            ErrorLog.log(BAD_NESTING, lineNumber, "Expected 'end' to close '%s'", controlStack.peek().getKeyword());
+            int lastLineNumber = tokens.get(tokens.size() - 1).getLineNumber();
+            ErrorLog.log(BAD_NESTING, lastLineNumber, "Expected 'end' to close '%s'",
+                    controlStack.peek().getKeyword());
         }
         return output;
     }
 
-    private List<Instruction> parseBlock(List<TokenLine> stream, int nestingDepth) {
+    private List<Instruction> parseBlock(int nestingDepth) {
         List<Instruction> output = new ArrayList<>();
-        address++;
-        while (address < stream.size()) {
-            TokenLine line = stream.get(address);
-            lineNumber = line.getLineNumber();
+        for (address++; address < lines.size(); address++) {
+            TokenLine line = lines.get(address);
+            Statement statement = Statement.resolve(line);
+            if (statement instanceof BlockClauseStatement) {
+                break;
+            }
             try {
-                Statement statement = Statement.resolve(line);
-                if (statement instanceof BlockClauseStatement) {
-                    break;
-                }
                 StatementData stmtData = statement.parse(line, this);
                 if (controlStack.size() < nestingDepth) {
                     break;
                 }
-                List<Instruction> compiled;
-                if (statement instanceof BasicStatement) {
-                    compiled = ((BasicStatement) statement).compile(stmtData);
-                } else {
-                    BlockStatement blockStatement = (BlockStatement) statement;
-                    List<Instruction> baseClauseBody = parseBlock(stream, nestingDepth + 1);
-                    List<ClauseData> clauses = new ArrayList<>(1);
-                    clauses.add(new ClauseData("base", stmtData, baseClauseBody));
-                    while (!Statement.isEnd(stream.get(address))) {
-                        ClauseData clause = parseClause(stream, nestingDepth);
-                        if (!blockStatement.allowsClause(clause.TYPE)) {
-                            ErrorLog.log(BAD_JUMP_POINT, lineNumber, "Structure '%s' does not support '%s' clauses",
-                                    blockStatement.getKeyword(), clause.TYPE);
-                        }
-                        clauses.add(clause);
-                    }
-                    compiled = blockStatement.compile(clauses);
-                }
-                output.addAll(compiled);
+                output.addAll(statement.compile(stmtData, nestingDepth, this));
             } catch (ParserException e) {
-                e.setLineNumber(lineNumber);
+                e.setLineNumber(line.getLineNumber());
             }
-            address++;
         }
         return output;
     }
 
-    private ClauseData parseClause(List<TokenLine> stream, int nestingDepth) {
-        TokenLine line = stream.get(address);
+    public List<Instruction> parseBlockStatement(BlockStatement statement, StatementData data, int nestingDepth) {
+        List<Instruction> baseClauseBody = parseBlock(nestingDepth + 1);
+        List<ClauseData> clauses = new ArrayList<>(1);
+        clauses.add(new ClauseData("base", data, baseClauseBody));
+        while (!Statement.isEnd(lines.get(address))) {
+            ClauseData clause = parseClause(lines, nestingDepth);
+            if (!statement.allowsClause(clause.TYPE)) {
+                int lineNumber = lines.get(address).getLineNumber();
+                ErrorLog.log(BAD_JUMP_POINT, lineNumber, "Structure '%s' does not support '%s' clauses",
+                        statement.getKeyword(), clause.TYPE);
+            }
+            clauses.add(clause);
+        }
+        return statement.build(clauses);
+    }
+
+    private ClauseData parseClause(List<TokenLine> lines, int nestingDepth) {
+        TokenLine line = lines.get(address);
         BlockClauseStatement clauseParser = (BlockClauseStatement) Statement.resolve(line);
         StatementData clauseData = clauseParser.parse(line, this);
-        List<Instruction> clauseBody = parseBlock(stream, nestingDepth + 1);
+        List<Instruction> clauseBody = parseBlock(nestingDepth + 1);
         return new ClauseData(clauseParser.getKeyword(), clauseData, clauseBody);
     }
 

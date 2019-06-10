@@ -28,7 +28,7 @@ public class IfStatement implements BlockStatement {
     }
 
     @Override
-    public List<Instruction> compile(List<ClauseData> clauses) {
+    public List<Instruction> build(List<ClauseData> clauses) {
         // todo assert that if there is an 'else' clause, it occurs only once and at the end
         int remaining = computeCompiledSize(clauses);
         List<Instruction> compiled = new ArrayList<>(remaining);

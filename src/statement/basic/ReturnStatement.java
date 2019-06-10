@@ -28,7 +28,7 @@ public class ReturnStatement implements BasicStatement {
     }
 
     @Override
-    public List<Instruction> compile(StatementData data) {
+    public List<Instruction> build(StatementData data) {
         return List.of(new ReturnInstruction(data.EXPRESSION));
     }
 

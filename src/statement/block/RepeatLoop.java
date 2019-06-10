@@ -26,9 +26,9 @@ public class RepeatLoop implements BlockStatement {
     }
 
     @Override
-    public List<Instruction> compile(List<ClauseData> clauses) {
+    public List<Instruction> build(List<ClauseData> clauses) {
         List<Instruction> body = clauses.get(0).BODY;
-        return build(body.size() + 1,
+        return asList(body.size() + 1,
                 body,
                 new JumpInstruction(-body.size()));
     }

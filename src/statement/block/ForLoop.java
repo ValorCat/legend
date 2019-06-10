@@ -33,11 +33,11 @@ public class ForLoop implements BlockStatement {
     }
 
     @Override
-    public List<Instruction> compile(List<ClauseData> clauses) {
+    public List<Instruction> build(List<ClauseData> clauses) {
         String variable = clauses.get(0).DATA.STRING;
         Expression iterable = clauses.get(0).DATA.EXPRESSION;
         List<Instruction> body = clauses.get(0).BODY;
-        return build(body.size() + 5,
+        return asList(body.size() + 5,
                 new PushStackInstruction(new UnaryOperatorCall(iterable, "_loop")),
                 new JumpUnlessInstruction(body.size() + 3, new UnaryOperatorCall(new StackValue(), "has_next")),
                 new AssignInstruction(variable, new UnaryOperatorCall(new StackValue(), "next")),

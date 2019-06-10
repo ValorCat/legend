@@ -33,7 +33,7 @@ public class FunctionDefinition implements BlockStatement {
     }
 
     @Override
-    public List<Instruction> compile(List<ClauseData> clauses) {
+    public List<Instruction> build(List<ClauseData> clauses) {
         String name = clauses.get(0).DATA.STRING;
         Parentheses params = (Parentheses) clauses.get(0).DATA.EXPRESSION;
         List<Instruction> body = clauses.get(0).BODY;
@@ -42,7 +42,7 @@ public class FunctionDefinition implements BlockStatement {
             body.add(new ReturnInstruction());
         }
 
-        return build(body.size() + 2,
+        return asList(body.size() + 2,
                 new DefineFunctionInstruction(name, params),
                 new JumpInstruction(body.size() + 1),
                 body);

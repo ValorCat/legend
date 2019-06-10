@@ -35,7 +35,7 @@ public class PrintStringStatement implements BasicStatement {
     }
 
     @Override
-    public List<Instruction> compile(StatementData data) {
+    public List<Instruction> build(StatementData data) {
         return List.of(new PrintInstruction(data.STRING));
     }
 

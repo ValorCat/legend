@@ -34,7 +34,7 @@ public class AssignmentStatement implements BasicStatement {
     }
 
     @Override
-    public List<Instruction> compile(StatementData data) {
+    public List<Instruction> build(StatementData data) {
          return List.of(new AssignInstruction(data.STRING, data.EXPRESSION));
     }
 
