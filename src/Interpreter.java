@@ -1,14 +1,14 @@
-import execute.Program;
-import expression.value.LNull;
-import expression.value.Value;
-import instruction.Instruction;
-import parse.Compiler;
-import parse.Lexer;
-import parse.Parser;
-import parse.TokenLine;
-import parse.error.ErrorLog;
-import parse.error.ParserException;
-import statement.Statement;
+import compiletime.Compiler;
+import compiletime.Lexer;
+import compiletime.Parser;
+import compiletime.TokenLine;
+import compiletime.error.ErrorLog;
+import compiletime.error.ParserException;
+import compiletime.expression.value.LNull;
+import compiletime.expression.value.Value;
+import compiletime.statement.Statement;
+import runtime.Program;
+import runtime.instruction.Instruction;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import java.util.List;
  * Interpretation is a three-step process:
  * <ol><li>The source code is divided into tokens and statements by the {@link Lexer} class.
  * <li>The statements are parsed into syntax trees by the {@link Parser} class.
- * <li>The syntax trees are traversed and executed by the {@link execute.Program} class.</ol>
+ * <li>The syntax trees are traversed and executed by the {@link runtime.Program} class.</ol>
  * @since 1/15/2019
  */
 public class Interpreter {
