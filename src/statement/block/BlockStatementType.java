@@ -3,15 +3,15 @@ package statement.block;
 import instruction.Instruction;
 import parse.Parser;
 import parse.TokenLine;
-import statement.Statement;
 import statement.StatementData;
+import statement.StatementType;
 import statement.block.clause.ClauseData;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public interface BlockStatement extends Statement {
+public interface BlockStatementType extends StatementType {
 
     StatementData parseHeader(TokenLine tokens, Parser parser);
     List<Instruction> build(List<ClauseData> clauses);
@@ -27,8 +27,8 @@ public interface BlockStatement extends Statement {
     }
 
     @Override
-    default List<Instruction> compile(StatementData data, int nestingDepth, Parser parser) {
-        return parser.parseBlockStatement(this, data, nestingDepth);
+    default List<Instruction> compile(StatementData data, Parser parser) {
+        return parser.parseBlockStatement(this, data);
     }
 
     @SuppressWarnings("unchecked")

@@ -19,7 +19,7 @@ import static parse.error.ErrorDescription.BAD_FUNC_DEF;
 /**
  * @since 2/16/2019
  */
-public class FunctionDefinition implements BlockStatement {
+public class FunctionDefinition implements BlockStatementType {
 
     @Override
     public StatementData parseHeader(TokenLine tokens, Parser parser) {
@@ -28,14 +28,14 @@ public class FunctionDefinition implements BlockStatement {
         } else if (tokens.size() == 2 || !tokens.get(2).matches("()")) {
             throw ErrorLog.raise(BAD_FUNC_DEF, "Expected function parameters after '%s'", tokens.get(1));
         }
-        return new StatementData(parser.parseFrom(tokens, 2), tokens.get(1).VALUE);
+        return new StatementData(this, parser.parseFrom(tokens, 2), tokens.get(1).VALUE);
         //params = new ParameterList(name, ((Parentheses) parser.parseFrom(tokens, 2)).getContents());
     }
 
     @Override
     public List<Instruction> build(List<ClauseData> clauses) {
-        String name = clauses.get(0).DATA.STRING;
-        Parentheses params = (Parentheses) clauses.get(0).DATA.EXPRESSION;
+        String name = clauses.get(0).HEADER.STRING;
+        Parentheses params = (Parentheses) clauses.get(0).HEADER.EXPRESSION;
         List<Instruction> body = clauses.get(0).BODY;
 
         if (!(body.get(body.size() - 1) instanceof ReturnInstruction)) {

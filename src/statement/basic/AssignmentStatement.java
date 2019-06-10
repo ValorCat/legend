@@ -12,7 +12,7 @@ import java.util.List;
 
 import static parse.error.ErrorDescription.BAD_ASSIGN;
 
-public class AssignmentStatement implements BasicStatement {
+public class AssignmentStatement implements BasicStatementType {
 
     @Override
     public boolean matches(TokenLine tokens) {
@@ -27,7 +27,7 @@ public class AssignmentStatement implements BasicStatement {
         } else if (equalsPos == tokens.size() - 1 || !tokens.get(equalsPos + 1).isValue()) {
             throw ErrorLog.raise(BAD_ASSIGN, "Missing assignment value on right of '='");
         }
-        return new StatementData(
+        return new StatementData(this,
                 parser.parseFrom(tokens, equalsPos + 1),  // value
                 tokens.get(equalsPos - 1).VALUE                    // target
         );

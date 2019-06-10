@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @since 2/16/2019
  */
-public class ReturnStatement implements BasicStatement {
+public class ReturnStatement implements BasicStatementType {
 
     @Override
     public boolean matches(TokenLine tokens) {
@@ -21,9 +21,9 @@ public class ReturnStatement implements BasicStatement {
     @Override
     public StatementData parse(TokenLine tokens, Parser parser) {
         if (tokens.size() == 1) {
-            return StatementData.EMPTY;
+            return new StatementData(this);
         } else {
-            return new StatementData(parser.parseFrom(tokens, 1));
+            return new StatementData(this, parser.parseFrom(tokens, 1));
         }
     }
 

@@ -17,14 +17,14 @@ import static parse.error.ErrorDescription.BAD_IF;
 /**
  * @since 1/27/2019
  */
-public class IfStatement implements BlockStatement {
+public class IfStatement implements BlockStatementType {
 
     @Override
     public StatementData parseHeader(TokenLine tokens, Parser parser) {
         if (tokens.size() == 1) {
             throw ErrorLog.raise(BAD_IF, "Expected expression after 'if'");
         }
-        return new StatementData(parser.parseFrom(tokens, 1));
+        return new StatementData(this, parser.parseFrom(tokens, 1));
     }
 
     @Override
@@ -38,7 +38,7 @@ public class IfStatement implements BlockStatement {
                 compiled.addAll(clause.BODY);
             } else {
                 int offset = remaining > 0 ? 2 : 1;
-                compiled.add(new JumpUnlessInstruction(clause.BODY.size() + offset, clause.DATA.EXPRESSION));
+                compiled.add(new JumpUnlessInstruction(clause.BODY.size() + offset, clause.HEADER.EXPRESSION));
                 compiled.addAll(clause.BODY);
                 if (remaining > 0) {
                     compiled.add(new JumpInstruction(remaining));

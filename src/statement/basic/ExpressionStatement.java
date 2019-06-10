@@ -8,7 +8,7 @@ import statement.StatementData;
 
 import java.util.List;
 
-public class ExpressionStatement implements BasicStatement {
+public class ExpressionStatement implements BasicStatementType {
 
     @Override
     public boolean matches(TokenLine tokens) {
@@ -17,7 +17,7 @@ public class ExpressionStatement implements BasicStatement {
 
     @Override
     public StatementData parse(TokenLine tokens, Parser parser) {
-        return new StatementData(parser.parseFrom(tokens, 0));
+        return new StatementData(this, parser.parseFrom(tokens, 0));
     }
 
     @Override

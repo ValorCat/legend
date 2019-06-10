@@ -4,24 +4,24 @@ import expression.Expression;
 
 public class StatementData {
 
-    public static final StatementData EMPTY = new StatementData();
-
+    public final StatementType TYPE;
     public final Expression EXPRESSION;
     public final String STRING;
 
-    private StatementData() {
-        this(null, null);
+    public StatementData(StatementType type) {
+        this(type, null, null);
     }
 
-    public StatementData(String string) {
-        this(null, string);
+    public StatementData(StatementType type, String string) {
+        this(type, null, string);
     }
 
-    public StatementData(Expression expression) {
-        this(expression, null);
+    public StatementData(StatementType type, Expression expression) {
+        this(type, expression, null);
     }
 
-    public StatementData(Expression expression, String string) {
+    public StatementData(StatementType type, Expression expression, String string) {
+        this.TYPE = type;
         this.EXPRESSION = expression;
         this.STRING = string;
     }

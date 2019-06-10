@@ -18,7 +18,7 @@ import static parse.error.ErrorDescription.BAD_FOR_LOOP;
 /**
  * @since 1/19/2019
  */
-public class ForLoop implements BlockStatement {
+public class ForLoop implements BlockStatementType {
 
     @Override
     public StatementData parseHeader(TokenLine tokens, Parser parser) {
@@ -29,13 +29,13 @@ public class ForLoop implements BlockStatement {
         } else if (tokens.size() == 3) {
             throw ErrorLog.raise(BAD_FOR_LOOP, "Expected loop expression after 'in'");
         }
-        return new StatementData(parser.parseFrom(tokens, 3), tokens.get(1).VALUE);
+        return new StatementData(this, parser.parseFrom(tokens, 3), tokens.get(1).VALUE);
     }
 
     @Override
     public List<Instruction> build(List<ClauseData> clauses) {
-        String variable = clauses.get(0).DATA.STRING;
-        Expression iterable = clauses.get(0).DATA.EXPRESSION;
+        String variable = clauses.get(0).HEADER.STRING;
+        Expression iterable = clauses.get(0).HEADER.EXPRESSION;
         List<Instruction> body = clauses.get(0).BODY;
         return asList(body.size() + 5,
                 new PushStackInstruction(new UnaryOperatorCall(iterable, "_loop")),

@@ -7,7 +7,7 @@ import statement.StatementData;
 
 import static parse.error.ErrorDescription.BAD_IF;
 
-public class ElseClause implements BlockClauseStatement {
+public class ElseClause implements ClauseStatementType {
 
     @Override
     public StatementData parse(TokenLine tokens, Parser parser) {
@@ -15,7 +15,7 @@ public class ElseClause implements BlockClauseStatement {
             throw ErrorLog.raise(BAD_IF, "Unexpected symbol '%s' after 'else' " +
                     "(did you mean 'elsif'?)", tokens.get(1));
         }
-        return StatementData.EMPTY;
+        return new StatementData(this);
     }
 
     @Override

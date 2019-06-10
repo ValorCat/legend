@@ -13,7 +13,7 @@ import static parse.error.ErrorDescription.BAD_NESTING;
 /**
  * @since 1/19/2019
  */
-public class EndStatement implements BasicStatement {
+public class EndStatement implements BasicStatementType {
 
     @Override
     public boolean matches(TokenLine tokens) {
@@ -28,7 +28,7 @@ public class EndStatement implements BasicStatement {
             throw ErrorLog.raise(BAD_NESTING, "Mismatched 'end'");
         }
         parser.getControlStack().pop();
-        return StatementData.EMPTY;
+        return new StatementData(this);
     }
 
     @Override

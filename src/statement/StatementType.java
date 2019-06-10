@@ -12,10 +12,10 @@ import statement.block.clause.ElsifClause;
 
 import java.util.List;
 
-public interface Statement {
+public interface StatementType {
 
     StatementData parse(TokenLine tokens, Parser parser);
-    List<Instruction> compile(StatementData data, int nestingDepth, Parser parser);
+    List<Instruction> compile(StatementData data, Parser parser);
     String getKeyword();
 
     default boolean matches(TokenLine tokens) {
@@ -23,7 +23,7 @@ public interface Statement {
         return initial.TYPE == TokenType.OPERATOR && initial.matches(getKeyword());
     }
 
-    List<Statement> STATEMENT_TYPES = List.of(
+    List<StatementType> STATEMENT_TYPES = List.of(
             new AssignmentStatement(),
             new ElseClause(),
             new ElsifClause(),
@@ -38,8 +38,8 @@ public interface Statement {
             new ExpressionStatement()
     );
 
-    static Statement resolve(TokenLine line) {
-        for (Statement stmt : STATEMENT_TYPES) {
+    static StatementType resolve(TokenLine line) {
+        for (StatementType stmt : STATEMENT_TYPES) {
             if (stmt.matches(line)) {
                 return stmt;
             }

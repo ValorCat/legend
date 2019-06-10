@@ -8,12 +8,12 @@ import java.util.List;
 public class ClauseData {
 
     public final String TYPE;
-    public final StatementData DATA;
+    public final StatementData HEADER;
     public final List<Instruction> BODY;
 
-    public ClauseData(String type, StatementData data, List<Instruction> body) {
+    public ClauseData(String type, StatementData header, List<Instruction> body) {
         this.TYPE = type;
-        this.DATA = data;
+        this.HEADER = header;
         this.BODY = body;
     }
 

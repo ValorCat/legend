@@ -7,11 +7,11 @@ import instruction.Instruction;
 import parse.Token.TokenType;
 import parse.error.ErrorLog;
 import parse.error.ParserException;
-import statement.Statement;
 import statement.StatementData;
-import statement.block.BlockStatement;
-import statement.block.clause.BlockClauseStatement;
+import statement.StatementType;
+import statement.block.BlockStatementType;
 import statement.block.clause.ClauseData;
+import statement.block.clause.ClauseStatementType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class Parser {
 
     private int address;
     private List<TokenLine> lines;
-    private Stack<BlockStatement> controlStack;
+    private Stack<BlockStatementType> controlStack;
 
     /**
      * Convert a stream of tokens into a sequence of syntax trees.
@@ -46,7 +46,7 @@ public class Parser {
         address = -1;
         lines = tokens;
         controlStack = new Stack<>();
-        List<Instruction> output = parseBlock(0);
+        List<Instruction> output = parseBlock();
         if (!controlStack.isEmpty()) {
             int lastLineNumber = tokens.get(tokens.size() - 1).getLineNumber();
             ErrorLog.log(BAD_NESTING, lastLineNumber, "Expected 'end' to close '%s'",
@@ -55,24 +55,25 @@ public class Parser {
         return output;
     }
 
-    private List<Instruction> parseBlock(int nestingDepth) {
+    private List<Instruction> parseBlock() {
         List<Instruction> output = new ArrayList<>();
         for (address++; address < lines.size(); address++) {
             TokenLine line = lines.get(address);
-            Statement statement = Statement.resolve(line);
+            StatementType stmtType = StatementType.resolve(line);
             try {
-                if (statement instanceof BlockClauseStatement) {
+                if (stmtType instanceof ClauseStatementType) {
                     if (!controlStack.isEmpty()) {
                         break;
                     }
                     throw ErrorLog.raise(BAD_JUMP_POINT, "'%s' statement must be inside a control structure",
-                            statement.getKeyword());
+                            stmtType.getKeyword());
                 }
-                StatementData stmtData = statement.parse(line, this);
-                if (controlStack.size() < nestingDepth) {
+                int startStackSize = controlStack.size();
+                StatementData parsedStmt = stmtType.parse(line, this);
+                if (controlStack.size() < startStackSize) {
                     break;
                 }
-                output.addAll(statement.compile(stmtData, nestingDepth, this));
+                output.addAll(stmtType.compile(parsedStmt, this));
             } catch (ParserException e) {
                 e.setLineNumber(line.getLineNumber());
             }
@@ -80,12 +81,12 @@ public class Parser {
         return output;
     }
 
-    public List<Instruction> parseBlockStatement(BlockStatement statement, StatementData data, int nestingDepth) {
-        List<Instruction> baseClauseBody = parseBlock(nestingDepth + 1);
+    public List<Instruction> parseBlockStatement(BlockStatementType statement, StatementData data) {
+        List<Instruction> baseClauseBody = parseBlock();
         List<ClauseData> clauses = new ArrayList<>(1);
         clauses.add(new ClauseData("base", data, baseClauseBody));
-        while (!Statement.isEnd(lines.get(address))) {
-            ClauseData clause = parseClause(lines, nestingDepth);
+        while (!StatementType.isEnd(lines.get(address))) {
+            ClauseData clause = parseClause(lines);
             if (!statement.allowsClause(clause.TYPE)) {
                 int lineNumber = lines.get(address).getLineNumber();
                 ErrorLog.log(BAD_JUMP_POINT, lineNumber, "Structure '%s' does not support '%s' clauses",
@@ -96,12 +97,12 @@ public class Parser {
         return statement.build(clauses);
     }
 
-    private ClauseData parseClause(List<TokenLine> lines, int nestingDepth) {
+    private ClauseData parseClause(List<TokenLine> lines) {
         TokenLine line = lines.get(address);
-        BlockClauseStatement clauseParser = (BlockClauseStatement) Statement.resolve(line);
-        StatementData clauseData = clauseParser.parse(line, this);
-        List<Instruction> clauseBody = parseBlock(nestingDepth + 1);
-        return new ClauseData(clauseParser.getKeyword(), clauseData, clauseBody);
+        ClauseStatementType clauseType = (ClauseStatementType) StatementType.resolve(line);
+        StatementData clauseData = clauseType.parse(line, this);
+        List<Instruction> clauseBody = parseBlock();
+        return new ClauseData(clauseType.getKeyword(), clauseData, clauseBody);
     }
 
     public Expression parseFrom(List<Token> expression, int startIndex) {
@@ -136,7 +137,7 @@ public class Parser {
         return expression.get(0).asExpression();
     }
 
-    public Stack<BlockStatement> getControlStack() {
+    public Stack<BlockStatementType> getControlStack() {
         return controlStack;
     }
 

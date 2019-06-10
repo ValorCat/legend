@@ -13,7 +13,7 @@ import java.util.List;
 
 import static parse.error.ErrorDescription.BAD_PRINT_STRING;
 
-public class PrintStringStatement implements BasicStatement {
+public class PrintStringStatement implements BasicStatementType {
 
     @Override
     public boolean matches(TokenLine tokens) {
@@ -31,7 +31,7 @@ public class PrintStringStatement implements BasicStatement {
             throw ErrorLog.raise(BAD_PRINT_STRING, "Print string cannot be used in an expression (did you " +
                     "mean single quotes?)");
         }
-        return new StatementData(tokens.get(0).VALUE);
+        return new StatementData(this, tokens.get(0).VALUE);
     }
 
     @Override

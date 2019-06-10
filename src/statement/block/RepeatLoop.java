@@ -15,14 +15,14 @@ import static parse.error.ErrorDescription.BAD_REPEAT;
 /**
  * @since 1/19/2019
  */
-public class RepeatLoop implements BlockStatement {
+public class RepeatLoop implements BlockStatementType {
 
     @Override
     public StatementData parseHeader(TokenLine tokens, Parser parser) {
         if (tokens.size() != 1) {
             throw ErrorLog.raise(BAD_REPEAT, "Unexpected symbol '%s' after 'repeat'", tokens.get(1));
         }
-        return StatementData.EMPTY;
+        return new StatementData(this);
     }
 
     @Override
