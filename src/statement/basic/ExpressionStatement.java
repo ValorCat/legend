@@ -4,7 +4,7 @@ import instruction.EvaluateInstruction;
 import instruction.Instruction;
 import parse.Parser;
 import parse.TokenLine;
-import statement.StatementData;
+import statement.Statement;
 
 import java.util.List;
 
@@ -16,12 +16,12 @@ public class ExpressionStatement implements BasicStatementType {
     }
 
     @Override
-    public StatementData parse(TokenLine tokens, Parser parser) {
-        return new StatementData(this, parser.parseFrom(tokens, 0));
+    public Statement parse(TokenLine tokens, Parser parser) {
+        return new Statement(this, parser.parseFrom(tokens, 0));
     }
 
     @Override
-    public List<Instruction> build(StatementData data) {
+    public List<Instruction> build(Statement data) {
          return List.of(new EvaluateInstruction(data.EXPRESSION));
     }
 

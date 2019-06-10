@@ -8,7 +8,7 @@ import parse.Parser;
 import parse.Token.TokenType;
 import parse.TokenLine;
 import parse.error.ErrorLog;
-import statement.StatementData;
+import statement.Statement;
 import statement.block.clause.ClauseData;
 
 import java.util.List;
@@ -21,7 +21,7 @@ import static parse.error.ErrorDescription.BAD_FOR_LOOP;
 public class ForLoop implements BlockStatementType {
 
     @Override
-    public StatementData parseHeader(TokenLine tokens, Parser parser) {
+    public Statement parseHeader(TokenLine tokens, Parser parser) {
         if (tokens.size() == 1 || tokens.get(1).TYPE != TokenType.IDENTIFIER) {
             throw ErrorLog.raise(BAD_FOR_LOOP, "Expected variable name after 'for'");
         } else if (tokens.size() == 2 || !tokens.get(2).matches("in")) {
@@ -29,7 +29,7 @@ public class ForLoop implements BlockStatementType {
         } else if (tokens.size() == 3) {
             throw ErrorLog.raise(BAD_FOR_LOOP, "Expected loop expression after 'in'");
         }
-        return new StatementData(this, parser.parseFrom(tokens, 3), tokens.get(1).VALUE);
+        return new Statement(this, parser.parseFrom(tokens, 3), tokens.get(1).VALUE);
     }
 
     @Override

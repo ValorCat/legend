@@ -7,7 +7,7 @@ import parse.Token;
 import parse.Token.TokenType;
 import parse.TokenLine;
 import parse.error.ErrorLog;
-import statement.StatementData;
+import statement.Statement;
 
 import java.util.List;
 
@@ -26,16 +26,16 @@ public class PrintStringStatement implements BasicStatementType {
     }
 
     @Override
-    public StatementData parse(TokenLine tokens, Parser parser) {
+    public Statement parse(TokenLine tokens, Parser parser) {
         if (tokens.get(0).TYPE != TokenType.PRINT_STRING || tokens.size() > 1) {
             throw ErrorLog.raise(BAD_PRINT_STRING, "Print string cannot be used in an expression (did you " +
                     "mean single quotes?)");
         }
-        return new StatementData(this, tokens.get(0).VALUE);
+        return new Statement(this, tokens.get(0).VALUE);
     }
 
     @Override
-    public List<Instruction> build(StatementData data) {
+    public List<Instruction> build(Statement data) {
         return List.of(new PrintInstruction(data.STRING));
     }
 

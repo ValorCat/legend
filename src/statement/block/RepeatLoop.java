@@ -5,7 +5,7 @@ import instruction.JumpInstruction;
 import parse.Parser;
 import parse.TokenLine;
 import parse.error.ErrorLog;
-import statement.StatementData;
+import statement.Statement;
 import statement.block.clause.ClauseData;
 
 import java.util.List;
@@ -18,11 +18,11 @@ import static parse.error.ErrorDescription.BAD_REPEAT;
 public class RepeatLoop implements BlockStatementType {
 
     @Override
-    public StatementData parseHeader(TokenLine tokens, Parser parser) {
+    public Statement parseHeader(TokenLine tokens, Parser parser) {
         if (tokens.size() != 1) {
             throw ErrorLog.raise(BAD_REPEAT, "Unexpected symbol '%s' after 'repeat'", tokens.get(1));
         }
-        return new StatementData(this);
+        return new Statement(this);
     }
 
     @Override

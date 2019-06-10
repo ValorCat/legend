@@ -1,17 +1,17 @@
 package statement.block.clause;
 
 import instruction.Instruction;
-import statement.StatementData;
+import statement.Statement;
 
 import java.util.List;
 
 public class ClauseData {
 
     public final String TYPE;
-    public final StatementData HEADER;
+    public final Statement HEADER;
     public final List<Instruction> BODY;
 
-    public ClauseData(String type, StatementData header, List<Instruction> body) {
+    public ClauseData(String type, Statement header, List<Instruction> body) {
         this.TYPE = type;
         this.HEADER = header;
         this.BODY = body;

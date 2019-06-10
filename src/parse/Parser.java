@@ -7,7 +7,7 @@ import instruction.Instruction;
 import parse.Token.TokenType;
 import parse.error.ErrorLog;
 import parse.error.ParserException;
-import statement.StatementData;
+import statement.Statement;
 import statement.StatementType;
 import statement.block.BlockStatementType;
 import statement.block.clause.ClauseData;
@@ -69,7 +69,7 @@ public class Parser {
                             stmtType.getKeyword());
                 }
                 int startStackSize = controlStack.size();
-                StatementData parsedStmt = stmtType.parse(line, this);
+                Statement parsedStmt = stmtType.parse(line, this);
                 if (controlStack.size() < startStackSize) {
                     break;
                 }
@@ -81,7 +81,7 @@ public class Parser {
         return output;
     }
 
-    public List<Instruction> parseBlockStatement(BlockStatementType statement, StatementData data) {
+    public List<Instruction> parseBlockStatement(BlockStatementType statement, Statement data) {
         List<Instruction> baseClauseBody = parseBlock();
         List<ClauseData> clauses = new ArrayList<>(1);
         clauses.add(new ClauseData("base", data, baseClauseBody));
@@ -100,7 +100,7 @@ public class Parser {
     private ClauseData parseClause(List<TokenLine> lines) {
         TokenLine line = lines.get(address);
         ClauseStatementType clauseType = (ClauseStatementType) StatementType.resolve(line);
-        StatementData clauseData = clauseType.parse(line, this);
+        Statement clauseData = clauseType.parse(line, this);
         List<Instruction> clauseBody = parseBlock();
         return new ClauseData(clauseType.getKeyword(), clauseData, clauseBody);
     }

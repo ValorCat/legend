@@ -4,7 +4,7 @@ import instruction.Instruction;
 import instruction.ReturnInstruction;
 import parse.Parser;
 import parse.TokenLine;
-import statement.StatementData;
+import statement.Statement;
 
 import java.util.List;
 
@@ -19,16 +19,16 @@ public class ReturnStatement implements BasicStatementType {
     }
 
     @Override
-    public StatementData parse(TokenLine tokens, Parser parser) {
+    public Statement parse(TokenLine tokens, Parser parser) {
         if (tokens.size() == 1) {
-            return new StatementData(this);
+            return new Statement(this);
         } else {
-            return new StatementData(this, parser.parseFrom(tokens, 1));
+            return new Statement(this, parser.parseFrom(tokens, 1));
         }
     }
 
     @Override
-    public List<Instruction> build(StatementData data) {
+    public List<Instruction> build(Statement data) {
         return List.of(new ReturnInstruction(data.EXPRESSION));
     }
 

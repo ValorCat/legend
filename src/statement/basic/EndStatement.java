@@ -4,7 +4,7 @@ import instruction.Instruction;
 import parse.Parser;
 import parse.TokenLine;
 import parse.error.ErrorLog;
-import statement.StatementData;
+import statement.Statement;
 
 import java.util.List;
 
@@ -21,18 +21,18 @@ public class EndStatement implements BasicStatementType {
     }
 
     @Override
-    public StatementData parse(TokenLine tokens, Parser parser) {
+    public Statement parse(TokenLine tokens, Parser parser) {
         if (tokens.size() != 1) {
             throw ErrorLog.raise(BAD_NESTING, "Unexpected symbol '%s' after 'end'", tokens.get(1));
         } else if (parser.getControlStack().isEmpty()) {
             throw ErrorLog.raise(BAD_NESTING, "Mismatched 'end'");
         }
         parser.getControlStack().pop();
-        return new StatementData(this);
+        return new Statement(this);
     }
 
     @Override
-    public List<Instruction> build(StatementData data) {
+    public List<Instruction> build(Statement data) {
         return List.of();
     }
 

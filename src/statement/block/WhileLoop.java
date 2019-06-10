@@ -7,7 +7,7 @@ import instruction.JumpUnlessInstruction;
 import parse.Parser;
 import parse.TokenLine;
 import parse.error.ErrorLog;
-import statement.StatementData;
+import statement.Statement;
 import statement.block.clause.ClauseData;
 
 import java.util.List;
@@ -20,11 +20,11 @@ import static parse.error.ErrorDescription.BAD_WHILE_LOOP;
 public class WhileLoop implements BlockStatementType {
 
     @Override
-    public StatementData parseHeader(TokenLine tokens, Parser parser) {
+    public Statement parseHeader(TokenLine tokens, Parser parser) {
         if (tokens.size() == 1) {
             throw ErrorLog.raise(BAD_WHILE_LOOP, "Expected expression after 'while'");
         }
-        return new StatementData(this, parser.parseFrom(tokens, 1));
+        return new Statement(this, parser.parseFrom(tokens, 1));
     }
 
     @Override

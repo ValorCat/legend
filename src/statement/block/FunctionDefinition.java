@@ -9,7 +9,7 @@ import parse.Parser;
 import parse.Token.TokenType;
 import parse.TokenLine;
 import parse.error.ErrorLog;
-import statement.StatementData;
+import statement.Statement;
 import statement.block.clause.ClauseData;
 
 import java.util.List;
@@ -22,13 +22,13 @@ import static parse.error.ErrorDescription.BAD_FUNC_DEF;
 public class FunctionDefinition implements BlockStatementType {
 
     @Override
-    public StatementData parseHeader(TokenLine tokens, Parser parser) {
+    public Statement parseHeader(TokenLine tokens, Parser parser) {
         if (tokens.size() == 1 || tokens.get(1).TYPE != TokenType.IDENTIFIER) {
             throw ErrorLog.raise(BAD_FUNC_DEF, "Expected function name after 'def'");
         } else if (tokens.size() == 2 || !tokens.get(2).matches("()")) {
             throw ErrorLog.raise(BAD_FUNC_DEF, "Expected function parameters after '%s'", tokens.get(1));
         }
-        return new StatementData(this, parser.parseFrom(tokens, 2), tokens.get(1).VALUE);
+        return new Statement(this, parser.parseFrom(tokens, 2), tokens.get(1).VALUE);
         //params = new ParameterList(name, ((Parentheses) parser.parseFrom(tokens, 2)).getContents());
     }
 

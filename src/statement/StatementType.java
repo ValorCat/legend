@@ -14,8 +14,8 @@ import java.util.List;
 
 public interface StatementType {
 
-    StatementData parse(TokenLine tokens, Parser parser);
-    List<Instruction> compile(StatementData data, Parser parser);
+    Statement parse(TokenLine tokens, Parser parser);
+    List<Instruction> compile(Statement data, Parser parser);
     String getKeyword();
 
     default boolean matches(TokenLine tokens) {

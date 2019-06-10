@@ -3,7 +3,7 @@ package statement.block;
 import instruction.Instruction;
 import parse.Parser;
 import parse.TokenLine;
-import statement.StatementData;
+import statement.Statement;
 import statement.StatementType;
 import statement.block.clause.ClauseData;
 
@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface BlockStatementType extends StatementType {
 
-    StatementData parseHeader(TokenLine tokens, Parser parser);
+    Statement parseHeader(TokenLine tokens, Parser parser);
     List<Instruction> build(List<ClauseData> clauses);
 
     default boolean allowsClause(String keyword) {
@@ -21,13 +21,13 @@ public interface BlockStatementType extends StatementType {
     }
 
     @Override
-    default StatementData parse(TokenLine tokens, Parser parser) {
+    default Statement parse(TokenLine tokens, Parser parser) {
         parser.getControlStack().push(this);
         return parseHeader(tokens, parser);
     }
 
     @Override
-    default List<Instruction> compile(StatementData data, Parser parser) {
+    default List<Instruction> compile(Statement data, Parser parser) {
         return parser.parseBlockStatement(this, data);
     }
 
