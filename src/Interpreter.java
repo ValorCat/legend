@@ -58,7 +58,7 @@ public class Interpreter {
         Parser parser = new Parser();
 
         List<TokenLine> tokens = lexer.tokenize(input);
-        List<Instruction> statements = parser.parse(tokens);
+        List<Instruction> instructions = parser.parse(tokens);
 
         if (ErrorLog.foundErrors()) {
             List<ParserException> errors = ErrorLog.getErrors();
@@ -70,7 +70,7 @@ public class Interpreter {
             return;
         }
 
-        Program.PROGRAM = new Program(statements);
+        Program.PROGRAM = new Program(instructions);
         Value returnValue = Program.PROGRAM.execute();
 
         if (returnValue != LNull.NULL) {

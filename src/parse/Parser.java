@@ -60,10 +60,14 @@ public class Parser {
         for (address++; address < lines.size(); address++) {
             TokenLine line = lines.get(address);
             Statement statement = Statement.resolve(line);
-            if (statement instanceof BlockClauseStatement) {
-                break;
-            }
             try {
+                if (statement instanceof BlockClauseStatement) {
+                    if (!controlStack.isEmpty()) {
+                        break;
+                    }
+                    throw ErrorLog.raise(BAD_JUMP_POINT, "'%s' statement must be inside a control structure",
+                            statement.getKeyword());
+                }
                 StatementData stmtData = statement.parse(line, this);
                 if (controlStack.size() < nestingDepth) {
                     break;
