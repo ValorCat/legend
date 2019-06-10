@@ -1,6 +1,10 @@
 package statement;
 
 import expression.Expression;
+import instruction.Instruction;
+import parse.Compiler;
+
+import java.util.List;
 
 public class Statement {
 
@@ -24,6 +28,10 @@ public class Statement {
         this.TYPE = type;
         this.EXPRESSION = expression;
         this.STRING = string;
+    }
+
+    public List<Instruction> compile(Compiler parser) {
+        return TYPE.compile(this, parser);
     }
 
 }

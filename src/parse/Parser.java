@@ -3,14 +3,12 @@ package parse;
 import expression.Expression;
 import expression.group.Parentheses;
 import expression.group.SquareBrackets;
-import instruction.Instruction;
 import parse.Token.TokenType;
 import parse.error.ErrorLog;
 import parse.error.ParserException;
 import statement.Statement;
 import statement.StatementType;
 import statement.block.BlockStatementType;
-import statement.block.clause.ClauseData;
 import statement.block.clause.ClauseStatementType;
 
 import java.util.ArrayList;
@@ -22,87 +20,45 @@ import static parse.Token.TokenType.IDENTIFIER;
 import static parse.Token.TokenType.OPERATOR;
 import static parse.error.ErrorDescription.*;
 
-/**
- * Convert the tokens produced by the {@link Lexer} class into a syntax tree.
- * Each internal node in the tree represents an operation to be performed, and the
- * leaves represent literals and variables. A tree node implements the {@link Expression}
- * interface. Each type of node, i.e. each class that implements Expression, is defined
- * in the {@link expression} package and its subpackages.
- * @see Expression
- * @since 12/22/2018
- */
 public class Parser {
 
-    private int address;
-    private List<TokenLine> lines;
     private Stack<BlockStatementType> controlStack;
 
-    /**
-     * Convert a stream of tokens into a sequence of syntax trees.
-     * @param tokens the list of tokens
-     * @return a list of syntax trees
-     */
-    public List<Instruction> parse(List<TokenLine> tokens) {
-        address = -1;
-        lines = tokens;
+    public List<Statement> parse(List<TokenLine> tokens) {
+        List<Statement> statements = new ArrayList<>(tokens.size());
         controlStack = new Stack<>();
-        List<Instruction> output = parseBlock();
+        for (TokenLine line : tokens) {
+            try {
+                StatementType type = StatementType.resolve(line);
+                if (type instanceof ClauseStatementType) {
+                    checkEnclosingStructure(type, line);
+                }
+                statements.add(type.parse(line, this));
+            } catch (ParserException e) {
+                e.setLineNumber(line.getLineNumber());
+            }
+        }
+        checkMissingEnd(tokens);
+        return statements;
+    }
+
+    private void checkEnclosingStructure(StatementType type, TokenLine line) {
+        if (controlStack.isEmpty()) {
+            throw ErrorLog.raise(BAD_JUMP_POINT, "'%s' statement must be inside a control structure",
+                    type.getKeyword());
+        } else if (!controlStack.peek().allowsClause(type.getKeyword())) {
+            String structType = controlStack.peek().getKeyword();
+            ErrorLog.log(BAD_JUMP_POINT, line.getLineNumber(), "Structure '%s' does not support '%s' clauses",
+                    structType, type.getKeyword());
+        }
+    }
+
+    private void checkMissingEnd(List<TokenLine> tokens) {
         if (!controlStack.isEmpty()) {
             int lastLineNumber = tokens.get(tokens.size() - 1).getLineNumber();
             ErrorLog.log(BAD_NESTING, lastLineNumber, "Expected 'end' to close '%s'",
                     controlStack.peek().getKeyword());
         }
-        return output;
-    }
-
-    private List<Instruction> parseBlock() {
-        List<Instruction> output = new ArrayList<>();
-        for (address++; address < lines.size(); address++) {
-            TokenLine line = lines.get(address);
-            StatementType stmtType = StatementType.resolve(line);
-            try {
-                if (stmtType instanceof ClauseStatementType) {
-                    if (!controlStack.isEmpty()) {
-                        break;
-                    }
-                    throw ErrorLog.raise(BAD_JUMP_POINT, "'%s' statement must be inside a control structure",
-                            stmtType.getKeyword());
-                }
-                int startStackSize = controlStack.size();
-                Statement parsedStmt = stmtType.parse(line, this);
-                if (controlStack.size() < startStackSize) {
-                    break;
-                }
-                output.addAll(stmtType.compile(parsedStmt, this));
-            } catch (ParserException e) {
-                e.setLineNumber(line.getLineNumber());
-            }
-        }
-        return output;
-    }
-
-    public List<Instruction> parseBlockStatement(BlockStatementType statement, Statement data) {
-        List<Instruction> baseClauseBody = parseBlock();
-        List<ClauseData> clauses = new ArrayList<>(1);
-        clauses.add(new ClauseData("base", data, baseClauseBody));
-        while (!StatementType.isEnd(lines.get(address))) {
-            ClauseData clause = parseClause(lines);
-            if (!statement.allowsClause(clause.TYPE)) {
-                int lineNumber = lines.get(address).getLineNumber();
-                ErrorLog.log(BAD_JUMP_POINT, lineNumber, "Structure '%s' does not support '%s' clauses",
-                        statement.getKeyword(), clause.TYPE);
-            }
-            clauses.add(clause);
-        }
-        return statement.build(clauses);
-    }
-
-    private ClauseData parseClause(List<TokenLine> lines) {
-        TokenLine line = lines.get(address);
-        ClauseStatementType clauseType = (ClauseStatementType) StatementType.resolve(line);
-        Statement clauseData = clauseType.parse(line, this);
-        List<Instruction> clauseBody = parseBlock();
-        return new ClauseData(clauseType.getKeyword(), clauseData, clauseBody);
     }
 
     public Expression parseFrom(List<Token> expression, int startIndex) {
@@ -137,10 +93,6 @@ public class Parser {
         return expression.get(0).asExpression();
     }
 
-    public Stack<BlockStatementType> getControlStack() {
-        return controlStack;
-    }
-
     /**
      * Recursively search through a statement for subexpressions (pairs of (),
      * [], or {}) and parse them.
@@ -161,6 +113,10 @@ public class Parser {
                 tokens.set(i, Token.newExpression(token.VALUE, value));
             }
         }
+    }
+
+    public Stack<BlockStatementType> getControlStack() {
+        return controlStack;
     }
 
     /**

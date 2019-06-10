@@ -1,6 +1,7 @@
 package statement;
 
 import instruction.Instruction;
+import parse.Compiler;
 import parse.Parser;
 import parse.Token;
 import parse.Token.TokenType;
@@ -15,7 +16,7 @@ import java.util.List;
 public interface StatementType {
 
     Statement parse(TokenLine tokens, Parser parser);
-    List<Instruction> compile(Statement data, Parser parser);
+    List<Instruction> compile(Statement stmt, Compiler compiler);
     String getKeyword();
 
     default boolean matches(TokenLine tokens) {

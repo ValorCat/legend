@@ -1,6 +1,7 @@
 package statement.block;
 
 import instruction.Instruction;
+import parse.Compiler;
 import parse.Parser;
 import parse.TokenLine;
 import statement.Statement;
@@ -27,8 +28,8 @@ public interface BlockStatementType extends StatementType {
     }
 
     @Override
-    default List<Instruction> compile(Statement data, Parser parser) {
-        return parser.parseBlockStatement(this, data);
+    default List<Instruction> compile(Statement stmt, Compiler compiler) {
+        return compiler.compileBlockStatement(stmt);
     }
 
     @SuppressWarnings("unchecked")

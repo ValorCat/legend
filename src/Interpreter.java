@@ -2,11 +2,13 @@ import execute.Program;
 import expression.value.LNull;
 import expression.value.Value;
 import instruction.Instruction;
+import parse.Compiler;
 import parse.Lexer;
 import parse.Parser;
 import parse.TokenLine;
 import parse.error.ErrorLog;
 import parse.error.ParserException;
+import statement.Statement;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +21,7 @@ import java.util.List;
  * <p>
  * Interpretation is a three-step process:
  * <ol><li>The source code is divided into tokens and statements by the {@link Lexer} class.
- * <li>The statements are parsed into syntax trees by the {@link parse.Parser} class.
+ * <li>The statements are parsed into syntax trees by the {@link Parser} class.
  * <li>The syntax trees are traversed and executed by the {@link execute.Program} class.</ol>
  * @since 1/15/2019
  */
@@ -56,9 +58,11 @@ public class Interpreter {
 
         Lexer lexer = new Lexer();
         Parser parser = new Parser();
+        Compiler compiler = new Compiler();
 
         List<TokenLine> tokens = lexer.tokenize(input);
-        List<Instruction> instructions = parser.parse(tokens);
+        List<Statement> statements = parser.parse(tokens);
+        List<Instruction> instructions = compiler.compile(statements);
 
         if (ErrorLog.foundErrors()) {
             List<ParserException> errors = ErrorLog.getErrors();
