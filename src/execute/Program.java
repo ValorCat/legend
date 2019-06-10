@@ -1,8 +1,7 @@
 package execute;
 
 import expression.value.Value;
-import statement.Statement;
-import statement.structure.FlowController;
+import instruction.Instruction;
 
 import java.util.List;
 import java.util.Stack;
@@ -11,22 +10,18 @@ public class Program {
 
     public static Program PROGRAM;
 
-    private List<Statement> program;
+    private List<Instruction> program;
     private int counter;
     private boolean counterMoved;
     private Stack<Value> stack;
     private Scope globalNamespace;
 
-    // temporary during migration
-    private Stack<FlowController> controlStack;
-
-    public Program(List<Statement> program) {
+    public Program(List<Instruction> program) {
         this.program = program;
         this.counter = 0;
         this.counterMoved = false;
         this.stack = new Stack<>();
         this.globalNamespace = new Scope();
-        this.controlStack = new Stack<>();
         TypeLibrary.updateNamespace(globalNamespace);
     }
 
@@ -62,10 +57,6 @@ public class Program {
 
     public Stack<Value> getStack() {
         return stack;
-    }
-
-    public Stack<FlowController> getControlStack() {
-        return controlStack;
     }
 
 }

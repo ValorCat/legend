@@ -1,3 +1,31 @@
+"Starting!"
+
+n = 14
+
+if n == 10
+    "if"
+    "if2"
+elsif n == 15
+    "elsif"
+else
+    "else"
+    "else2"
+end
+
+def fact(n)
+    if n < 2
+        return n
+    end
+    return n * fact(n - 1)
+end
+
+for i in 0 to 6
+    (fact(i)) show
+end
+
+"Quick done"
+return
+
 def test_recursion(n)
     if n == 0
         return

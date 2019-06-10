@@ -1,12 +1,12 @@
 import execute.Program;
 import expression.value.LNull;
 import expression.value.Value;
+import instruction.Instruction;
 import parse.Lexer;
 import parse.Parser;
 import parse.TokenLine;
 import parse.error.ErrorLog;
 import parse.error.ParserException;
-import statement.Statement;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +58,7 @@ public class Interpreter {
         Parser parser = new Parser();
 
         List<TokenLine> tokens = lexer.tokenize(input);
-        List<Statement> statements = parser.parse(tokens);
+        List<Instruction> statements = parser.parse(tokens);
 
         if (ErrorLog.foundErrors()) {
             List<ParserException> errors = ErrorLog.getErrors();

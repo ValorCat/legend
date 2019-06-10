@@ -3,11 +3,16 @@ package parse;
 import expression.Expression;
 import expression.group.Parentheses;
 import expression.group.SquareBrackets;
+import instruction.Instruction;
 import parse.Token.TokenType;
 import parse.error.ErrorLog;
 import parse.error.ParserException;
-import statement.*;
-import statement.structure.*;
+import statement.Statement;
+import statement.StatementData;
+import statement.basic.BasicStatement;
+import statement.block.BlockStatement;
+import statement.block.clause.BlockClauseStatement;
+import statement.block.clause.ClauseData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,77 +34,72 @@ import static parse.error.ErrorDescription.*;
  */
 public class Parser {
 
-    private int address;
-    private Stack<FlowController> controlStack;
+    private int address, lineNumber;
+    private Stack<BlockStatement> controlStack;
 
     /**
      * Convert a stream of tokens into a sequence of syntax trees.
      * @param stream the list of tokens
      * @return a list of syntax trees
      */
-    public List<Statement> parse(List<TokenLine> stream) {
-        List<Statement> trees = new ArrayList<>(stream.size());
-        int lineNumber = 1;
+    public List<Instruction> parse(List<TokenLine> stream) {
         controlStack = new Stack<>();
-        for (address = 0; address < stream.size(); address++) {
-            TokenLine line = stream.get(address);
-            lineNumber = line.getLineNumber();
-            try {
-                trees.add(parseStatement(line));
-            } catch (ParserException e) {
-                e.setLineNumber(lineNumber);
-            }
-        }
+        address = -1;
+        List<Instruction> output = parseBlock(stream, 0);
         if (!controlStack.isEmpty()) {
             ErrorLog.log(BAD_NESTING, lineNumber, "Expected 'end' to close '%s'", controlStack.peek().getKeyword());
         }
-        return trees;
+        return output;
     }
 
-    /**
-     * Convert a line of tokens into a statement.
-     * @param tokens the tokens to convert
-     * @return the parsed statement
-     */
-    private Statement parseStatement(TokenLine tokens) {
-        // check if assignment or print string
-        for (int i = 0; i < tokens.size(); i++) {
-            Token token = tokens.get(i);
-            if (token.matches("=")) {
-                return new Assignment(tokens, i, this);
-            } else if (token.TYPE == TokenType.PRINT_STRING) {
-                return new PrintString(tokens, i);
-            }
-        }
-
-        // check if flow control statement
-        Statement statement = null;
-        switch (tokens.get(0).VALUE) {
-            case "def":    statement = new FunctionDefinition(tokens, this); break;
-            case "end":    statement = new EndStatement(tokens, this); break;
-            case "for":    statement = new ForLoop(tokens, this); break;
-            case "if":     statement = new IfStatement(tokens, this); break;
-            case "repeat": statement = new RepeatLoop(tokens); break;
-            case "return": statement = new ReturnStatement(tokens); break;
-            case "while":  statement = new WhileLoop(tokens, this); break;
-            case "elsif": case "else":
-                if (controlStack.isEmpty()) {
-                    throw ErrorLog.raise(BAD_JUMP_POINT, "Unexpected keyword '%s'", tokens.get(0));
+    private List<Instruction> parseBlock(List<TokenLine> stream, int nestingDepth) {
+        List<Instruction> output = new ArrayList<>();
+        address++;
+        while (address < stream.size()) {
+            TokenLine line = stream.get(address);
+            lineNumber = line.getLineNumber();
+            try {
+                Statement statement = Statement.resolve(line);
+                if (statement instanceof BlockClauseStatement) {
+                    break;
                 }
-                FlowController struct = controlStack.peek();
-                struct.setJumpPoint(tokens, this);
-                return struct;
-        }
-
-        if (statement != null) {
-            if (statement instanceof FlowController) {
-                controlStack.push((FlowController) statement);
+                StatementData stmtData = statement.parse(line, this);
+                if (controlStack.size() < nestingDepth) {
+                    break;
+                }
+                List<Instruction> compiled;
+                if (statement instanceof BasicStatement) {
+                    compiled = ((BasicStatement) statement).compile(stmtData);
+                } else {
+                    BlockStatement blockStatement = (BlockStatement) statement;
+                    List<Instruction> baseClauseBody = parseBlock(stream, nestingDepth + 1);
+                    List<ClauseData> clauses = new ArrayList<>(1);
+                    clauses.add(new ClauseData("base", stmtData, baseClauseBody));
+                    while (!Statement.isEnd(stream.get(address))) {
+                        ClauseData clause = parseClause(stream, nestingDepth);
+                        if (!blockStatement.allowsClause(clause.TYPE)) {
+                            ErrorLog.log(BAD_JUMP_POINT, lineNumber, "Structure '%s' does not support '%s' clauses",
+                                    blockStatement.getKeyword(), clause.TYPE);
+                        }
+                        clauses.add(clause);
+                    }
+                    compiled = blockStatement.compile(clauses);
+                }
+                output.addAll(compiled);
+            } catch (ParserException e) {
+                e.setLineNumber(lineNumber);
             }
-            return statement;
+            address++;
         }
+        return output;
+    }
 
-        // statement is expression
-        return parseExpression(tokens);
+    private ClauseData parseClause(List<TokenLine> stream, int nestingDepth) {
+        TokenLine line = stream.get(address);
+        BlockClauseStatement clauseParser = (BlockClauseStatement) Statement.resolve(line);
+        StatementData clauseData = clauseParser.parse(line, this);
+        List<Instruction> clauseBody = parseBlock(stream, nestingDepth + 1);
+        return new ClauseData(clauseParser.getKeyword(), clauseData, clauseBody);
     }
 
     public Expression parseFrom(List<Token> expression, int startIndex) {
@@ -111,7 +111,7 @@ public class Parser {
      * @param expression the tokens to convert, which will be consumed and destroyed
      * @return the root of a syntax tree
      */
-    public Expression parseExpression(List<Token> expression) {
+    private Expression parseExpression(List<Token> expression) {
         if (expression.isEmpty()) {
             // if there are no tokens (such as in a function call with no args)
             // just return empty parentheses
@@ -134,11 +134,7 @@ public class Parser {
         return expression.get(0).asExpression();
     }
 
-    public int getAddress() {
-        return address;
-    }
-
-    public Stack<FlowController> getControlStack() {
+    public Stack<BlockStatement> getControlStack() {
         return controlStack;
     }
 
