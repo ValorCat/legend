@@ -15,4 +15,9 @@ public class PrintInstruction implements Instruction {
         System.out.println(value);
     }
 
+    @Override
+    public String toString() {
+        return String.format("prt \"%s\"", value);
+    }
+
 }

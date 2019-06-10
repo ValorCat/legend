@@ -21,4 +21,9 @@ public class JumpUnlessInstruction implements Instruction {
         }
     }
 
+    @Override
+    public String toString() {
+        return String.format("jun %d %s", offset, condition);
+    }
+
 }

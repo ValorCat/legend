@@ -18,4 +18,9 @@ public class AssignInstruction implements Instruction {
         scope.setVariable(target, value.evaluate(scope));
     }
 
+    @Override
+    public String toString() {
+        return String.format("asn %s %s", target, value);
+    }
+
 }

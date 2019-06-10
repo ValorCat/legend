@@ -16,4 +16,9 @@ public class EvaluateInstruction implements Instruction {
         value.evaluate(scope);
     }
 
+    @Override
+    public String toString() {
+        return String.format("evl %s", value);
+    }
+
 }

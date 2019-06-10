@@ -16,4 +16,9 @@ public class JumpInstruction implements Instruction {
         Program.PROGRAM.offsetCounter(offset);
     }
 
+    @Override
+    public String toString() {
+        return String.format("jmp %d", offset);
+    }
+
 }

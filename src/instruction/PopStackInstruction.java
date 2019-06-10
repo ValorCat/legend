@@ -10,4 +10,9 @@ public class PopStackInstruction implements Instruction {
         Program.PROGRAM.getStack().pop();
     }
 
+    @Override
+    public String toString() {
+        return "pop";
+    }
+
 }

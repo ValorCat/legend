@@ -17,4 +17,9 @@ public class PushStackInstruction implements Instruction {
         Program.PROGRAM.getStack().push(value.evaluate(scope));
     }
 
+    @Override
+    public String toString() {
+        return String.format("psh %s", value);
+    }
+
 }
