@@ -1,6 +1,8 @@
 package expression.operation;
 
 import execute.Scope;
+import expression.Expression;
+import expression.Variable;
 import expression.group.ArgumentList;
 import expression.value.Value;
 import parse.Token;
@@ -14,6 +16,10 @@ public class UnaryOperatorCall extends Operation {
 
     public UnaryOperatorCall(int position, List<Token> tokens) {
         super(position, tokens);
+    }
+
+    public UnaryOperatorCall(Expression target, String method) {
+        super("unop", List.of(target, new Variable(method)));
     }
 
     @Override

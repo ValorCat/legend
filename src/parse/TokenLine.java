@@ -25,6 +25,19 @@ public class TokenLine extends ArrayList<Token> {
         return new TokenLine(this, lineNumber);
     }
 
+    public int indexOf(String token) {
+        for (int i = 0; i < this.size(); i++) {
+            if (get(i).matches(token)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public boolean contains(String token) {
+        return indexOf(token) >= 0;
+    }
+
     @Override
     public TokenLine subList(int from, int to) {
         return new TokenLine(super.subList(from, to), lineNumber);

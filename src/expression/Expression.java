@@ -2,7 +2,6 @@ package expression;
 
 import execute.Scope;
 import expression.value.Value;
-import statement.Statement;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
  * parsed statement's syntax tree.
  * @since 12/23/2018
  */
-public interface Expression extends Statement {
+public interface Expression {
 
     /**
      * Execute this expression, also executing any sub-expressions as necessary.
@@ -45,11 +44,6 @@ public interface Expression extends Statement {
      */
     default List<Expression> getChildren() {
         return Collections.emptyList();
-    }
-
-    @Override
-    default void execute(Scope scope) {
-        evaluate(scope);
     }
 
 }
