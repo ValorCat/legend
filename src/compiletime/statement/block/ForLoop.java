@@ -13,8 +13,6 @@ import runtime.instruction.*;
 
 import java.util.List;
 
-import static compiletime.error.ErrorDescription.BAD_FOR_LOOP;
-
 /**
  * @since 1/19/2019
  */
@@ -23,11 +21,11 @@ public class ForLoop implements BlockStatementType {
     @Override
     public Statement parseHeader(TokenLine tokens, Parser parser) {
         if (tokens.size() == 1 || tokens.get(1).TYPE != TokenType.IDENTIFIER) {
-            throw ErrorLog.raise(BAD_FOR_LOOP, "Expected variable name after 'for'");
+            throw ErrorLog.get("Expected variable name after 'for'");
         } else if (tokens.size() == 2 || !tokens.get(2).matches("in")) {
-            throw ErrorLog.raise(BAD_FOR_LOOP, "Expected 'in' after variable '%s'", tokens.get(1));
+            throw ErrorLog.get("Expected 'in' after variable '%s'", tokens.get(1));
         } else if (tokens.size() == 3) {
-            throw ErrorLog.raise(BAD_FOR_LOOP, "Expected loop expression after 'in'");
+            throw ErrorLog.get("Expected loop expression after 'in'");
         }
         return new Statement(this, parser.parseFrom(tokens, 3), tokens.get(1).VALUE);
     }

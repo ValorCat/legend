@@ -5,6 +5,7 @@ import compiletime.Parser;
 import compiletime.Token;
 import compiletime.Token.TokenType;
 import compiletime.TokenLine;
+import compiletime.error.InterpreterException;
 import compiletime.statement.basic.*;
 import compiletime.statement.block.*;
 import compiletime.statement.block.clause.ElseClause;
@@ -63,7 +64,7 @@ public interface StatementType {
      * @param tokens the tokens to parse
      * @param parser the parser object to use for parsing subexpressions
      * @return a parsed statement
-     * @throws compiletime.error.ParserException if the statement is malformed
+     * @throws InterpreterException if the statement is malformed
      * @see Parser
      */
     Statement parse(TokenLine tokens, Parser parser);

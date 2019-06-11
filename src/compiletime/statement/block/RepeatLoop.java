@@ -10,8 +10,6 @@ import runtime.instruction.JumpInstruction;
 
 import java.util.List;
 
-import static compiletime.error.ErrorDescription.BAD_REPEAT;
-
 /**
  * @since 1/19/2019
  */
@@ -20,7 +18,7 @@ public class RepeatLoop implements BlockStatementType {
     @Override
     public Statement parseHeader(TokenLine tokens, Parser parser) {
         if (tokens.size() != 1) {
-            throw ErrorLog.raise(BAD_REPEAT, "Unexpected symbol '%s' after 'repeat'", tokens.get(1));
+            throw ErrorLog.get("Unexpected symbol '%s' after 'repeat'", tokens.get(1));
         }
         return new Statement(this);
     }

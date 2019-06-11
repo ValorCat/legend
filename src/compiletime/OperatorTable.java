@@ -1,13 +1,10 @@
 package compiletime;
 
 import compiletime.error.ErrorLog;
-import compiletime.error.ParserException;
+import compiletime.error.InterpreterException;
 import compiletime.expression.operation.*;
 
 import java.util.*;
-
-import static compiletime.error.ErrorDescription.BAD_ASSIGN;
-import static compiletime.error.ErrorDescription.UNKNOWN_OPER;
 
 /**
  * This class stores valid operators and their precedence levels. It also instantiates
@@ -135,11 +132,11 @@ public final class OperatorTable {
         return temp;
     }
 
-    private static ParserException getException(String operator) {
+    private static InterpreterException getException(String operator) {
         if (operator.equals("=")) {
-            return ErrorLog.raise(BAD_ASSIGN, "Cannot use '=' in an expression (did you mean ':='?)");
+            return ErrorLog.get("Cannot use '=' in an expression (did you mean ':='?)");
         }
-        return ErrorLog.raise(UNKNOWN_OPER, "Unrecognized operator '%s'", operator);
+        return ErrorLog.get("Unrecognized operator '%s'", operator);
     }
 
 }

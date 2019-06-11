@@ -3,18 +3,12 @@ package compiletime.error;
 /**
  * @since 3/1/2019
  */
-public class ParserException extends RuntimeException {
+public class InterpreterException extends RuntimeException {
 
-    private ErrorDescription desc;
     private int lineNumber;
 
-    public ParserException(ErrorDescription desc, String message) {
+    public InterpreterException(String message) {
         super(message);
-        this.desc = desc;
-    }
-
-    public String getDetails() {
-        return desc.DETAILS;
     }
 
     public int getLineNumber() {

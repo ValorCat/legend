@@ -12,8 +12,6 @@ import runtime.instruction.JumpUnlessInstruction;
 import java.util.ArrayList;
 import java.util.List;
 
-import static compiletime.error.ErrorDescription.BAD_IF;
-
 /**
  * @since 1/27/2019
  */
@@ -22,7 +20,7 @@ public class IfStatement implements BlockStatementType {
     @Override
     public Statement parseHeader(TokenLine tokens, Parser parser) {
         if (tokens.size() == 1) {
-            throw ErrorLog.raise(BAD_IF, "Expected expression after 'if'");
+            throw ErrorLog.get("Expected expression after 'if'");
         }
         return new Statement(this, parser.parseFrom(tokens, 1));
     }

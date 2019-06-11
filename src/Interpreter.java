@@ -3,7 +3,7 @@ import compiletime.Lexer;
 import compiletime.Parser;
 import compiletime.TokenLine;
 import compiletime.error.ErrorLog;
-import compiletime.error.ParserException;
+import compiletime.error.InterpreterException;
 import compiletime.expression.value.LNull;
 import compiletime.expression.value.Value;
 import compiletime.statement.Statement;
@@ -69,9 +69,9 @@ public class Interpreter {
         List<Instruction> instructions = compiler.compile(statements);
 
         if (ErrorLog.foundErrors()) {
-            List<ParserException> errors = ErrorLog.getErrors();
+            List<InterpreterException> errors = ErrorLog.getErrors();
             System.err.printf("The interpeter encountered %d error(s) during parsing.\n\n", errors.size());
-            for (ParserException e : errors) {
+            for (InterpreterException e : errors) {
                 System.err.printf("(line %d) %s\n", e.getLineNumber(), e.getMessage());
             }
             System.err.println("\nInterpretation aborted.\n");

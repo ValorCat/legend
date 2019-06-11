@@ -11,8 +11,6 @@ import runtime.instruction.PrintInstruction;
 
 import java.util.List;
 
-import static compiletime.error.ErrorDescription.BAD_PRINT_STRING;
-
 public class PrintStringStatement implements BasicStatementType {
 
     @Override
@@ -28,8 +26,7 @@ public class PrintStringStatement implements BasicStatementType {
     @Override
     public Statement parse(TokenLine tokens, Parser parser) {
         if (tokens.get(0).TYPE != TokenType.PRINT_STRING || tokens.size() > 1) {
-            throw ErrorLog.raise(BAD_PRINT_STRING, "Print string cannot be used in an expression (did you " +
-                    "mean single quotes?)");
+            throw ErrorLog.get("Print string cannot be used in an expression (did you mean single quotes?)");
         }
         return new Statement(this, tokens.get(0).VALUE);
     }

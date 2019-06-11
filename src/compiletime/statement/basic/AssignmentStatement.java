@@ -10,8 +10,6 @@ import runtime.instruction.Instruction;
 
 import java.util.List;
 
-import static compiletime.error.ErrorDescription.BAD_ASSIGN;
-
 public class AssignmentStatement implements BasicStatementType {
 
     @Override
@@ -23,9 +21,9 @@ public class AssignmentStatement implements BasicStatementType {
     public Statement parse(TokenLine tokens, Parser parser) {
         int equalsPos = tokens.indexOf("=");
         if (equalsPos == 0 || tokens.get(equalsPos - 1).TYPE != TokenType.IDENTIFIER) {
-            throw ErrorLog.raise(BAD_ASSIGN, "Missing assignment target on left of '='");
+            throw ErrorLog.get("Missing assignment target on left of '='");
         } else if (equalsPos == tokens.size() - 1 || !tokens.get(equalsPos + 1).isValue()) {
-            throw ErrorLog.raise(BAD_ASSIGN, "Missing assignment value on right of '='");
+            throw ErrorLog.get("Missing assignment value on right of '='");
         }
         return new Statement(this,
                 parser.parseFrom(tokens, equalsPos + 1),  // value

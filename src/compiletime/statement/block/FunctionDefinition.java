@@ -14,8 +14,6 @@ import runtime.instruction.ReturnInstruction;
 
 import java.util.List;
 
-import static compiletime.error.ErrorDescription.BAD_FUNC_DEF;
-
 /**
  * @since 2/16/2019
  */
@@ -24,12 +22,11 @@ public class FunctionDefinition implements BlockStatementType {
     @Override
     public Statement parseHeader(TokenLine tokens, Parser parser) {
         if (tokens.size() == 1 || tokens.get(1).TYPE != TokenType.IDENTIFIER) {
-            throw ErrorLog.raise(BAD_FUNC_DEF, "Expected function name after 'def'");
+            throw ErrorLog.get("Expected function name after 'def'");
         } else if (tokens.size() == 2 || !tokens.get(2).matches("()")) {
-            throw ErrorLog.raise(BAD_FUNC_DEF, "Expected function parameters after '%s'", tokens.get(1));
+            throw ErrorLog.get("Expected function parameters after '%s'", tokens.get(1));
         }
         return new Statement(this, parser.parseFrom(tokens, 2), tokens.get(1).VALUE);
-        //params = new ParameterList(name, ((Parentheses) parser.parseFrom(tokens, 2)).getContents());
     }
 
     @Override

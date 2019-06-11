@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Stack;
 
 import static compiletime.Token.TokenType.*;
-import static compiletime.error.ErrorDescription.BAD_PARENS;
-import static compiletime.error.ErrorDescription.BAD_STRING;
 
 /**
  * Lexing is the first step in interpretation. The lexer divides the raw source code into atomic units called tokens and
@@ -157,7 +155,7 @@ public class Lexer {
     private void breakStatement(char c) {
         if (c == '\n' || c == '~') {
             if (stringType != 0) {
-                ErrorLog.log(BAD_STRING, lineNumber, "Unterminated string literal");
+                ErrorLog.log(lineNumber, "Unterminated string literal");
                 currToken.setLength(0);
                 stringType = 0;
             }
@@ -259,7 +257,7 @@ public class Lexer {
                     break;
                 case ")": case "]":
                     if (delimiters.isEmpty() || !delimiters.pop().equals(token)) {
-                        ErrorLog.log(BAD_PARENS, lineNumber, "Extraneous '%s'", token);
+                        ErrorLog.log(lineNumber, "Extraneous '%s'", token);
                         line.remove(i);
                         i--;
                     } else {
@@ -274,7 +272,7 @@ public class Lexer {
         if (!delimiters.isEmpty()) {
             String found = delimiters.peek();
             String missing = getMatchingWrapper(found);
-            ErrorLog.log(BAD_PARENS, lineNumber, "Missing '%s' to close '%s'", missing, found);
+            ErrorLog.log(lineNumber, "Missing '%s' to close '%s'", missing, found);
             // fix the mismatch so more errors aren't raised
             while (!delimiters.isEmpty()) {
                 line.add(Token.newOperator(getMatchingWrapper(delimiters.pop())));

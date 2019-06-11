@@ -9,8 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
 
-import static compiletime.error.ErrorDescription.BAD_OPERANDS;
-
 /**
  * Classes that extend Operation represent binary and unary operations in
  * the parsed syntax tree.
@@ -68,7 +66,7 @@ public abstract class Operation implements Expression {
         if (pos > 0) left = tokens.get(pos - 1);
         if (pos < tokens.size() - 1) right = tokens.get(pos + 1);
         if (left == null || right == null || !left.isValue() || !right.isValue()) {
-            throw ErrorLog.raise(BAD_OPERANDS, "The '%s' operator requires values on both sides", operator);
+            throw ErrorLog.get("The '%s' operator requires values on both sides", operator);
         }
 
         // convert this operation into a tree
@@ -79,7 +77,7 @@ public abstract class Operation implements Expression {
     protected void parseLeftUnaryOperation(int pos, TokenLine tokens) {
         String operator = tokens.get(pos).VALUE;
         if (pos == tokens.size() - 1 || !tokens.get(pos + 1).isValue()) {
-            throw ErrorLog.raise(BAD_OPERANDS, "The '%s' operator requires a value on the right", operator);
+            throw ErrorLog.get("The '%s' operator requires a value on the right", operator);
         }
         operands = List.of(tokens.get(pos + 1).asExpression());
         tokens.consolidate(Token.newExpression(operator, this), pos, 2);
@@ -88,7 +86,7 @@ public abstract class Operation implements Expression {
     protected void parseRightUnaryOperation(int pos, TokenLine tokens) {
         String operator = tokens.get(pos).VALUE;
         if (pos == 0 || !tokens.get(pos - 1).isValue()) {
-            throw ErrorLog.raise(BAD_OPERANDS, "The '%s' operator requires a value on the left", operator);
+            throw ErrorLog.get("The '%s' operator requires a value on the left", operator);
         }
         operands = List.of(tokens.get(pos - 1).asExpression());
         tokens.consolidate(Token.newExpression(operator, this), pos - 1, 2);

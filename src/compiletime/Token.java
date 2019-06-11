@@ -8,8 +8,6 @@ import compiletime.expression.value.LInteger;
 import compiletime.expression.value.LNull;
 import compiletime.expression.value.LString;
 
-import static compiletime.error.ErrorDescription.MISPLACED_SYMBOL;
-
 /**
  * A token is a fundamental symbol in the source code, such as an operator,
  * variable, or literal value. A token is represented by a type, value, and
@@ -76,7 +74,7 @@ public final class Token {
                     return new LString(VALUE);
                 }
             default:
-                throw ErrorLog.raise(MISPLACED_SYMBOL, "Unexpected symbol '%s'", VALUE);
+                throw ErrorLog.get("Unexpected symbol '%s'", VALUE);
         }
     }
 

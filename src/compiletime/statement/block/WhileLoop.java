@@ -12,8 +12,6 @@ import runtime.instruction.JumpUnlessInstruction;
 
 import java.util.List;
 
-import static compiletime.error.ErrorDescription.BAD_WHILE_LOOP;
-
 /**
  * @since 1/19/2019
  */
@@ -22,7 +20,7 @@ public class WhileLoop implements BlockStatementType {
     @Override
     public Statement parseHeader(TokenLine tokens, Parser parser) {
         if (tokens.size() == 1) {
-            throw ErrorLog.raise(BAD_WHILE_LOOP, "Expected expression after 'while'");
+            throw ErrorLog.get("Expected expression after 'while'");
         }
         return new Statement(this, parser.parseFrom(tokens, 1));
     }
