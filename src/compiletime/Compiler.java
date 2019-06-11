@@ -75,15 +75,14 @@ public class Compiler {
      * @see BlockStatementType
      */
     public List<Instruction> compileBlockStatement(Statement header) {
-        List<Clause> clauses = new ArrayList<>(1);
-        List<Instruction> baseClauseBody = compileBlock();
-        clauses.add(new Clause(header, baseClauseBody));
+        Clause base = new Clause(header, compileBlock());
+        List<Clause> optional = new ArrayList<>(0);
         while (!atEnd()) {
             Statement clauseHeader = statements.get(address);
             List<Instruction> clauseBody = compileBlock();
-            clauses.add(new Clause(clauseHeader, clauseBody));
+            optional.add(new Clause(clauseHeader, clauseBody));
         }
-        return ((BlockStatementType) header.TYPE).build(clauses);
+        return ((BlockStatementType) header.TYPE).build(base, optional);
     }
 
     /**

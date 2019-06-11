@@ -28,9 +28,9 @@ public class WhileLoop implements BlockStatementType {
     }
 
     @Override
-    public List<Instruction> build(List<Clause> clauses) {
-        Expression condition = clauses.get(0).HEADER.EXPRESSION;
-        List<Instruction> body = clauses.get(0).BODY;
+    public List<Instruction> build(Clause base, List<Clause> optional) {
+        Expression condition = base.HEADER.EXPRESSION;
+        List<Instruction> body = base.BODY;
         return asList(body.size() + 2,
                 new JumpUnlessInstruction(body.size() + 2, condition),
                 body,

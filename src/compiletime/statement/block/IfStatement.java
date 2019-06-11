@@ -28,8 +28,9 @@ public class IfStatement implements BlockStatementType {
     }
 
     @Override
-    public List<Instruction> build(List<Clause> clauses) {
+    public List<Instruction> build(Clause base, List<Clause> optional) {
         // todo assert that if there is an 'else' clause, it occurs only once and at the end
+        List<Clause> clauses = joined(base, optional);
         int remaining = computeCompiledSize(clauses);
         List<Instruction> compiled = new ArrayList<>(remaining);
         for (Clause clause : clauses) {
@@ -56,6 +57,12 @@ public class IfStatement implements BlockStatementType {
     @Override
     public String getName() {
         return "if";
+    }
+
+    private static List<Clause> joined(Clause base, List<Clause> optional) {
+        List<Clause> clauses = new ArrayList<>(optional);
+        clauses.add(0, base);
+        return clauses;
     }
 
     private static int computeCompiledSize(List<Clause> clauses) {

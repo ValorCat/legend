@@ -33,10 +33,10 @@ public class FunctionDefinition implements BlockStatementType {
     }
 
     @Override
-    public List<Instruction> build(List<Clause> clauses) {
-        String name = clauses.get(0).HEADER.STRING;
-        Parentheses params = (Parentheses) clauses.get(0).HEADER.EXPRESSION;
-        List<Instruction> body = clauses.get(0).BODY;
+    public List<Instruction> build(Clause base, List<Clause> optional) {
+        String name = base.HEADER.STRING;
+        Parentheses params = (Parentheses) base.HEADER.EXPRESSION;
+        List<Instruction> body = base.BODY;
 
         if (!(body.get(body.size() - 1) instanceof ReturnInstruction)) {
             body.add(new ReturnInstruction());

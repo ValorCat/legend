@@ -29,10 +29,11 @@ public interface BlockStatementType extends StatementType {
 
     /**
      * Generate the runtime instructions for a block statement.
-     * @param clauses the clauses of the block (e.g. 'elsif' clauses in an if statement)
+     * @param base the base clause of the block (e.g. 'if' clause in an if statement)
+     * @param optional the optional following clauses of the block (e.g. 'elsif' clauses in an if statement)
      * @return the corresponding instructions
      */
-    List<Instruction> build(List<Clause> clauses);
+    List<Instruction> build(Clause base, List<Clause> optional);
 
     /**
      * Return whether this block statement supports the specified clause type.
