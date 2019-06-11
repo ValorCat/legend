@@ -8,13 +8,13 @@ import java.util.List;
 
 /**
  * Classes that implement this interface represent nodes in a
- * parsed statement's syntax tree.
+ * parsed expression's syntax tree.
  * @since 12/23/2018
  */
 public interface Expression {
 
     /**
-     * Execute this expression, also executing any sub-expressions as necessary.
+     * Resolve this expression, consequently resolving any sub-expressions as necessary.
      * @param scope the scope in which to execute this expression
      * @return the value that this expression resolved to
      */

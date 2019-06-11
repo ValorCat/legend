@@ -49,8 +49,8 @@ public class IfStatement implements BlockStatementType {
     }
 
     @Override
-    public boolean allowsClause(String keyword) {
-        return keyword.equals("else") || keyword.equals("elsif");
+    public boolean allowsClause(String name) {
+        return name.equals("else") || name.equals("elsif");
     }
 
     @Override

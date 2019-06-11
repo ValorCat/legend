@@ -16,11 +16,6 @@ import static compiletime.error.ErrorDescription.BAD_NESTING;
 public class EndStatement implements BasicStatementType {
 
     @Override
-    public boolean matches(TokenLine tokens) {
-        return tokens.get(0).matches("end");
-    }
-
-    @Override
     public Statement parse(TokenLine tokens, Parser parser) {
         if (tokens.size() != 1) {
             throw ErrorLog.raise(BAD_NESTING, "Unexpected symbol '%s' after 'end'", tokens.get(1));
@@ -32,7 +27,7 @@ public class EndStatement implements BasicStatementType {
     }
 
     @Override
-    public List<Instruction> build(Statement data) {
+    public List<Instruction> build(Statement stmt) {
         return List.of();
     }
 

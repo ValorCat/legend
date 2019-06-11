@@ -34,8 +34,8 @@ public class AssignmentStatement implements BasicStatementType {
     }
 
     @Override
-    public List<Instruction> build(Statement data) {
-         return List.of(new AssignInstruction(data.STRING, data.EXPRESSION));
+    public List<Instruction> build(Statement stmt) {
+         return List.of(new AssignInstruction(stmt.STRING, stmt.EXPRESSION));
     }
 
     @Override

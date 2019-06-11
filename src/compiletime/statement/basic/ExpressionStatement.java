@@ -17,12 +17,12 @@ public class ExpressionStatement implements BasicStatementType {
 
     @Override
     public Statement parse(TokenLine tokens, Parser parser) {
-        return new Statement(this, parser.parseFrom(tokens, 0));
+        return new Statement(this, parser.parseExpression(tokens));
     }
 
     @Override
-    public List<Instruction> build(Statement data) {
-         return List.of(new EvaluateInstruction(data.EXPRESSION));
+    public List<Instruction> build(Statement stmt) {
+         return List.of(new EvaluateInstruction(stmt.EXPRESSION));
     }
 
     @Override

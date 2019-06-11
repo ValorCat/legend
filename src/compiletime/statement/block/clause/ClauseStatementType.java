@@ -7,6 +7,11 @@ import runtime.instruction.Instruction;
 
 import java.util.List;
 
+/**
+ * Represents a clause within a multi-line statement, such as an 'else' clause within an if statement. This interface is
+ * mostly useful for instanceof checks.
+ * @see compiletime.statement.block.clause
+ */
 public interface ClauseStatementType extends StatementType {
 
     @Override

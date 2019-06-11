@@ -8,6 +8,12 @@ import compiletime.expression.value.type.Type;
 import runtime.Scope;
 
 /**
+ * Represents a value in the language, like an integer or list. Primitive types are concrete subclasses of this class,
+ * while other types (i.e. more complex built-in types and user-defined types) are instances of {@link LObject}. A
+ * value is defined as having a type and 0 or more personal attributes, which are themselves values. A primitive value
+ * has no personal attributes.
+ * @see compiletime.expression.value.type.Type
+ * @see runtime.library
  * @since 12/24/2018
  */
 public abstract class Value implements Expression {

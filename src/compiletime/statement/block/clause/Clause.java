@@ -5,6 +5,11 @@ import runtime.instruction.Instruction;
 
 import java.util.List;
 
+/**
+ * Represents a clause within a multi-line statement, such as an 'elsif' clause within an if statement. This class
+ * stores the clause's name, header data, and compiled body.
+ * @see ClauseStatementType
+ */
 public class Clause {
 
     public final String NAME;
