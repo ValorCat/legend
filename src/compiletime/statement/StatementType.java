@@ -2,8 +2,6 @@ package compiletime.statement;
 
 import compiletime.Compiler;
 import compiletime.Parser;
-import compiletime.Token;
-import compiletime.Token.TokenType;
 import compiletime.TokenLine;
 import compiletime.error.InterpreterException;
 import compiletime.statement.basic.*;
@@ -54,8 +52,7 @@ public interface StatementType {
      * @return true if the tokens likely represent this statement type, otherwise false
      */
     default boolean matches(TokenLine tokens) {
-        Token initial = tokens.get(0);
-        return initial.TYPE == TokenType.OPERATOR && initial.matches(getName());
+        return tokens.get(0).matches(getName());
     }
 
     /**

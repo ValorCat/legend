@@ -23,7 +23,7 @@ public class FunctionDefinition implements BlockStatementType {
     public Statement parseHeader(TokenLine tokens, Parser parser) {
         if (tokens.size() == 1 || tokens.get(1).TYPE != TokenType.IDENTIFIER) {
             throw ErrorLog.get("Expected function name after 'def'");
-        } else if (tokens.size() == 2 || !tokens.get(2).matches("()")) {
+        } else if (tokens.size() == 2 || !tokens.get(2).matches("()", TokenType.GROUP)) {
             throw ErrorLog.get("Expected function parameters after '%s'", tokens.get(1));
         }
         return new Statement(this, parser.parseFrom(tokens, 2), tokens.get(1).VALUE);

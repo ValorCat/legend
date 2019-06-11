@@ -44,13 +44,24 @@ public final class Token {
     }
 
     /**
-     * Check if this token has a particular value. This is a
+     * Check if this token is a particular operator. This is a
      * convenience method to replace long calls with equals().
      * @param value the value to check against
      * @return whether this token's value is the specified value
      */
     public boolean matches(String value) {
-        return VALUE.equals(value);
+        return matches(value, TokenType.OPERATOR);
+    }
+
+    /**
+     * Check if this token has a particular type and value. This is
+     * a convenience method to replace long calls with equals().
+     * @param value the value to check against
+     * @param type the token type to check against
+     * @return whether this token's value is the specified value
+     */
+    public boolean matches(String value, TokenType type) {
+        return TYPE == type && VALUE.equals(value);
     }
 
     /**
