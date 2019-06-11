@@ -13,6 +13,7 @@ import runtime.instruction.Instruction;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -36,7 +37,20 @@ public class Interpreter {
     /* This main method executes the provided source file in input.leg. If you don't want to make a new source file,
        you can simply edit the provided file and run this method. */
     public static void main(String[] args) {
-        interpret(new File("input.leg"));
+        String sourcePath;
+        if (args.length == 0) {
+            sourcePath = "input.leg";
+        } else if (args.length == 1) {
+            sourcePath = args[0];
+            if (Files.notExists(Paths.get(sourcePath))) {
+                System.err.println("Cannot find specified input file: " + sourcePath);
+                return;
+            }
+        } else {
+            System.err.println("Unexpected argument " + args[1]);
+            return;
+        }
+        interpret(new File(sourcePath));
     }
 
     /**
