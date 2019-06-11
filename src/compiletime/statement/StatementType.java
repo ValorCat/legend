@@ -7,7 +7,7 @@ import compiletime.error.InterpreterException;
 import compiletime.statement.basic.*;
 import compiletime.statement.block.*;
 import compiletime.statement.block.clause.ElseClause;
-import compiletime.statement.block.clause.ElsifClause;
+import compiletime.statement.block.clause.ElseIfClause;
 import runtime.instruction.Instruction;
 
 import java.util.List;
@@ -29,8 +29,8 @@ public interface StatementType {
      */
     List<StatementType> STATEMENT_TYPES = List.of(
             new AssignmentStatement(),
+            new ElseIfClause(),
             new ElseClause(),
-            new ElsifClause(),
             new EndStatement(),
             new ForLoop(),
             new FunctionDefinition(),

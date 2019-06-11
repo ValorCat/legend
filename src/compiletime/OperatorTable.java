@@ -43,7 +43,7 @@ public final class OperatorTable {
      */
     public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=", "::", ":=");
     public static final Set<String> KEYWORDS = Set.of(
-            "and", "def", "else", "elsif", "end", "for", "if", "or", "nor", "not", "repeat", "return", "while"
+            "and", "def", "else", "end", "for", "if", "or", "nor", "not", "repeat", "return", "while"
     );
 
     /**

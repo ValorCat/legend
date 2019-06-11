@@ -27,6 +27,6 @@ public class ExpressionStatement implements BasicStatementType {
 
     @Override
     public String getName() {
-        return "<expr>";
+        return "expr";
     }
 }

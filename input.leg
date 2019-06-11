@@ -4,12 +4,12 @@ n = 14
 
 if n == 10
     "if"
-    "if2"
-elsif n == 15
-    "elsif"
+    "if 2"
+else if n == 14
+    "else if"
 else
     "else"
-    "else2"
+    "else 2"
 end
 
 def fact(n)

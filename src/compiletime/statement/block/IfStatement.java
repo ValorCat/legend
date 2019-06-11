@@ -49,7 +49,7 @@ public class IfStatement implements BlockStatementType {
 
     @Override
     public boolean allowsClause(String name) {
-        return name.equals("else") || name.equals("elsif");
+        return name.equals("else") || name.equals("else if");
     }
 
     @Override
