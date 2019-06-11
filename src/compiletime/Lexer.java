@@ -12,29 +12,45 @@ import static compiletime.error.ErrorDescription.BAD_PARENS;
 import static compiletime.error.ErrorDescription.BAD_STRING;
 
 /**
- * Convert raw Legend code into a list of tokens. A token is a fundamental symbol in the
- * source code, such as an operator, variable, or literal value. Tokenization ensures that
- * a statement can be parsed regardless of its whitespace or internal line breaks.
+ * Lexing is the first step in interpretation. The lexer divides the raw source code into atomic units called tokens and
+ * attaches type information like 'operator', 'identifier', and so on (see {@link Token.TokenType} for all types). The
+ * lexified tokens produced by this class can be passed directly to {@link Parser} for parsing. Tokenization eliminates
+ * whitespace and comments, but preserves original line numbers for use in error messages. For example:
+ *
+ *  1  if #name == 0
+ *  2      "You must enter a name."
+ *  3      return
+ *  4  end
+ *
+ * The above source code produces the following token stream:
+ *
+ *    [op 'if', op '#', id 'name', op '==', lt '0'] line=1
+ *    [ps 'You must enter a name']                  line=2
+ *    [op 'return']                                 line=3
+ *    [op 'end']                                    line=4
+ *
+ * Each line in the output is represented by a {@link TokenLine} object that contains a list of {@link Token} objects.
+ *
  * @see Token
+ * @see Token.TokenType
+ * @see TokenLine
  * @since 12/21/2018
  */
 public class Lexer {
 
     private static final String SYMBOLS = "#%^*()-=+[]:,.<>/?";
 
-    private List<TokenLine> tokenized;
-    private List<Token> currStatement;
-    private StringBuilder currToken;
-    private char prev;
-    private char stringType;
-    private int lineNumber;
+    private List<TokenLine> tokenized;      // completed lines
+    private List<Token> currStatement;      // current line being tokenized
+    private StringBuilder currToken;        // current token being built
+    private char prev;                      // the previous character
+    private char stringType;                // type of the enclosing string -- either '\'', '"', or '\0' for n/a
+    private int lineNumber;                 // current line number in source file
 
     /**
-     * Convert source code into a 2-dimensional list of tokens, where the rows represent
-     * statements and the columns represent the tokens in each statement. The output of
-     * this method is intended to be passed to the {@link Parser} class.
+     * Translate raw source code into lexified tokens, as detailed at the top of this class.
      * @param input the raw source code
-     * @return a 2-dimensional list of tokens
+     * @return a list of lexified lines
      */
     public List<TokenLine> tokenize(String input) {
         initialize();
@@ -44,7 +60,7 @@ public class Lexer {
             input += "\n";
         }
 
-        // go through each token
+        // go through each character
         for (int i = 0; i < input.length(); i++) {
             char curr = input.charAt(i);
             breakToken(curr);
