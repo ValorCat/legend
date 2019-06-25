@@ -15,9 +15,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Scanner;
 
 /**
- * This class is the public access point of the interpreter. You can execute a Legend file by calling
+ * This class is the public entry point of the interpreter. You can execute a Legend file by calling
  * {@link #interpret(File)} and passing in the file object.
  *
  * Interpretation is a 4-step process:
@@ -34,30 +35,30 @@ import java.util.List;
  */
 public class Interpreter {
 
-    /* This main method executes the provided source file in input.leg. If you don't want to make a new source file,
-       you can simply edit the provided file and run this method. */
     public static void main(String[] args) {
-        String sourcePath;
-        if (args.length == 0) {
-            sourcePath = "input.leg";
-        } else if (args.length == 1) {
-            sourcePath = args[0];
-            if (Files.notExists(Paths.get(sourcePath))) {
-                System.err.println("Cannot find specified input file: " + sourcePath);
-                return;
-            }
+        if (args.length != 1) {
+            // the parentheses line up after backslashes are escaped
+            System.err.println("Usage: .\\legend.exe <path\\to\\input.leg>          (on Windows)");
+            System.err.println("Usage: java -jar legend.jar <path/to/input.leg>  (on Mac/Linux)");
         } else {
-            System.err.println("Unexpected argument " + args[1]);
-            return;
+            String sourcePath = args[0];
+            if (Files.exists(Paths.get(sourcePath))) {
+                interpret(new File(sourcePath));
+            } else {
+                System.err.println("Cannot find specified source file: " + sourcePath);
+            }
         }
-        interpret(new File(sourcePath));
+        System.out.println("\nPress the enter key to exit...");
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
+        scanner.close();
     }
 
     /**
      * Execute a Legend source file.
      * @param sourceFile the file to execute
      */
-    public static void interpret(File sourceFile) {
+    private static void interpret(File sourceFile) {
         if (Files.notExists(sourceFile.toPath())) {
             throw new RuntimeException("Couldn't locate source file: " + sourceFile.getAbsolutePath());
         }

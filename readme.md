@@ -19,18 +19,24 @@ end
 Checkout the wiki for a language overview: [Link to Wiki](https://github.com/ValorCat/legend/wiki).
 
 ## Running the Interpreter
-First, get the latest stable version of the interpreter here:
+You can find the latest versions of the interpreter here:
 
 - **Releases:** https://github.com/ValorCat/legend/releases
 
-Download the JAR file and run it on the command line:
-
-```
-java -jar legend.jar path/to/input.leg
-```
-
-On Windows, you can also use the provided Batch file, as long as it's in the same folder as the JAR:
+#### On Windows
+There are no external dependencies. On the releases page, download the EXE file and run it on the command line:
 
 ```
 .\legend path\to\input.leg
+```
+
+#### On Other Platforms
+The Java 11 JDK is required to run the interpreter on other platforms. You can download it here if you don't already have it installed:
+
+**JDK 11:** https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html
+
+On the Legend releases page, download the JAR file and run it in the terminal:
+
+```
+java -jar legend.jar path/to/input.leg
 ```
