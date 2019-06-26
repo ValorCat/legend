@@ -15,6 +15,7 @@ import legend.runtime.instruction.Instruction;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
@@ -38,20 +39,27 @@ import java.util.Scanner;
 public class Interpreter {
 
     public static void main(String[] args) {
-        if (args.length != 1) {
-            // the parentheses line up after backslashes are escaped
-            System.err.println("Usage: .\\legend.exe <path\\to\\input.leg>          (on Windows)");
-            System.err.println("Usage: java -jar legend.jar <path/to/input.leg>  (on Mac/Linux)");
+        Scanner scanner = new Scanner(System.in);
+        String sourcePath = "";
+        if (args.length == 0) {
+            System.out.print("Enter the path to the source file: ");
+            sourcePath = scanner.nextLine();
+        } else if (args.length > 1) {
+            System.err.println("Usage: ./bin/legend input.leg          (bundled interpreter)"
+                    .replace('/', File.separatorChar));
+            System.err.println("Usage: java -jar legend.jar input.leg  (standalone interpreter)");
         } else {
-            String sourcePath = args[0];
-            if (Files.exists(Paths.get(sourcePath))) {
-                interpret(new File(sourcePath));
+            sourcePath = args[0];
+        }
+        if (!sourcePath.isEmpty()) {
+            Path path = Paths.get(sourcePath);
+            if (Files.exists(path) && !Files.isDirectory(path)) {
+                interpret(path.toFile());
             } else {
-                System.err.println("Cannot find specified source file: " + sourcePath);
+                System.err.println("Cannot find source file: " + sourcePath);
             }
         }
-        System.out.println("\nPress the enter key to exit...");
-        Scanner scanner = new Scanner(System.in);
+        System.out.print("\nPress enter to exit...");
         scanner.nextLine();
         scanner.close();
     }
@@ -67,7 +75,7 @@ public class Interpreter {
 
         String fileName = sourceFile.getName();
         if (!fileName.endsWith(".leg")) {
-            throw new RuntimeException("Couldn't read source file: does not end in .leg");
+            throw new RuntimeException("Couldn't read source file: not a .leg file");
         }
         String input;
 
