@@ -18,23 +18,31 @@ end
 Checkout the wiki for a syntax reference: https://github.com/ValorCat/legend/wiki
 
 ## Running the Interpreter
-You can find the latest versions of the interpreter here:
+There are two versions of the interpreter. Read below to determine which version is best for you.
 
-- **Releases:** https://github.com/ValorCat/legend/releases
+### Standalone Version
+This version is slightly larger (~25 mb unzipped), but has no external dependencies. Simply go to the releases page and choose the latest version:
 
-### On Windows
-There are no external dependencies. On the releases page, download the EXE file and run it on the command line:
+**Releases:** https://github.com/ValorCat/legend/releases
+
+At the bottom under "Assets", download `legend-standalone.zip`. Unzip it and navigate to the `bin` subdirectory. You can run the interpreter by double-clicking `legend.bat` (on Windows) or `legend` (on Mac/Linux).
+
+You can also run the interpreter from the terminal with:
 
 ```
-.\legend path\to\input.leg
+./bin/legend path/to/input.leg
 ```
 
-### On Other Platforms
-The Java 11 JDK is required to run the interpreter on other platforms. You can download it here if you don't already have it installed:
+### Java-Dependent Version
+This version is much smaller (~200 kb), but requires Java 11 installed. If you don't have Java 11 but want to use this version, you can download the Java 11 JDK from Oracle:
 
 **JDK 11:** https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html
 
-On the Legend releases page, download the JAR file and run it in the terminal:
+Once Java is installed, go to the Legend releases page and choose the latest version:
+
+**Releases:** https://github.com/ValorCat/legend/releases
+
+At the bottom under "Assets", download `legend.jar`. On some systems, you can double-click the JAR file to run it. Otherwise, you can run the interpreter from the terminal with:
 
 ```
 java -jar legend.jar path/to/input.leg
