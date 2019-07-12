@@ -29,8 +29,8 @@ public final class OperatorTable {
             {"*", "/", "%"},
             {"+", "-"},
             {"==", "!=", "<", "<=", ">", ">="},
+            {"&"},
             {"and", "or", "nor"},
-            {"::"},
             {":="},
             {":"},
             {","},
@@ -41,7 +41,7 @@ public final class OperatorTable {
     These two constants are used by the lexer to assign the correct type
     to unusual operators.
      */
-    public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=", "::", ":=");
+    public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=", ":=");
     public static final Set<String> KEYWORDS = Set.of(
             "and", "def", "else", "end", "for", "if", "or", "nor", "not", "repeat", "return", "while"
     );
@@ -73,9 +73,9 @@ public final class OperatorTable {
                             new EqualsOperation(tokenPos, tokens); break;
             case "<": case ">": case "<=": case ">=":
                             new ComparisonOperation(tokenPos, tokens); break;
+            case "&":       new ConcatenationOperation(tokenPos, tokens); break;
             case "and": case "or": case "nor":
                             new LogicalOperation(tokenPos, tokens); break;
-            case "::":      new ConcatenationOperation(tokenPos, tokens); break;
             case ":=":      new AssignmentExpression(tokenPos, tokens); break;
             case ":":       new Mapping(tokenPos, tokens); break;
             case ",":       new CommaList(tokenPos, tokens); break;
