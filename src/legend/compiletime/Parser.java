@@ -193,9 +193,9 @@ public class Parser {
             if (current.isValue() && distanceFromEnd > 0) {
                 Token next = tokens.get(i + 1);
                 if (next.matches("()", GROUP) && (i == 0 || !tokens.get(i - 1).matches("def"))) {
-                    tokens.add(i + 1, Token.newOperator("call"));
+                    tokens.add(i + 1, Token.newOperator("()"));
                 } else if (next.matches("[]", GROUP)) {
-                    tokens.add(i + 1, Token.newOperator("index"));
+                    tokens.add(i + 1, Token.newOperator("[]"));
                 }
             }
         }

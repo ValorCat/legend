@@ -15,13 +15,13 @@ public final class OperatorTable {
 
     /*
     Below is the list of operators defined in Legend, ordered by descending precedence
-    level. Some operators, like "call", don't correspond to a particular token, but
+    level. Some operators, like "[]", don't correspond to a particular token, but
     instead an arrangement of other tokens. For example, a function call is indicated
     by an identifier followed by parentheses. These special operations are detected
     during tokenization and their corresponding operators are inserted implicitly.
      */
     private static final OperatorTable OPERATORS = defineOperations(new String[][] {
-            {".", "call", "index"}, // high precedence
+            {".", "()", "[]"},      // high precedence
             {"#", "?"},
             {"not"},
             {"^"},
@@ -58,8 +58,8 @@ public final class OperatorTable {
         Token token = tokens.get(tokenPos);
         switch (token.VALUE) {
             case ".":       new DotOperation(tokenPos, tokens); break;
-            case "call":    new FunctionCall(tokenPos, tokens); break;
-            case "index":   new IndexOperation(tokenPos, tokens); break;
+            case "()":      new FunctionCall(tokenPos, tokens); break;
+            case "[]":      new IndexOperation(tokenPos, tokens); break;
             case "#":       new LengthOperation(tokenPos, tokens); break;
             case "?":       new NullableOperation(tokenPos, tokens); break;
             case "not":     new NotOperation(tokenPos, tokens); break;
