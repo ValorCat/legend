@@ -19,8 +19,8 @@ def fact(n)
     return n * fact(n - 1)
 end
 
-for i in 0 to 6
-    (fact(i)) show
+for i in 0.to(6)
+    fact(i).show()
 end
 
 "Quick done"
@@ -30,8 +30,8 @@ def test_recursion(n)
     if n == 0
         return
     end
-    for i in 0 to 3
-        ('n = ' & n & ', i = ' & i) show
+    for i in 0.to(3)
+        ('n = ' & n & ', i = ' & i).show()
         test_recursion(n - 1)
     end
 end

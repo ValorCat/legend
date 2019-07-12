@@ -6,7 +6,7 @@ import legend.compiletime.TokenLine;
 import legend.compiletime.error.ErrorLog;
 import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.StackValue;
-import legend.compiletime.expression.operation.UnaryOperatorCall;
+import legend.compiletime.expression.operation.NoArgMethodCall;
 import legend.compiletime.statement.Statement;
 import legend.compiletime.statement.block.clause.Clause;
 import legend.runtime.instruction.*;
@@ -36,9 +36,9 @@ public class ForLoop implements BlockStatementType {
         Expression iterable = base.HEADER.EXPRESSION;
         List<Instruction> body = base.BODY;
         return asList(body.size() + 5,
-                new PushStackInstruction(new UnaryOperatorCall(iterable, "_loop")),
-                new JumpUnlessInstruction(body.size() + 3, new UnaryOperatorCall(new StackValue(), "has_next")),
-                new AssignInstruction(variable, new UnaryOperatorCall(new StackValue(), "next")),
+                new PushStackInstruction(new NoArgMethodCall(iterable, "_loop")),
+                new JumpUnlessInstruction(body.size() + 3, new NoArgMethodCall(new StackValue(), "has_next")),
+                new AssignInstruction(variable, new NoArgMethodCall(new StackValue(), "next")),
                 body,
                 new JumpInstruction(-body.size() - 2),
                 new PopStackInstruction());
