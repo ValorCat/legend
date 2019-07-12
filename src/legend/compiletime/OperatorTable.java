@@ -32,7 +32,6 @@ public final class OperatorTable {
             {"&"},
             {"and", "or", "nor"},
             {":="},
-            {":"},
             {","},
             {"in"}                  // low precedence
     });
@@ -77,7 +76,6 @@ public final class OperatorTable {
             case "and": case "or": case "nor":
                             new LogicalOperation(tokenPos, tokens); break;
             case ":=":      new AssignmentExpression(tokenPos, tokens); break;
-            case ":":       new Mapping(tokenPos, tokens); break;
             case ",":       new CommaList(tokenPos, tokens); break;
             case "in":      break; // ignore
             default:        throw getException(token.VALUE);
