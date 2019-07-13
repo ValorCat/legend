@@ -3,6 +3,8 @@ package legend.compiletime.expression.value.type;
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.value.LObject;
 import legend.compiletime.expression.value.Value;
+import legend.compiletime.expression.value.function.BuiltinFunction;
+import legend.compiletime.expression.value.function.BuiltinFunction.FunctionBody;
 import legend.compiletime.expression.value.function.LFunction;
 import legend.runtime.Scope;
 
@@ -11,12 +13,12 @@ import java.util.Map;
 
 public abstract class BuiltinType extends Type {
 
-    public BuiltinType(String name, LFunction... methods) {
-        this(name, new String[0], methods);
+    public BuiltinType(String name) {
+        super(name, new String[0], Map.of());
     }
 
-    public BuiltinType(String name, String[] personal, LFunction... methods) {
-        super(name, personal, toSharedMap(methods));
+    public BuiltinType(Builder builder) {
+        super(builder.name, builder.personal, builder.shared);
     }
 
     @Override
@@ -44,12 +46,40 @@ public abstract class BuiltinType extends Type {
         return null;
     }
 
-    private static Map<String, Value> toSharedMap(LFunction... methods) {
-        Map<String, Value> map = new HashMap<>(methods.length);
-        for (LFunction method : methods) {
-            map.put(method.getName(), method);
+    public static class Builder {
+
+        private String name;
+        private String[] personal;
+        private Map<String, Value> shared;
+        private Map<String, LFunction> operations;
+
+        public Builder(String name) {
+            this.name = name;
+            this.personal = new String[0];
+            this.shared = new HashMap<>();
+            this.operations = new HashMap<>();
         }
-        return map;
+
+        public Builder personal(String... names) {
+            personal = names;
+            return this;
+        }
+
+        public Builder shared(String name, Value value) {
+            shared.put(name, value);
+            return this;
+        }
+
+        public Builder shared(String name, FunctionBody method) {
+            shared.put(name, new BuiltinFunction(name, method));
+            return this;
+        }
+
+        public Builder operation(String operator, FunctionBody handler) {
+            shared.put(operator, new BuiltinFunction(name, handler));
+            return this;
+        }
+
     }
 
 }

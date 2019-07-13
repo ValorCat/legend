@@ -17,12 +17,14 @@ import java.util.function.ToIntFunction;
 public class ListType extends BuiltinType {
 
     public ListType() {
-        super("List", new String[] {"*list"},
-                new BuiltinFunction("max", ListType::max),
-                new BuiltinFunction("show", ListType::show),
-                new BuiltinFunction("_index", ListType::metaIndex),
-                new BuiltinFunction("_loop", ListType::metaLoop),
-                new BuiltinFunction("_size", ListType::metaSize));
+        super(new BuiltinType.Builder("List")
+                .personal("*list")
+                .shared("max", ListType::max)
+                .shared("show", ListType::show)
+                .operation("_index", ListType::metaIndex)
+                .operation("_loop", ListType::metaLoop)
+                .operation("_size", ListType::metaSize)
+        );
     }
 
     @Override

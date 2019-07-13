@@ -11,11 +11,12 @@ import legend.runtime.Scope;
 public class StringType extends BuiltinType {
 
     public StringType() {
-        super("String",
-                new BuiltinFunction("show", StringType::show),
-                new BuiltinFunction("_index", StringType::metaIndex),
-                new BuiltinFunction("_loop", StringType::metaLoop),
-                new BuiltinFunction("_size", StringType::metaSize));
+        super(new BuiltinType.Builder("String")
+                .shared("show", StringType::show)
+                .operation("_index", StringType::metaIndex)
+                .operation("_loop", StringType::metaLoop)
+                .operation("_size", StringType::metaSize)
+        );
     }
 
     private static Value show(ArgumentList args, Scope scope) {

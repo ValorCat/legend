@@ -3,7 +3,6 @@ package legend.runtime.library;
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.value.LNull;
 import legend.compiletime.expression.value.Value;
-import legend.compiletime.expression.value.function.BuiltinFunction;
 import legend.compiletime.expression.value.type.BuiltinType;
 import legend.compiletime.expression.value.type.Type;
 import legend.runtime.Scope;
@@ -11,9 +10,10 @@ import legend.runtime.Scope;
 public class IntegerType extends BuiltinType {
 
     public IntegerType() {
-        super("Integer",
-                new BuiltinFunction("show", IntegerType::show),
-                new BuiltinFunction("to", IntegerType::to));
+        super(new BuiltinType.Builder("Integer")
+                .shared("show", IntegerType::show)
+                .shared("to", IntegerType::to)
+        );
     }
 
     private static Value show(ArgumentList args, Scope scope) {

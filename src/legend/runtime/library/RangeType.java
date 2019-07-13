@@ -14,11 +14,13 @@ import legend.runtime.Scope;
 public class RangeType extends BuiltinType {
 
     public RangeType() {
-        super("Range", new String[] {"left", "right"},
-                new BuiltinFunction("contains", RangeType::contains),
-                new BuiltinFunction("show", RangeType::show),
-                new BuiltinFunction("_loop", RangeType::metaLoop),
-                new BuiltinFunction("_size", RangeType::metaSize));
+        super(new BuiltinType.Builder("Range")
+                .personal("left", "right")
+                .shared("contains", RangeType::contains)
+                .shared("show", RangeType::show)
+                .operation("_loop", RangeType::metaLoop)
+                .operation("_size", RangeType::metaSize)
+        );
     }
 
     private static Value contains(ArgumentList args, Scope scope) {
