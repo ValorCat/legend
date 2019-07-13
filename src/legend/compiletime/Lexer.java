@@ -36,7 +36,7 @@ import static legend.compiletime.Token.TokenType.*;
  */
 public class Lexer {
 
-    private static final String SYMBOLS = "#%^&*()-=+[],.<>/?";
+    private static final String SYMBOLS = "#^&*()-=+[],.<>/?";
 
     private List<TokenLine> tokenized;      // completed lines
     private List<Token> currStatement;      // current line being tokenized

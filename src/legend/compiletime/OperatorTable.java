@@ -25,7 +25,7 @@ public final class OperatorTable {
             {"#", "?"},
             {"not"},
             {"^"},
-            {"*", "/", "%"},
+            {"*", "/", "mod"},
             {"+", "-"},
             {"==", "!=", "<", "<=", ">", ">="},
             {"&"},
@@ -41,7 +41,7 @@ public final class OperatorTable {
      */
     public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=", ":=");
     public static final Set<String> KEYWORDS = Set.of(
-            "and", "def", "else", "end", "for", "if", "or", "nor", "not", "repeat", "return", "while"
+            "and", "def", "else", "end", "for", "if", "mod", "or", "nor", "not", "repeat", "return", "while"
     );
 
     /**
@@ -63,7 +63,7 @@ public final class OperatorTable {
             case "#":       new LengthOperation(tokenPos, tokens); break;
             case "?":       new NullableOperation(tokenPos, tokens); break;
             case "not":     new NotOperation(tokenPos, tokens); break;
-            case "^": case "*": case "/": case "%": case "+": case "-":
+            case "^": case "*": case "/": case "mod": case "+": case "-":
                             new ArithmeticOperation(tokenPos, tokens); break;
             case "==": case "!=":
                             new EqualsOperation(tokenPos, tokens); break;
