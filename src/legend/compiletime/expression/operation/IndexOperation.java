@@ -18,8 +18,8 @@ public class IndexOperation extends Operation {
     @Override
     public Value evaluate(Scope scope) {
         Value target = operands.get(0).evaluate(scope);
-        Value index = operands.get(1).getChildren().get(0).evaluate(scope);
-        return target.operate("[]", scope, index);
+        Value subscript = operands.get(1).getChildren().get(0).evaluate(scope);
+        return target.operateBinary("[]", subscript);
     }
 
 }

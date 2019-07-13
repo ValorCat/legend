@@ -80,12 +80,12 @@ public abstract class Value implements Expression {
         return FunctionCall.call(method, argList);
     }
 
-    public Value operate(String operator, Scope scope) {
-        return type().resolveOperation(operator, scope, this);
+    public Value operateUnary(String operator) {
+        return type().operateUnary(operator, this);
     }
 
-    public Value operate(String operator, Scope scope, Value other) {
-        return type().resolveOperation(operator, scope, this, other);
+    public Value operateBinary(String operator, Value other) {
+        return type().operateBinary(operator, this, other);
     }
 
     public Value[] getAttributes() {

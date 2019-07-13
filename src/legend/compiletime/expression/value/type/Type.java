@@ -2,13 +2,13 @@ package legend.compiletime.expression.value.type;
 
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.value.Value;
-import legend.compiletime.expression.value.function.LFunction;
-import legend.runtime.Scope;
 import legend.runtime.TypeLibrary;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BinaryOperator;
+import java.util.function.UnaryOperator;
 
 /**
  * @since 12/23/2018
@@ -18,14 +18,21 @@ public abstract class Type extends Value {
     protected String name;
     private Map<String, Integer> personal;
     private Map<String, Value> shared;
-    private Map<String, LFunction> operations;
+    private Map<String, UnaryOperator<Value>> unaryOps;
+    private Map<String, BinaryOperator<Value>> binaryOps;
 
-    public Type(String name, String[] personal, Map<String, Value> shared, Map<String, LFunction> operations) {
+    public Type(String name, String[] personal) {
+        this(name, personal, Map.of(), Map.of(), Map.of());
+    }
+
+    public Type(String name, String[] personal, Map<String, Value> shared,Map<String, UnaryOperator<Value>> unaryOps,
+                Map<String, BinaryOperator<Value>> binaryOps) {
         super("Type");
         this.name = name;
         this.personal = buildPersonalMap(personal);
         this.shared = shared;
-        this.operations = operations;
+        this.unaryOps = unaryOps;
+        this.binaryOps = binaryOps;
     }
 
     public Type(Type other) {
@@ -33,7 +40,8 @@ public abstract class Type extends Value {
         this.name = other.name;
         this.personal = other.personal;
         this.shared = other.shared;
-        this.operations = other.operations;
+        this.unaryOps = other.unaryOps;
+        this.binaryOps = other.binaryOps;
     }
 
     public abstract Value instantiate(ArgumentList args);
@@ -65,11 +73,18 @@ public abstract class Type extends Value {
         }
     }
 
-    public Value resolveOperation(String operator, Scope scope, Value... operands) {
-        if (operations.containsKey(operator)) {
-            return operations.get(operator).call(scope, operands);
+    public Value operateUnary(String operator, Value operand) {
+        if (unaryOps.containsKey(operator)) {
+            return unaryOps.get(operator).apply(operand);
         }
-        throw new RuntimeException("Type '" + name + "' does not support operator '" + operator + "'");
+        throw new RuntimeException("Type '" + name + "' does not support unary operator '" + operator + "'");
+    }
+
+    public Value operateBinary(String operator, Value left, Value right) {
+        if (binaryOps.containsKey(operator)) {
+            return binaryOps.get(operator).apply(left, right);
+        }
+        throw new RuntimeException("Type '" + name + "' does not support binary operator '" + operator + "'");
     }
 
     public boolean encompasses(Type other) {

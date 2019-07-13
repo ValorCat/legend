@@ -12,9 +12,9 @@ public class StringType extends BuiltinType {
     public StringType() {
         super(new BuiltinType.Builder("String")
                 .shared("show", StringType::show)
-                .operation("[]", StringType::operIndex)
-                .operation("for", StringType::operIterate)
-                .operation("#", StringType::operLength)
+                .unaryOper("for", StringType::operIterate)
+                .unaryOper("#", StringType::operSize)
+                .binaryOper("[]", StringType::operSubscript)
         );
     }
 
@@ -23,16 +23,7 @@ public class StringType extends BuiltinType {
         return LNull.NULL;
     }
 
-    private static Value operIndex(ArgumentList args) {
-        String string = args.arg(0).asString();
-        int index = args.arg(1).asInteger();
-        if (index >= 0 && index < string.length()) {
-            return new LString(string.substring(index, index + 1));
-        }
-        throw new RuntimeException("Cannot get index " + index + " of string of length " + string.length());
-    }
-
-    private static Value operIterate(ArgumentList args) {
+    private static Value operIterate(Value operand) {
         LFunction hasNext = new BuiltinFunction("has_next", _args -> {
             int current = _args.target().getAttribute("position").asInteger();
             int size = _args.target().getAttribute("values").asString().length();
@@ -45,12 +36,20 @@ public class StringType extends BuiltinType {
             // todo error if out of range
             return new LString(string.substring(current, current + 1));
         });
-        return Type.of("Iterator").instantiate(
-                new ArgumentList(args.scope(), args.arg(0), new LInteger(0), hasNext, getNext));
+        return Type.of("Iterator").instantiate(new ArgumentList(operand, new LInteger(0), hasNext, getNext));
     }
 
-    private static Value operLength(ArgumentList args) {
-        return new LInteger(args.arg(0).asString().length());
+    private static Value operSize(Value operand) {
+        return new LInteger(operand.asString().length());
+    }
+
+    private static Value operSubscript(Value target, Value subscript) {
+        String string = target.asString();
+        int index = subscript.asInteger();
+        if (index >= 0 && index < string.length()) {
+            return new LString(string.substring(index, index + 1));
+        }
+        throw new RuntimeException("Cannot get index " + index + " of string of length " + string.length());
     }
 
 }

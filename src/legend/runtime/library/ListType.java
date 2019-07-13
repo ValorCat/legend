@@ -20,9 +20,9 @@ public class ListType extends BuiltinType {
                 .personal("*list")
                 .shared("max", ListType::max)
                 .shared("show", ListType::show)
-                .operation("[]", ListType::operIndex)
-                .operation("for", ListType::operIterate)
-                .operation("#", ListType::operLength)
+                .unaryOper("for", ListType::operIterate)
+                .unaryOper("#", ListType::operSize)
+                .binaryOper("[]", ListType::operSubscript)
         );
     }
 
@@ -57,17 +57,7 @@ public class ListType extends BuiltinType {
         return LNull.NULL;
     }
 
-    private static Value operIndex(ArgumentList args) {
-        List list = (List) args.arg(0).getAttribute("*list").asNative();
-        int index = args.arg(1).asInteger();
-        if (index >= 0 && index < list.size()) {
-            return ((Value) list.get(index));
-        }
-        throw new RuntimeException("Cannot get index " + index + " of list with "
-                + list.size() + " item(s)");
-    }
-
-    private static Value operIterate(ArgumentList args) {
+    private static Value operIterate(Value operand) {
         LFunction hasNext = new BuiltinFunction("has_next", _args -> {
             int index = _args.target().getAttribute("position").asInteger();
             Object javaList = _args.target().getAttribute("values").getAttribute("*list").asNative();
@@ -82,11 +72,21 @@ public class ListType extends BuiltinType {
             return (Value) (((List) javaList).get(index));
         });
         return Type.of("Iterator").instantiate(
-                new ArgumentList(args.scope(), args.arg(0), new LInteger(0), hasNext, getNext));
+                new ArgumentList(operand, new LInteger(0), hasNext, getNext));
     }
 
-    private static Value operLength(ArgumentList args) {
-        return new LInteger(((Collection) args.arg(0).getAttribute("*list").asNative()).size());
+    private static Value operSize(Value operand) {
+        return new LInteger(((Collection) operand.getAttribute("*list").asNative()).size());
+    }
+
+    private static Value operSubscript(Value target, Value subscript) {
+        List list = (List) target.getAttribute("*list").asNative();
+        int index = subscript.asInteger();
+        if (index >= 0 && index < list.size()) {
+            return ((Value) list.get(index));
+        }
+        throw new RuntimeException("Cannot get index " + index + " of list with "
+                + list.size() + " item(s)");
     }
 
 }

@@ -23,8 +23,7 @@ public class LengthOperation extends Operation {
 
     @Override
     public Value evaluate(Scope scope) {
-        Value operand = operands.get(0).evaluate(scope);
-        return operand.operate("#", scope);
+        return operands.get(0).evaluate(scope).operateUnary("#");
     }
 
 }

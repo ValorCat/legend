@@ -5,19 +5,20 @@ import legend.compiletime.expression.value.LObject;
 import legend.compiletime.expression.value.Value;
 import legend.compiletime.expression.value.function.BuiltinFunction;
 import legend.compiletime.expression.value.function.BuiltinFunction.FunctionBody;
-import legend.compiletime.expression.value.function.LFunction;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BinaryOperator;
+import java.util.function.UnaryOperator;
 
 public abstract class BuiltinType extends Type {
 
     public BuiltinType(String name) {
-        super(name, new String[0], Map.of(), Map.of());
+        super(name, new String[0]);
     }
 
     public BuiltinType(Builder builder) {
-        super(builder.name, builder.personal, builder.shared, builder.operations);
+        super(builder.name, builder.personal, builder.shared, builder.unaryOps, builder.binaryOps);
     }
 
     @Override
@@ -50,13 +51,15 @@ public abstract class BuiltinType extends Type {
         private String name;
         private String[] personal;
         private Map<String, Value> shared;
-        private Map<String, LFunction> operations;
+        private Map<String, UnaryOperator<Value>> unaryOps;
+        private Map<String, BinaryOperator<Value>> binaryOps;
 
         public Builder(String name) {
             this.name = name;
             this.personal = new String[0];
             this.shared = new HashMap<>();
-            this.operations = new HashMap<>();
+            this.unaryOps = new HashMap<>();
+            this.binaryOps = new HashMap<>();
         }
 
         public Builder personal(String... names) {
@@ -74,8 +77,13 @@ public abstract class BuiltinType extends Type {
             return this;
         }
 
-        public Builder operation(String operator, FunctionBody handler) {
-            operations.put(operator, new BuiltinFunction(name, handler));
+        public Builder unaryOper(String operator, UnaryOperator<Value> handler) {
+            unaryOps.put(operator, handler);
+            return this;
+        }
+
+        public Builder binaryOper(String operator, BinaryOperator<Value> handler) {
+            binaryOps.put(operator, handler);
             return this;
         }
 

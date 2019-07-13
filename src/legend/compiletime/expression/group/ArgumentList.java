@@ -24,6 +24,10 @@ public class ArgumentList {
     private Value target;
     private Scope scope;
 
+    public ArgumentList(Value... args) {
+        this(null, args);
+    }
+
     public ArgumentList(Scope scope, Value... args) {
         this.args = args;
         this.keywords = Map.of();
@@ -69,6 +73,9 @@ public class ArgumentList {
     }
 
     public Scope scope() {
+        if (scope == null) {
+            throw new RuntimeException("ArgumentList was not provided a scope");
+        }
         return scope;
     }
 
