@@ -18,8 +18,8 @@ public class RangeType extends BuiltinType {
                 .personal("left", "right")
                 .shared("contains", RangeType::contains)
                 .shared("show", RangeType::show)
-                .operation("_loop", RangeType::metaLoop)
-                .operation("_size", RangeType::metaSize)
+                .operation("for", RangeType::operIterate)
+                .operation("#", RangeType::operLength)
         );
     }
 
@@ -35,7 +35,7 @@ public class RangeType extends BuiltinType {
         return LNull.NULL;
     }
 
-    private static Value metaLoop(ArgumentList args, Scope scope) {
+    private static Value operIterate(ArgumentList args, Scope scope) {
         LFunction hasNext = new BuiltinFunction("has_next", (_args, _scope) -> {
             int current = _args.target().getAttribute("position").asInteger();
             int max = _args.target().getAttribute("values").getAttribute("right").asInteger();
@@ -48,12 +48,12 @@ public class RangeType extends BuiltinType {
             return current;
         });
         return Type.of("Iterator").instantiate(
-                new ArgumentList(args.target(), args.target().getAttribute("left"), hasNext, getNext), scope);
+                new ArgumentList(args.arg(0), args.arg(0).getAttribute("left"), hasNext, getNext), scope);
     }
 
-    private static Value metaSize(ArgumentList args, Scope scope) {
-        int left = args.target().getAttribute("left").asInteger();
-        int right = args.target().getAttribute("right").asInteger();
+    private static Value operLength(ArgumentList args, Scope scope) {
+        int left = args.arg(0).getAttribute("left").asInteger();
+        int right = args.arg(0).getAttribute("right").asInteger();
         return new LInteger(right - left + 1);
     }
 

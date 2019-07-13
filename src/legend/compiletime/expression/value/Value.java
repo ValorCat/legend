@@ -80,19 +80,12 @@ public abstract class Value implements Expression {
         return FunctionCall.call(method, argList, scope);
     }
 
-    public Value callMetamethod(String name, ArgumentList args, Scope scope, String targetDesc) {
-        Value method;
-        try {
-            method = type().getAttribute(name, this);
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Expected " + targetDesc + " to have metamethod '" + name + "'");
-        }
-        if (!method.isType("Function")) {
-            throw new RuntimeException("Expected " + targetDesc + " to have metamethod '" + name + "' but found type "
-                    + method.type().getName());
-        }
-        args.setTarget(this);
-        return FunctionCall.call(method, args, scope);
+    public Value operate(String operator, Scope scope) {
+        return type().resolveOperation(operator, scope, this);
+    }
+
+    public Value operate(String operator, Scope scope, Value other) {
+        return type().resolveOperation(operator, scope, this, other);
     }
 
     public Value[] getAttributes() {

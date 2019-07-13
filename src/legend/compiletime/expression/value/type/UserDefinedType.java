@@ -15,7 +15,7 @@ public class UserDefinedType extends Type {
     private boolean anonymous;
 
     public UserDefinedType(String[] personal) {
-        super("(anonymous type)", personal, Map.of());
+        super("(anonymous type)", personal, Map.of(), Map.of());
         this.anonymous = true;
     }
 

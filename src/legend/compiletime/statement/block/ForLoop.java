@@ -6,7 +6,6 @@ import legend.compiletime.TokenLine;
 import legend.compiletime.error.ErrorLog;
 import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.StackValue;
-import legend.compiletime.expression.operation.NoArgMethodCall;
 import legend.compiletime.statement.Statement;
 import legend.compiletime.statement.block.clause.Clause;
 import legend.runtime.instruction.*;
@@ -35,10 +34,15 @@ public class ForLoop implements BlockStatementType {
         String variable = base.HEADER.STRING;
         Expression iterable = base.HEADER.EXPRESSION;
         List<Instruction> body = base.BODY;
+
+        Expression getIterator = scope -> iterable.evaluate(scope).operate("for", scope);
+        Expression hasNext = scope -> new StackValue().evaluate(scope).callMethod("has_next", scope);
+        Expression getNext = scope -> new StackValue().evaluate(scope).callMethod("next", scope);
+
         return asList(body.size() + 5,
-                new PushStackInstruction(new NoArgMethodCall(iterable, "_loop")),
-                new JumpUnlessInstruction(body.size() + 3, new NoArgMethodCall(new StackValue(), "has_next")),
-                new AssignInstruction(variable, new NoArgMethodCall(new StackValue(), "next")),
+                new PushStackInstruction(getIterator),
+                new JumpUnlessInstruction(body.size() + 3, hasNext),
+                new AssignInstruction(variable, getNext),
                 body,
                 new JumpInstruction(-body.size() - 2),
                 new PopStackInstruction());

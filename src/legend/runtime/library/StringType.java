@@ -13,9 +13,9 @@ public class StringType extends BuiltinType {
     public StringType() {
         super(new BuiltinType.Builder("String")
                 .shared("show", StringType::show)
-                .operation("_index", StringType::metaIndex)
-                .operation("_loop", StringType::metaLoop)
-                .operation("_size", StringType::metaSize)
+                .operation("[]", StringType::operIndex)
+                .operation("for", StringType::operIterate)
+                .operation("#", StringType::operLength)
         );
     }
 
@@ -24,16 +24,16 @@ public class StringType extends BuiltinType {
         return LNull.NULL;
     }
 
-    private static Value metaIndex(ArgumentList args, Scope scope) {
-        int index = args.arg(0).asInteger();
-        String string = args.target().asString();
+    private static Value operIndex(ArgumentList args, Scope scope) {
+        String string = args.arg(0).asString();
+        int index = args.arg(1).asInteger();
         if (index >= 0 && index < string.length()) {
             return new LString(string.substring(index, index + 1));
         }
         throw new RuntimeException("Cannot get index " + index + " of string of length " + string.length());
     }
 
-    private static Value metaLoop(ArgumentList args, Scope scope) {
+    private static Value operIterate(ArgumentList args, Scope scope) {
         LFunction hasNext = new BuiltinFunction("has_next", (_args, _scope) -> {
             int current = _args.target().getAttribute("position").asInteger();
             int size = _args.target().getAttribute("values").asString().length();
@@ -47,11 +47,11 @@ public class StringType extends BuiltinType {
             return new LString(string.substring(current, current + 1));
         });
         return Type.of("Iterator").instantiate(
-                new ArgumentList(args.target(), new LInteger(0), hasNext, getNext), scope);
+                new ArgumentList(args.arg(0), new LInteger(0), hasNext, getNext), scope);
     }
 
-    private static Value metaSize(ArgumentList args, Scope scope) {
-        return new LInteger(args.target().asString().length());
+    private static Value operLength(ArgumentList args, Scope scope) {
+        return new LInteger(args.arg(0).asString().length());
     }
 
 }

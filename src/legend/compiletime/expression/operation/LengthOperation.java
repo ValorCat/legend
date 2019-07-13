@@ -2,7 +2,6 @@ package legend.compiletime.expression.operation;
 
 import legend.compiletime.Token;
 import legend.compiletime.TokenLine;
-import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.value.Value;
 import legend.runtime.Scope;
 
@@ -25,9 +24,7 @@ public class LengthOperation extends Operation {
     @Override
     public Value evaluate(Scope scope) {
         Value operand = operands.get(0).evaluate(scope);
-        ArgumentList args = new ArgumentList();
-        args.setTarget(operand);
-        return operand.callMetamethod("_size", args, scope, "target of # operator");
+        return operand.operate("#", scope);
     }
 
 }

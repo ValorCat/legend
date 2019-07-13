@@ -14,11 +14,11 @@ import java.util.Map;
 public abstract class BuiltinType extends Type {
 
     public BuiltinType(String name) {
-        super(name, new String[0], Map.of());
+        super(name, new String[0], Map.of(), Map.of());
     }
 
     public BuiltinType(Builder builder) {
-        super(builder.name, builder.personal, builder.shared);
+        super(builder.name, builder.personal, builder.shared, builder.operations);
     }
 
     @Override
@@ -76,7 +76,7 @@ public abstract class BuiltinType extends Type {
         }
 
         public Builder operation(String operator, FunctionBody handler) {
-            shared.put(operator, new BuiltinFunction(name, handler));
+            operations.put(operator, new BuiltinFunction(name, handler));
             return this;
         }
 

@@ -2,6 +2,7 @@ package legend.compiletime.expression.value.type;
 
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.value.Value;
+import legend.compiletime.expression.value.function.LFunction;
 import legend.runtime.Scope;
 import legend.runtime.TypeLibrary;
 
@@ -17,12 +18,14 @@ public abstract class Type extends Value {
     protected String name;
     private Map<String, Integer> personal;
     private Map<String, Value> shared;
+    private Map<String, LFunction> operations;
 
-    public Type(String name, String[] personal, Map<String, Value> shared) {
+    public Type(String name, String[] personal, Map<String, Value> shared, Map<String, LFunction> operations) {
         super("Type");
         this.name = name;
         this.personal = buildPersonalMap(personal);
         this.shared = shared;
+        this.operations = operations;
     }
 
     public Type(Type other) {
@@ -30,6 +33,7 @@ public abstract class Type extends Value {
         this.name = other.name;
         this.personal = other.personal;
         this.shared = other.shared;
+        this.operations = other.operations;
     }
 
     public abstract Value instantiate(ArgumentList args, Scope scope);
@@ -59,6 +63,13 @@ public abstract class Type extends Value {
         if (!setPersonal(target, attribute, value) && !setShared(attribute, value)) {
             throw new RuntimeException("Type '" + name + "' has no attribute '" + attribute + "'");
         }
+    }
+
+    public Value resolveOperation(String operator, Scope scope, Value... operands) {
+        if (operations.containsKey(operator)) {
+            return operations.get(operator).call(scope, operands);
+        }
+        throw new RuntimeException("Type '" + name + "' does not support operator '" + operator + "'");
     }
 
     public boolean encompasses(Type other) {

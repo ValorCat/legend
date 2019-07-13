@@ -21,9 +21,9 @@ public class ListType extends BuiltinType {
                 .personal("*list")
                 .shared("max", ListType::max)
                 .shared("show", ListType::show)
-                .operation("_index", ListType::metaIndex)
-                .operation("_loop", ListType::metaLoop)
-                .operation("_size", ListType::metaSize)
+                .operation("[]", ListType::operIndex)
+                .operation("for", ListType::operIterate)
+                .operation("#", ListType::operLength)
         );
     }
 
@@ -58,9 +58,9 @@ public class ListType extends BuiltinType {
         return LNull.NULL;
     }
 
-    private static Value metaIndex(ArgumentList args, Scope scope) {
-        int index = args.arg(0).asInteger();
-        List list = (List) args.target().getAttribute("*list").asNative();
+    private static Value operIndex(ArgumentList args, Scope scope) {
+        List list = (List) args.arg(0).getAttribute("*list").asNative();
+        int index = args.arg(1).asInteger();
         if (index >= 0 && index < list.size()) {
             return ((Value) list.get(index));
         }
@@ -68,7 +68,7 @@ public class ListType extends BuiltinType {
                 + list.size() + " item(s)");
     }
 
-    private static Value metaLoop(ArgumentList args, Scope scope) {
+    private static Value operIterate(ArgumentList args, Scope scope) {
         LFunction hasNext = new BuiltinFunction("has_next", (_args, _scope) -> {
             int index = _args.target().getAttribute("position").asInteger();
             Object javaList = _args.target().getAttribute("values").getAttribute("*list").asNative();
@@ -83,11 +83,11 @@ public class ListType extends BuiltinType {
             return (Value) (((List) javaList).get(index));
         });
         return Type.of("Iterator").instantiate(
-                new ArgumentList(args.target(), new LInteger(0), hasNext, getNext), scope);
+                new ArgumentList(args.arg(0), new LInteger(0), hasNext, getNext), scope);
     }
 
-    private static Value metaSize(ArgumentList args, Scope scope) {
-        return new LInteger(((Collection) args.target().getAttribute("*list").asNative()).size());
+    private static Value operLength(ArgumentList args, Scope scope) {
+        return new LInteger(((Collection) args.arg(0).getAttribute("*list").asNative()).size());
     }
 
 }
