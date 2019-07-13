@@ -5,7 +5,6 @@ import legend.compiletime.expression.value.LNull;
 import legend.compiletime.expression.value.Value;
 import legend.compiletime.expression.value.type.BuiltinType;
 import legend.compiletime.expression.value.type.Type;
-import legend.runtime.Scope;
 
 public class IntegerType extends BuiltinType {
 
@@ -16,14 +15,14 @@ public class IntegerType extends BuiltinType {
         );
     }
 
-    private static Value show(ArgumentList args, Scope scope) {
+    private static Value show(ArgumentList args) {
         System.out.println(args.target());
         return LNull.NULL;
     }
 
-    private static Value to(ArgumentList args, Scope scope) {
-        ArgumentList bounds = new ArgumentList(args.target(), args.arg(0));
-        return Type.of("Range").instantiate(bounds, scope);
+    private static Value to(ArgumentList args) {
+        ArgumentList bounds = new ArgumentList(args.scope(), args.target(), args.arg(0));
+        return Type.of("Range").instantiate(bounds);
     }
 
 }

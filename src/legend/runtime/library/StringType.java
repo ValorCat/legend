@@ -6,7 +6,6 @@ import legend.compiletime.expression.value.function.BuiltinFunction;
 import legend.compiletime.expression.value.function.LFunction;
 import legend.compiletime.expression.value.type.BuiltinType;
 import legend.compiletime.expression.value.type.Type;
-import legend.runtime.Scope;
 
 public class StringType extends BuiltinType {
 
@@ -19,12 +18,12 @@ public class StringType extends BuiltinType {
         );
     }
 
-    private static Value show(ArgumentList args, Scope scope) {
+    private static Value show(ArgumentList args) {
         System.out.println(args.target().asString());
         return LNull.NULL;
     }
 
-    private static Value operIndex(ArgumentList args, Scope scope) {
+    private static Value operIndex(ArgumentList args) {
         String string = args.arg(0).asString();
         int index = args.arg(1).asInteger();
         if (index >= 0 && index < string.length()) {
@@ -33,13 +32,13 @@ public class StringType extends BuiltinType {
         throw new RuntimeException("Cannot get index " + index + " of string of length " + string.length());
     }
 
-    private static Value operIterate(ArgumentList args, Scope scope) {
-        LFunction hasNext = new BuiltinFunction("has_next", (_args, _scope) -> {
+    private static Value operIterate(ArgumentList args) {
+        LFunction hasNext = new BuiltinFunction("has_next", _args -> {
             int current = _args.target().getAttribute("position").asInteger();
             int size = _args.target().getAttribute("values").asString().length();
             return LBoolean.resolve(current < size);
         });
-        LFunction getNext = new BuiltinFunction("next", (_args, _scope) -> {
+        LFunction getNext = new BuiltinFunction("next", _args -> {
             int current = _args.target().getAttribute("position").asInteger();
             String string = _args.target().getAttribute("values").asString();
             _args.target().setAttribute("position", new LInteger(current + 1));
@@ -47,10 +46,10 @@ public class StringType extends BuiltinType {
             return new LString(string.substring(current, current + 1));
         });
         return Type.of("Iterator").instantiate(
-                new ArgumentList(args.arg(0), new LInteger(0), hasNext, getNext), scope);
+                new ArgumentList(args.scope(), args.arg(0), new LInteger(0), hasNext, getNext));
     }
 
-    private static Value operLength(ArgumentList args, Scope scope) {
+    private static Value operLength(ArgumentList args) {
         return new LInteger(args.arg(0).asString().length());
     }
 

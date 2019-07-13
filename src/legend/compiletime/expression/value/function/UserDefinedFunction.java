@@ -24,9 +24,9 @@ public class UserDefinedFunction extends LFunction {
     }
 
     @Override
-    public Value call(ArgumentList args, Scope scope) {
+    public Value call(ArgumentList args) {
         Scope newScope = new Scope(parentScope);
-        params.accept(args, parentScope, newScope);
+        params.accept(args, newScope);
         int returnAddress = Program.PROGRAM.getCounter();
         Value returnValue = Program.PROGRAM.executeSubroutine(beginAddress, newScope);
         Program.PROGRAM.setCounter(returnAddress + 1);

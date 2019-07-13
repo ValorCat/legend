@@ -23,19 +23,19 @@ public class FunctionCall extends Operation {
     @Override
     public Value evaluate(Scope scope) {
         Value executable = operands.get(0).evaluate(scope);
-        ArgumentList arguments = new ArgumentList((Parentheses) operands.get(1), scope);
+        ArgumentList arguments = new ArgumentList(scope, (Parentheses) operands.get(1));
         if (executable.hasOwner()) {
             arguments.setTarget(executable.getOwner());
             executable = ((Attribute) executable).getValue();
         }
-        return call(executable, arguments, scope);
+        return call(executable, arguments);
     }
 
-    public static Value call(Value executable, ArgumentList args, Scope scope) {
+    public static Value call(Value executable, ArgumentList args) {
         if (executable.isType("Function")) {
-            return ((LFunction) executable).call(args, scope);
+            return ((LFunction) executable).call(args);
         } else if (executable.isType("Type")) {
-            return ((Type) executable).instantiate(args, scope);
+            return ((Type) executable).instantiate(args);
         }
         throw new RuntimeException("Cannot execute object of type '" + executable.type().getName() + "'");
     }

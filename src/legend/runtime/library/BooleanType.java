@@ -4,7 +4,6 @@ import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.value.LNull;
 import legend.compiletime.expression.value.Value;
 import legend.compiletime.expression.value.type.BuiltinType;
-import legend.runtime.Scope;
 
 public class BooleanType extends BuiltinType {
 
@@ -14,7 +13,7 @@ public class BooleanType extends BuiltinType {
         );
     }
 
-    private static Value show(ArgumentList args, Scope scope) {
+    private static Value show(ArgumentList args) {
         System.out.println(args.target());
         return LNull.NULL;
     }

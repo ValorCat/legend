@@ -36,7 +36,7 @@ public abstract class Type extends Value {
         this.operations = other.operations;
     }
 
-    public abstract Value instantiate(ArgumentList args, Scope scope);
+    public abstract Value instantiate(ArgumentList args);
     public abstract void deanonymize(String name);
 
     @Override

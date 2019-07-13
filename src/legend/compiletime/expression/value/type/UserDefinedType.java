@@ -3,7 +3,6 @@ package legend.compiletime.expression.value.type;
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.value.LObject;
 import legend.compiletime.expression.value.Value;
-import legend.runtime.Scope;
 
 import java.util.Map;
 
@@ -20,7 +19,7 @@ public class UserDefinedType extends Type {
     }
 
     @Override
-    public Value instantiate(ArgumentList args, Scope scope) {
+    public Value instantiate(ArgumentList args) {
         if (!args.keywords().isEmpty()) {
             throw new RuntimeException("Type '" + getName() + "' does not accept keyword arguments");
         }

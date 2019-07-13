@@ -75,9 +75,9 @@ public abstract class Value implements Expression {
 
     public Value callMethod(String name, Scope scope, Value... args) {
         Value method = getAttribute(name);
-        ArgumentList argList = new ArgumentList(args);
+        ArgumentList argList = new ArgumentList(scope, args);
         argList.setTarget(this);
-        return FunctionCall.call(method, argList, scope);
+        return FunctionCall.call(method, argList);
     }
 
     public Value operate(String operator, Scope scope) {

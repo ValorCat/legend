@@ -20,7 +20,7 @@ public abstract class LFunction extends Value {
         this.name = name;
     }
 
-    public abstract Value call(ArgumentList args, Scope scope);
+    public abstract Value call(ArgumentList args);
     public abstract boolean equals(Value other);
     public abstract String toString();
 
@@ -30,7 +30,7 @@ public abstract class LFunction extends Value {
     }
 
     public Value call(Scope scope, Value... args) {
-        return call(new ArgumentList(args), scope);
+        return call(new ArgumentList(scope, args));
     }
 
     public String getName() {

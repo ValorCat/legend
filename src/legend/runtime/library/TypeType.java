@@ -8,7 +8,6 @@ import legend.compiletime.expression.value.Value;
 import legend.compiletime.expression.value.type.BuiltinType;
 import legend.compiletime.expression.value.type.Type;
 import legend.compiletime.expression.value.type.UserDefinedType;
-import legend.runtime.Scope;
 
 import java.util.Scanner;
 
@@ -24,13 +23,13 @@ public class TypeType extends BuiltinType {
     }
 
     @Override
-    protected Value initialize(ArgumentList args, Scope scope) {
+    protected Value initialize(ArgumentList args) {
         String[] attributes = args.keywords().keySet().toArray(new String[0]);
         // todo use attribute types/bounds
         return new UserDefinedType(attributes);
     }
 
-    private static Value read(ArgumentList args, Scope scope) {
+    private static Value read(ArgumentList args) {
         if (args.size() > 0) {
             System.out.print(((LString) args.arg(0)).getValue());
         }
@@ -43,7 +42,7 @@ public class TypeType extends BuiltinType {
         return new LString(scanner.nextLine());
     }
 
-    private static Value show(ArgumentList args, Scope scope) {
+    private static Value show(ArgumentList args) {
         System.out.println(args.target());
         return LNull.NULL;
     }

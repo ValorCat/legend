@@ -22,13 +22,13 @@ public class ParameterList {
         }
     }
 
-    public void accept(ArgumentList args, Scope defScope, Scope funcScope) {
+    public void accept(ArgumentList args, Scope scope) {
         if (args.size() != params.length) {
             throw new RuntimeException(String.format("Function '%s' requires %d arguments but received %d",
                     name, params.length, args.size()));
         }
         for (int i = 0; i < args.size(); i++) {
-            funcScope.setLocalVariable(params[i], args.arg(i));
+            scope.setLocalVariable(params[i], args.arg(i));
         }
     }
 

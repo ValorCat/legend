@@ -32,7 +32,7 @@ public class DotOperation extends Operation {
     public Value evaluate(Scope scope) {
         String attribute = operands.get(1).getIdentifier();
         if (operands.get(0).matches("_")) {
-            return new BuiltinFunction((args, _scope) -> args.arg(0).getAttribute(attribute));
+            return new BuiltinFunction(args -> args.arg(0).getAttribute(attribute));
         } else {
             Value target = operands.get(0).evaluate(scope);
             return new Attribute(target, target.getAttribute(attribute));

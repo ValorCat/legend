@@ -3,7 +3,6 @@ package legend.compiletime.expression.value.type;
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.value.LNull;
 import legend.compiletime.expression.value.Value;
-import legend.runtime.Scope;
 
 /**
  * @since 2/26/2019
@@ -18,8 +17,8 @@ public class NullableType extends Type {
     }
 
     @Override
-    public Value instantiate(ArgumentList args, Scope scope) {
-        return wrappedType.instantiate(args, scope);
+    public Value instantiate(ArgumentList args) {
+        return wrappedType.instantiate(args);
     }
 
     @Override

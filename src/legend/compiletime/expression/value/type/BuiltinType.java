@@ -6,7 +6,6 @@ import legend.compiletime.expression.value.Value;
 import legend.compiletime.expression.value.function.BuiltinFunction;
 import legend.compiletime.expression.value.function.BuiltinFunction.FunctionBody;
 import legend.compiletime.expression.value.function.LFunction;
-import legend.runtime.Scope;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,8 +21,8 @@ public abstract class BuiltinType extends Type {
     }
 
     @Override
-    public Value instantiate(ArgumentList args, Scope scope) {
-        Value instance = initialize(args, scope);
+    public Value instantiate(ArgumentList args) {
+        Value instance = initialize(args);
         if (instance == null) {
             return new LObject(this, args.args());
         }
@@ -39,7 +38,7 @@ public abstract class BuiltinType extends Type {
     @Override
     public void deanonymize(String name) {}
 
-    protected Value initialize(ArgumentList args, Scope scope) {
+    protected Value initialize(ArgumentList args) {
         if (!args.keywords().isEmpty()) {
             throw new RuntimeException("Type '" + getName() + "' does not accept keyword arguments");
         }

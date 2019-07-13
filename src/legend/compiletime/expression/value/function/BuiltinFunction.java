@@ -2,9 +2,8 @@ package legend.compiletime.expression.value.function;
 
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.value.Value;
-import legend.runtime.Scope;
 
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * @since 12/24/2018
@@ -12,7 +11,7 @@ import java.util.function.BiFunction;
 public class BuiltinFunction extends LFunction {
 
     @FunctionalInterface
-    public interface FunctionBody extends BiFunction<ArgumentList, Scope, Value> {}
+    public interface FunctionBody extends Function<ArgumentList, Value> {}
 
     private FunctionBody body;
 
@@ -26,8 +25,9 @@ public class BuiltinFunction extends LFunction {
         this.body = body;
     }
 
-    public Value call(ArgumentList args, Scope scope) {
-        return body.apply(args, scope);
+    @Override
+    public Value call(ArgumentList args) {
+        return body.apply(args);
     }
 
     @Override
