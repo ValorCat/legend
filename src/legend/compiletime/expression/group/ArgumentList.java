@@ -1,6 +1,7 @@
 package legend.compiletime.expression.group;
 
 import legend.compiletime.expression.Expression;
+import legend.compiletime.expression.operation.InvokeOperation;
 import legend.compiletime.expression.value.Value;
 import legend.runtime.Scope;
 
@@ -13,7 +14,7 @@ import java.util.Map;
  * Represent a sequence of positional and/or keyword arguments in a
  * function call. If the function is a method, this class also stores
  * the method target (the object it is called upon).
- * @see legend.compiletime.expression.operation.FunctionCall
+ * @see InvokeOperation
  * @see legend.compiletime.expression.value.function.LFunction
  * @since 12/24/2018
  */

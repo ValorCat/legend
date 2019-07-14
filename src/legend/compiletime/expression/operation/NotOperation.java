@@ -2,7 +2,6 @@ package legend.compiletime.expression.operation;
 
 import legend.compiletime.Token;
 import legend.compiletime.TokenLine;
-import legend.compiletime.expression.value.LBoolean;
 import legend.compiletime.expression.value.Value;
 import legend.runtime.Scope;
 
@@ -24,7 +23,7 @@ public class NotOperation extends Operation {
 
     @Override
     public Value evaluate(Scope scope) {
-        return LBoolean.resolve(operands.get(0).evaluate(scope).asBoolean());
+        return operands.get(0).evaluate(scope).operateUnary("not");
     }
 
 }

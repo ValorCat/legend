@@ -2,7 +2,7 @@ package legend.compiletime.expression.value;
 
 import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.group.ArgumentList;
-import legend.compiletime.expression.operation.FunctionCall;
+import legend.compiletime.expression.operation.InvokeOperation;
 import legend.compiletime.expression.value.type.LazyType;
 import legend.compiletime.expression.value.type.Type;
 import legend.runtime.Scope;
@@ -77,7 +77,7 @@ public abstract class Value implements Expression {
         Value method = getAttribute(name);
         ArgumentList argList = new ArgumentList(scope, args);
         argList.setTarget(this);
-        return FunctionCall.call(method, argList);
+        return InvokeOperation.call(method, argList);
     }
 
     public Value operateUnary(String operator) {

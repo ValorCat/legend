@@ -14,9 +14,9 @@ import java.util.List;
 /**
  * @since 1/18/2019
  */
-public class FunctionCall extends Operation {
+public class InvokeOperation extends Operation {
 
-    public FunctionCall(int position, List<Token> tokens) {
+    public InvokeOperation(int position, List<Token> tokens) {
         super(position, tokens);
     }
 
@@ -37,7 +37,7 @@ public class FunctionCall extends Operation {
         } else if (executable.isType("Type")) {
             return ((Type) executable).instantiate(args);
         }
-        throw new RuntimeException("Cannot execute object of type '" + executable.type().getName() + "'");
+        throw new RuntimeException("Cannot invoke object of type '" + executable.type().getName() + "'");
     }
 
 }

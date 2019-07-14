@@ -6,6 +6,7 @@ import legend.compiletime.expression.value.LNull;
 import legend.compiletime.expression.value.LString;
 import legend.compiletime.expression.value.Value;
 import legend.compiletime.expression.value.type.BuiltinType;
+import legend.compiletime.expression.value.type.NullableType;
 import legend.compiletime.expression.value.type.Type;
 import legend.compiletime.expression.value.type.UserDefinedType;
 
@@ -19,6 +20,7 @@ public class TypeType extends BuiltinType {
         super(new BuiltinType.Builder("Type")
                 .shared("read", TypeType::read)
                 .shared("show", TypeType::show)
+                .unaryOper("?", TypeType::operNullify)
         );
     }
 
@@ -45,6 +47,10 @@ public class TypeType extends BuiltinType {
     private static Value show(ArgumentList args) {
         System.out.println(args.target());
         return LNull.NULL;
+    }
+
+    private static Value operNullify(Value operand) {
+        return new NullableType((Type) operand);
     }
 
 }

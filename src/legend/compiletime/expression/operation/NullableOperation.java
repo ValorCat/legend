@@ -3,8 +3,6 @@ package legend.compiletime.expression.operation;
 import legend.compiletime.Token;
 import legend.compiletime.TokenLine;
 import legend.compiletime.expression.value.Value;
-import legend.compiletime.expression.value.type.NullableType;
-import legend.compiletime.expression.value.type.Type;
 import legend.runtime.Scope;
 
 import java.util.List;
@@ -25,11 +23,7 @@ public class NullableOperation extends Operation {
 
     @Override
     public Value evaluate(Scope scope) {
-        Value type = operands.get(0).evaluate(scope);
-        if (!type.isType("Type")) {
-            throw new RuntimeException("Cannot apply '?' operator to object of type '" + type.type().getName() + "'");
-        }
-        return new NullableType(((Type) type));
+        return operands.get(0).evaluate(scope).operateUnary("?");
     }
 
 }

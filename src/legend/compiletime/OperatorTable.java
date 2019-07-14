@@ -25,8 +25,9 @@ public final class OperatorTable {
             {"#", "?"},
             {"not"},
             {"^"},
-            {"*", "/", "mod"},
+            {"*", "/"},
             {"+", "-"},
+            {"mod"},
             {"==", "!=", "<", "<=", ">", ">="},
             {"&"},
             {"and", "or", "nor"},
@@ -58,7 +59,7 @@ public final class OperatorTable {
         Token token = tokens.get(tokenPos);
         switch (token.VALUE) {
             case ".":       new DotOperation(tokenPos, tokens); break;
-            case "()":      new FunctionCall(tokenPos, tokens); break;
+            case "()":      new InvokeOperation(tokenPos, tokens); break;
             case "[]":      new IndexOperation(tokenPos, tokens); break;
             case "#":       new LengthOperation(tokenPos, tokens); break;
             case "?":       new NullableOperation(tokenPos, tokens); break;

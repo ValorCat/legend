@@ -77,14 +77,15 @@ public abstract class Type extends Value {
         if (unaryOps.containsKey(operator)) {
             return unaryOps.get(operator).apply(operand);
         }
-        throw new RuntimeException("Type '" + name + "' does not support unary operator '" + operator + "'");
+        throw new RuntimeException("Cannot apply operator '" + operator + "' to type '" + name + "'");
     }
 
     public Value operateBinary(String operator, Value left, Value right) {
         if (binaryOps.containsKey(operator)) {
             return binaryOps.get(operator).apply(left, right);
         }
-        throw new RuntimeException("Type '" + name + "' does not support binary operator '" + operator + "'");
+        throw new RuntimeException("Cannot apply operator '" + operator + "' to types '" + name + "' and '"
+                + right.type().name + "'");
     }
 
     public boolean encompasses(Type other) {
