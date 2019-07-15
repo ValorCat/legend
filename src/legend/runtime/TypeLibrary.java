@@ -20,7 +20,6 @@ public class TypeLibrary {
             new BooleanType(),
             new FunctionType(),
             new IntegerType(),
-            new IteratorType(),
             new ListType(),
             new NativeType(),
             new NullType(),

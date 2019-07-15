@@ -2,7 +2,6 @@ package legend.runtime.library;
 
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.value.*;
-import legend.compiletime.expression.value.function.BuiltinFunction;
 import legend.compiletime.expression.value.function.LFunction;
 import legend.compiletime.expression.value.type.BuiltinType;
 import legend.compiletime.expression.value.type.Type;
@@ -14,6 +13,8 @@ import java.util.List;
 import java.util.function.ToIntFunction;
 
 public class ListType extends BuiltinType {
+
+    private static ListIteratorType iterator = new ListIteratorType();
 
     public ListType() {
         super(new BuiltinType.Builder("List", "Any")
@@ -58,16 +59,7 @@ public class ListType extends BuiltinType {
     }
 
     private static Value operIterate(Value operand) {
-        LFunction func = new BuiltinFunction("next", args -> {
-            int index = args.target().getAttribute("position").asInteger();
-            List javaList = (List) args.target().getAttribute("values").getAttribute("*list").asNative();
-            if (index < javaList.size()) {
-                args.target().setAttribute("position", new LInteger(index + 1));
-                return (Value) javaList.get(index);
-            }
-            return LNull.NULL;
-        });
-        return Type.of("Iterator").instantiate(new ArgumentList(operand, new LInteger(0), func));
+        return iterator.instantiate(new ArgumentList(new LInteger(0), operand.getAttribute("*list")));
     }
 
     private static Value operSize(Value operand) {
@@ -82,6 +74,27 @@ public class ListType extends BuiltinType {
         }
         throw new RuntimeException("Cannot get index " + index + " of list with "
                 + list.size() + " item(s)");
+    }
+
+    private static class ListIteratorType extends BuiltinType {
+
+        public ListIteratorType() {
+            super(new BuiltinType.Builder("ListIterator", "Any")
+                    .personal("index", "list")
+                    .unaryOper("next", ListIteratorType::operNext)
+            );
+        }
+
+        private static Value operNext(Value operand) {
+            int index = operand.getAttribute("index").asInteger();
+            List list = (List) operand.getAttribute("list").asNative();
+            if (index < list.size()) {
+                operand.setAttribute("index", new LInteger(index + 1));
+                return (Value) list.get(index);
+            }
+            return LNull.NULL;
+        }
+
     }
 
 }

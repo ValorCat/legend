@@ -38,7 +38,7 @@ public class ForLoop implements BlockStatementType {
         List<Instruction> body = base.BODY;
 
         Expression getIterator = scope -> iterable.evaluate(scope).operateUnary("for");
-        Expression getNext = scope -> new StackValue().evaluate(scope).callMethod("next", scope);
+        Expression getNext = scope -> new StackValue().evaluate(scope).operateUnary("next");
         Expression hasNext = scope -> LBoolean.resolve(new StackValue().evaluate(scope) != LNull.NULL);
 
         return asList(body.size() + 5,

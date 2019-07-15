@@ -5,12 +5,11 @@ import legend.compiletime.expression.value.LBoolean;
 import legend.compiletime.expression.value.LInteger;
 import legend.compiletime.expression.value.LNull;
 import legend.compiletime.expression.value.Value;
-import legend.compiletime.expression.value.function.BuiltinFunction;
-import legend.compiletime.expression.value.function.LFunction;
 import legend.compiletime.expression.value.type.BuiltinType;
-import legend.compiletime.expression.value.type.Type;
 
 public class RangeType extends BuiltinType {
+
+    private static RangeIteratorType iterator = new RangeIteratorType();
 
     public RangeType() {
         super(new BuiltinType.Builder("Range", "Any")
@@ -35,22 +34,34 @@ public class RangeType extends BuiltinType {
     }
 
     private static Value operIterate(Value operand) {
-        LFunction func = new BuiltinFunction("next", args -> {
-            Value current = args.target().getAttribute("position");
-            int max = args.target().getAttribute("values").getAttribute("right").asInteger();
-            if (current.asInteger() <= max) {
-                args.target().setAttribute("position", new LInteger(current.asInteger() + 1));
-                return current;
-            }
-            return LNull.NULL;
-        });
-        return Type.of("Iterator").instantiate(new ArgumentList(operand, operand.getAttribute("left"), func));
+        return iterator.instantiate(new ArgumentList(operand.getAttribute("left"), operand.getAttribute("right")));
     }
 
     private static Value operSize(Value operand) {
         int left = operand.getAttribute("left").asInteger();
         int right = operand.getAttribute("right").asInteger();
         return new LInteger(right - left + 1);
+    }
+
+    private static class RangeIteratorType extends BuiltinType {
+
+        public RangeIteratorType() {
+            super(new BuiltinType.Builder("RangeIterator", "Any")
+                    .personal("pos", "end")
+                    .unaryOper("next", RangeIteratorType::operNext)
+            );
+        }
+
+        private static Value operNext(Value operand) {
+            Value pos = operand.getAttribute("pos");
+            int end = operand.getAttribute("end").asInteger();
+            if (pos.asInteger() <= end) {
+                operand.setAttribute("pos", new LInteger(pos.asInteger() + 1));
+                return pos;
+            }
+            return LNull.NULL;
+        }
+
     }
 
 }

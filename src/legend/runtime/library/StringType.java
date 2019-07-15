@@ -5,12 +5,11 @@ import legend.compiletime.expression.value.LInteger;
 import legend.compiletime.expression.value.LNull;
 import legend.compiletime.expression.value.LString;
 import legend.compiletime.expression.value.Value;
-import legend.compiletime.expression.value.function.BuiltinFunction;
-import legend.compiletime.expression.value.function.LFunction;
 import legend.compiletime.expression.value.type.BuiltinType;
-import legend.compiletime.expression.value.type.Type;
 
 public class StringType extends BuiltinType {
+
+    private static StringIteratorType iterator = new StringIteratorType();
 
     public StringType() {
         super(new BuiltinType.Builder("String", "Any")
@@ -27,16 +26,7 @@ public class StringType extends BuiltinType {
     }
 
     private static Value operIterate(Value operand) {
-        LFunction func = new BuiltinFunction("next", args -> {
-            int current = args.target().getAttribute("position").asInteger();
-            String string = args.target().getAttribute("values").asString();
-            if (current < string.length()) {
-                args.target().setAttribute("position", new LInteger(current + 1));
-                return new LString(string.substring(current, current + 1));
-            }
-            return LNull.NULL;
-        });
-        return Type.of("Iterator").instantiate(new ArgumentList(operand, new LInteger(0), func));
+        return iterator.instantiate(new ArgumentList(new LInteger(0), operand));
     }
 
     private static Value operSize(Value operand) {
@@ -50,6 +40,27 @@ public class StringType extends BuiltinType {
             return new LString(string.substring(index, index + 1));
         }
         throw new RuntimeException("Cannot get index " + index + " of string of length " + string.length());
+    }
+
+    private static class StringIteratorType extends BuiltinType {
+
+        public StringIteratorType() {
+            super(new BuiltinType.Builder("StringIterator", "Any")
+                    .personal("index", "string")
+                    .unaryOper("next", StringIteratorType::operNext)
+            );
+        }
+
+        private static Value operNext(Value operand) {
+            int index = operand.getAttribute("index").asInteger();
+            String string = operand.getAttribute("string").asString();
+            if (index < string.length()) {
+                operand.setAttribute("index", new LInteger(index + 1));
+                return new LString(string.substring(index, index + 1));
+            }
+            return LNull.NULL;
+        }
+
     }
 
 }
