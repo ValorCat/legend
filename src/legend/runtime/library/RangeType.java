@@ -35,18 +35,16 @@ public class RangeType extends BuiltinType {
     }
 
     private static Value operIterate(Value operand) {
-        LFunction hasNext = new BuiltinFunction("has_next", _args -> {
-            int current = _args.target().getAttribute("position").asInteger();
-            int max = _args.target().getAttribute("values").getAttribute("right").asInteger();
-            return LBoolean.resolve(current <= max);
+        LFunction func = new BuiltinFunction("next", args -> {
+            Value current = args.target().getAttribute("position");
+            int max = args.target().getAttribute("values").getAttribute("right").asInteger();
+            if (current.asInteger() <= max) {
+                args.target().setAttribute("position", new LInteger(current.asInteger() + 1));
+                return current;
+            }
+            return LNull.NULL;
         });
-        LFunction getNext = new BuiltinFunction("next", _args -> {
-            Value current = _args.target().getAttribute("position");
-            _args.target().setAttribute("position", new LInteger(current.asInteger() + 1));
-            // todo error if out of range
-            return current;
-        });
-        return Type.of("Iterator").instantiate(new ArgumentList(operand, operand.getAttribute("left"), hasNext, getNext));
+        return Type.of("Iterator").instantiate(new ArgumentList(operand, operand.getAttribute("left"), func));
     }
 
     private static Value operSize(Value operand) {

@@ -18,7 +18,7 @@ public class ArithmeticOperation extends Operation {
     @Override
     public Value evaluate(Scope scope) {
         Value left = operands.get(0).evaluate(scope);
-        Value right = operands.get(0).evaluate(scope);
+        Value right = operands.get(1).evaluate(scope);
         return left.operateBinary(operator, right);
     }
 

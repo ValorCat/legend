@@ -58,21 +58,16 @@ public class ListType extends BuiltinType {
     }
 
     private static Value operIterate(Value operand) {
-        LFunction hasNext = new BuiltinFunction("has_next", _args -> {
-            int index = _args.target().getAttribute("position").asInteger();
-            Object javaList = _args.target().getAttribute("values").getAttribute("*list").asNative();
-            int size = ((Collection) javaList).size();
-            return LBoolean.resolve(index < size);
+        LFunction func = new BuiltinFunction("next", args -> {
+            int index = args.target().getAttribute("position").asInteger();
+            List javaList = (List) args.target().getAttribute("values").getAttribute("*list").asNative();
+            if (index < javaList.size()) {
+                args.target().setAttribute("position", new LInteger(index + 1));
+                return (Value) javaList.get(index);
+            }
+            return LNull.NULL;
         });
-        LFunction getNext = new BuiltinFunction("next", _args -> {
-            int index = _args.target().getAttribute("position").asInteger();
-            Object javaList = _args.target().getAttribute("values").getAttribute("*list").asNative();
-            _args.target().setAttribute("position", new LInteger(index + 1));
-            // todo error if out of bounds
-            return (Value) (((List) javaList).get(index));
-        });
-        return Type.of("Iterator").instantiate(
-                new ArgumentList(operand, new LInteger(0), hasNext, getNext));
+        return Type.of("Iterator").instantiate(new ArgumentList(operand, new LInteger(0), func));
     }
 
     private static Value operSize(Value operand) {

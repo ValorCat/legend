@@ -23,6 +23,10 @@ for i in 0.to(6)
     fact(i).show()
 end
 
+for n in List(10, 20, 30, 40)
+    (n - 5).show()
+end
+
 "Quick done"
 return
 

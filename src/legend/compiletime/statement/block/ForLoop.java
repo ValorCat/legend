@@ -6,6 +6,8 @@ import legend.compiletime.TokenLine;
 import legend.compiletime.error.ErrorLog;
 import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.StackValue;
+import legend.compiletime.expression.value.LBoolean;
+import legend.compiletime.expression.value.LNull;
 import legend.compiletime.statement.Statement;
 import legend.compiletime.statement.block.clause.Clause;
 import legend.runtime.instruction.*;
@@ -36,15 +38,18 @@ public class ForLoop implements BlockStatementType {
         List<Instruction> body = base.BODY;
 
         Expression getIterator = scope -> iterable.evaluate(scope).operateUnary("for");
-        Expression hasNext = scope -> new StackValue().evaluate(scope).callMethod("has_next", scope);
         Expression getNext = scope -> new StackValue().evaluate(scope).callMethod("next", scope);
+        Expression hasNext = scope -> LBoolean.resolve(new StackValue().evaluate(scope) != LNull.NULL);
 
         return asList(body.size() + 5,
                 new PushStackInstruction(getIterator),
-                new JumpUnlessInstruction(body.size() + 3, hasNext),
-                new AssignInstruction(variable, getNext),
+                new PushStackInstruction(getNext),
+                new JumpUnlessInstruction(body.size() + 4, hasNext),
+                new AssignInstruction(variable, new StackValue()),
+                new PopStackInstruction(),
                 body,
-                new JumpInstruction(-body.size() - 2),
+                new JumpInstruction(-body.size() - 4),
+                new PopStackInstruction(),
                 new PopStackInstruction());
     }
 

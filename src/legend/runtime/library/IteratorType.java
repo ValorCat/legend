@@ -9,7 +9,7 @@ public class IteratorType extends BuiltinType {
 
     public IteratorType() {
         super(new BuiltinType.Builder("Iterator", "Any")
-                .personal("values", "position", "has_next", "next")
+                .personal("values", "position", "next")
                 .shared("show", IteratorType::show)
         );
     }

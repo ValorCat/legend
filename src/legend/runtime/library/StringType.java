@@ -1,7 +1,10 @@
 package legend.runtime.library;
 
 import legend.compiletime.expression.group.ArgumentList;
-import legend.compiletime.expression.value.*;
+import legend.compiletime.expression.value.LInteger;
+import legend.compiletime.expression.value.LNull;
+import legend.compiletime.expression.value.LString;
+import legend.compiletime.expression.value.Value;
 import legend.compiletime.expression.value.function.BuiltinFunction;
 import legend.compiletime.expression.value.function.LFunction;
 import legend.compiletime.expression.value.type.BuiltinType;
@@ -24,19 +27,16 @@ public class StringType extends BuiltinType {
     }
 
     private static Value operIterate(Value operand) {
-        LFunction hasNext = new BuiltinFunction("has_next", _args -> {
-            int current = _args.target().getAttribute("position").asInteger();
-            int size = _args.target().getAttribute("values").asString().length();
-            return LBoolean.resolve(current < size);
+        LFunction func = new BuiltinFunction("next", args -> {
+            int current = args.target().getAttribute("position").asInteger();
+            String string = args.target().getAttribute("values").asString();
+            if (current < string.length()) {
+                args.target().setAttribute("position", new LInteger(current + 1));
+                return new LString(string.substring(current, current + 1));
+            }
+            return LNull.NULL;
         });
-        LFunction getNext = new BuiltinFunction("next", _args -> {
-            int current = _args.target().getAttribute("position").asInteger();
-            String string = _args.target().getAttribute("values").asString();
-            _args.target().setAttribute("position", new LInteger(current + 1));
-            // todo error if out of range
-            return new LString(string.substring(current, current + 1));
-        });
-        return Type.of("Iterator").instantiate(new ArgumentList(operand, new LInteger(0), hasNext, getNext));
+        return Type.of("Iterator").instantiate(new ArgumentList(operand, new LInteger(0), func));
     }
 
     private static Value operSize(Value operand) {
