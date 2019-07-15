@@ -40,6 +40,10 @@ public final class LBoolean extends Value {
         return value;
     }
 
+    public LBoolean not() {
+        return this == TRUE ? FALSE : TRUE;
+    }
+
     @Override
     public boolean equals(Value other) {
         return this == other;

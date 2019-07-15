@@ -1,7 +1,6 @@
 package legend.compiletime.expression.operation;
 
 import legend.compiletime.Token;
-import legend.compiletime.expression.value.LString;
 import legend.compiletime.expression.value.Value;
 import legend.runtime.Scope;
 
@@ -20,7 +19,7 @@ public class ConcatenationOperation extends Operation {
     public Value evaluate(Scope scope) {
         Value left = operands.get(0).evaluate(scope);
         Value right = operands.get(1).evaluate(scope);
-        return new LString(left.asString() + right.asString());
+        return left.operateBinary("&", right);
     }
 
 }
