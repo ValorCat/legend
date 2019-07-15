@@ -5,7 +5,6 @@ import legend.compiletime.Token.TokenType;
 import legend.compiletime.TokenLine;
 import legend.compiletime.error.ErrorLog;
 import legend.compiletime.expression.Expression;
-import legend.compiletime.expression.StackValue;
 import legend.compiletime.expression.value.LBoolean;
 import legend.compiletime.expression.value.LNull;
 import legend.compiletime.statement.Statement;
@@ -13,6 +12,8 @@ import legend.compiletime.statement.block.clause.Clause;
 import legend.runtime.instruction.*;
 
 import java.util.List;
+
+import static legend.compiletime.expression.TopOfStack.TOP_OF_STACK;
 
 /**
  * @since 1/19/2019
@@ -38,14 +39,14 @@ public class ForLoop implements BlockStatementType {
         List<Instruction> body = base.BODY;
 
         Expression getIterator = scope -> iterable.evaluate(scope).operateUnary("for");
-        Expression getNext = scope -> new StackValue().evaluate(scope).operateUnary("next");
-        Expression hasNext = scope -> LBoolean.resolve(new StackValue().evaluate(scope) != LNull.NULL);
+        Expression getNext = scope -> TOP_OF_STACK.evaluate(scope).operateUnary("next");
+        Expression hasNext = scope -> LBoolean.resolve(TOP_OF_STACK.evaluate(scope) != LNull.NULL);
 
         return asList(body.size() + 5,
                 new PushStackInstruction(getIterator),
                 new PushStackInstruction(getNext),
                 new JumpUnlessInstruction(body.size() + 4, hasNext),
-                new AssignInstruction(variable, new StackValue()),
+                new AssignInstruction(variable, TOP_OF_STACK),
                 new PopStackInstruction(),
                 body,
                 new JumpInstruction(-body.size() - 4),

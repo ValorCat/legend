@@ -13,7 +13,11 @@ import legend.runtime.Scope;
  * @see legend.runtime.instruction.PopStackInstruction
  * @since 5/28/2019
  */
-public class StackValue implements Expression {
+public final class TopOfStack implements Expression {
+
+    public static final TopOfStack TOP_OF_STACK = new TopOfStack();
+
+    private TopOfStack() {}
 
     @Override
     public Value evaluate(Scope scope) {
