@@ -17,7 +17,7 @@ public class TypeType extends BuiltinType {
     private static Scanner scanner;
 
     public TypeType() {
-        super(new BuiltinType.Builder("Type")
+        super(new BuiltinType.Builder("Type", "Any")
                 .shared("read", TypeType::read)
                 .shared("show", TypeType::show)
                 .unaryOper("?", TypeType::operNullify)

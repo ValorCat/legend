@@ -13,12 +13,12 @@ import java.util.function.UnaryOperator;
 
 public abstract class BuiltinType extends Type {
 
-    public BuiltinType(String name) {
-        super(name, new String[0]);
+    public BuiltinType(String name, String supertype) {
+        super(name, supertype, new String[0]);
     }
 
     public BuiltinType(Builder builder) {
-        super(builder.name, builder.personal, builder.shared, builder.unaryOps, builder.binaryOps);
+        super(builder.name, builder.supertype, builder.personal, builder.shared, builder.unaryOps, builder.binaryOps);
     }
 
     @Override
@@ -49,13 +49,15 @@ public abstract class BuiltinType extends Type {
     public static class Builder {
 
         private String name;
+        private String supertype;
         private String[] personal;
         private Map<String, Value> shared;
         private Map<String, UnaryOperator<Value>> unaryOps;
         private Map<String, BinaryOperator<Value>> binaryOps;
 
-        public Builder(String name) {
+        public Builder(String name, String supertype) {
             this.name = name;
+            this.supertype = supertype;
             this.personal = new String[0];
             this.shared = new HashMap<>();
             this.unaryOps = new HashMap<>();

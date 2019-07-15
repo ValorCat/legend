@@ -16,6 +16,7 @@ public class TypeLibrary {
 
     /* the types to be loaded upon initialization */
     private static final BuiltinType[] BUILTIN_TYPE_ARRAY = {
+            new AnyType(),
             new BooleanType(),
             new FunctionType(),
             new IntegerType(),

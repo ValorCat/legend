@@ -10,7 +10,7 @@ import legend.compiletime.expression.value.type.Type;
 public class StringType extends BuiltinType {
 
     public StringType() {
-        super(new BuiltinType.Builder("String")
+        super(new BuiltinType.Builder("String", "Any")
                 .shared("show", StringType::show)
                 .unaryOper("for", StringType::operIterate)
                 .unaryOper("#", StringType::operSize)

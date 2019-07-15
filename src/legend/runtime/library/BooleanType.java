@@ -9,7 +9,7 @@ import legend.compiletime.expression.value.type.BuiltinType;
 public class BooleanType extends BuiltinType {
 
     public BooleanType() {
-        super(new BuiltinType.Builder("Boolean")
+        super(new BuiltinType.Builder("Boolean", "Any")
                 .shared("show", BooleanType::show)
                 .unaryOper("not", BooleanType::operNot)
                 .binaryOper("and", BooleanType::operAnd)

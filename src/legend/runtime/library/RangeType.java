@@ -13,7 +13,7 @@ import legend.compiletime.expression.value.type.Type;
 public class RangeType extends BuiltinType {
 
     public RangeType() {
-        super(new BuiltinType.Builder("Range")
+        super(new BuiltinType.Builder("Range", "Any")
                 .personal("left", "right")
                 .shared("contains", RangeType::contains)
                 .shared("show", RangeType::show)

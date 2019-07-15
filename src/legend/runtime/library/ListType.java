@@ -16,7 +16,7 @@ import java.util.function.ToIntFunction;
 public class ListType extends BuiltinType {
 
     public ListType() {
-        super(new BuiltinType.Builder("List")
+        super(new BuiltinType.Builder("List", "Any")
                 .personal("*list")
                 .shared("max", ListType::max)
                 .shared("show", ListType::show)

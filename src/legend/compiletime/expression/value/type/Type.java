@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 /**
@@ -15,20 +16,25 @@ import java.util.function.UnaryOperator;
  */
 public abstract class Type extends Value {
 
+    public static final String NO_PARENT = "<noparent>";
+
     protected String name;
+    private LazyType supertype;
     private Map<String, Integer> personal;
     private Map<String, Value> shared;
     private Map<String, UnaryOperator<Value>> unaryOps;
     private Map<String, BinaryOperator<Value>> binaryOps;
 
-    public Type(String name, String[] personal) {
-        this(name, personal, Map.of(), Map.of(), Map.of());
+    public Type(String name, String supertype, String[] personal) {
+        this(name, supertype, personal, Map.of(), Map.of(), Map.of());
     }
 
-    public Type(String name, String[] personal, Map<String, Value> shared,Map<String, UnaryOperator<Value>> unaryOps,
+    public Type(String name, String supertype, String[] personal, Map<String, Value> shared,Map<String, UnaryOperator<Value>> unaryOps,
                 Map<String, BinaryOperator<Value>> binaryOps) {
         super("Type");
         this.name = name;
+        //noinspection StringEquality
+        this.supertype = supertype == NO_PARENT ? null : new LazyType(supertype);
         this.personal = buildPersonalMap(personal);
         this.shared = shared;
         this.unaryOps = unaryOps;
@@ -38,6 +44,7 @@ public abstract class Type extends Value {
     public Type(Type other) {
         super("Type");
         this.name = other.name;
+        this.supertype = other.supertype;
         this.personal = other.personal;
         this.shared = other.shared;
         this.unaryOps = other.unaryOps;
@@ -61,6 +68,10 @@ public abstract class Type extends Value {
         return name;
     }
 
+    public Optional<Type> getSuperType() {
+        return Optional.ofNullable(supertype == null ? null : supertype.get());
+    }
+
     public Value getAttribute(String attribute, Value target) {
         return getPersonal(target, attribute)
                 .or(() -> getShared(attribute))
@@ -74,22 +85,29 @@ public abstract class Type extends Value {
     }
 
     public Value operateUnary(String operator, Value operand) {
-        if (unaryOps.containsKey(operator)) {
-            return unaryOps.get(operator).apply(operand);
-        }
-        throw new RuntimeException("Cannot apply operator '" + operator + "' to type '" + name + "'");
+        return getOperatorHandler(operator, type -> type.unaryOps)
+                .orElseThrow(() -> new RuntimeException(
+                        "Cannot apply operator '" + operator + "' to type '" + name + "'"))
+                .apply(operand);
     }
 
     public Value operateBinary(String operator, Value left, Value right) {
-        if (binaryOps.containsKey(operator)) {
-            return binaryOps.get(operator).apply(left, right);
-        }
-        throw new RuntimeException("Cannot apply operator '" + operator + "' to types '" + name + "' and '"
-                + right.type().name + "'");
+        return getOperatorHandler(operator, type -> type.binaryOps)
+                .orElseThrow(() -> new RuntimeException(
+                        "Cannot apply operator '" + operator + "' to types '" + name + "' and '" + right.type().name + "'"))
+                .apply(left, right);
+    }
+
+    private <Handler> Optional<Handler> getOperatorHandler(String operator,
+                                                           Function<Type, Map<String, Handler>> mapGetter) {
+        return Optional.ofNullable(mapGetter.apply(this).get(operator))
+                .or(() -> getSuperType().flatMap(parent -> parent.getOperatorHandler(operator, mapGetter)));
     }
 
     public boolean encompasses(Type other) {
-        return this == other;
+        return this == other || other.getSuperType()
+                .map(this::encompasses)
+                .orElse(false);
     }
 
     public LazyType asLazy() {

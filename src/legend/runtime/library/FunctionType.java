@@ -8,7 +8,7 @@ import legend.compiletime.expression.value.type.BuiltinType;
 public class FunctionType extends BuiltinType {
 
     public FunctionType() {
-        super(new BuiltinType.Builder("Function")
+        super(new BuiltinType.Builder("Function", "Any")
                 .shared("show", FunctionType::show)
         );
     }

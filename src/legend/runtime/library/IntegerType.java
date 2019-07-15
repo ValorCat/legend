@@ -11,7 +11,7 @@ import legend.compiletime.expression.value.type.Type;
 public class IntegerType extends BuiltinType {
 
     public IntegerType() {
-        super(new BuiltinType.Builder("Integer")
+        super(new BuiltinType.Builder("Integer", "Any")
                 .shared("show", IntegerType::show)
                 .shared("to", IntegerType::to)
                 .binaryOper("+", IntegerType::operAdd)

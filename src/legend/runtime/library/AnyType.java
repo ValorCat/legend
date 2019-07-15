@@ -5,12 +5,11 @@ import legend.compiletime.expression.value.LNull;
 import legend.compiletime.expression.value.Value;
 import legend.compiletime.expression.value.type.BuiltinType;
 
-public class IteratorType extends BuiltinType {
+public class AnyType extends BuiltinType {
 
-    public IteratorType() {
-        super(new BuiltinType.Builder("Iterator", "Any")
-                .personal("values", "position", "has_next", "next")
-                .shared("show", IteratorType::show)
+    public AnyType() {
+        super(new Builder("Any", NO_PARENT)
+                .shared("show", AnyType::show)
         );
     }
 
