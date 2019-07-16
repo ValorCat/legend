@@ -1,7 +1,7 @@
 package legend.compiletime.expression.group;
 
 import legend.compiletime.expression.Expression;
-import legend.compiletime.expression.operation.CommaList;
+import legend.compiletime.expression.operation.CommaOperation;
 import legend.compiletime.expression.value.Value;
 import legend.runtime.Scope;
 
@@ -34,7 +34,7 @@ public class Parentheses implements Expression {
     }
 
     public List<Expression> getContents() {
-        return contents instanceof CommaList
+        return contents instanceof CommaOperation
                 ? contents.getChildren()
                 : List.of(contents);
     }

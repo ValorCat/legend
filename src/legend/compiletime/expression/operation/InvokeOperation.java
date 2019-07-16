@@ -1,6 +1,8 @@
 package legend.compiletime.expression.operation;
 
 import legend.compiletime.Token;
+import legend.compiletime.TokenLine;
+import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.group.Parentheses;
 import legend.compiletime.expression.value.Attribute;
@@ -9,35 +11,39 @@ import legend.compiletime.expression.value.function.LFunction;
 import legend.compiletime.expression.value.type.Type;
 import legend.runtime.Scope;
 
-import java.util.List;
+public class InvokeOperation extends BinaryOperation {
 
-/**
- * @since 1/18/2019
- */
-public class InvokeOperation extends Operation {
+    private static final String OPERATOR = "()";
 
-    public InvokeOperation(int position, List<Token> tokens) {
-        super(position, tokens);
+    public InvokeOperation(Expression callable, Parentheses args) {
+        super(OPERATOR, callable, args);
     }
 
     @Override
     public Value evaluate(Scope scope) {
-        Value executable = operands.get(0).evaluate(scope);
-        ArgumentList arguments = new ArgumentList(scope, (Parentheses) operands.get(1));
-        if (executable.hasOwner()) {
-            arguments.setTarget(executable.getOwner());
-            executable = ((Attribute) executable).getValue();
+        Value callable = left.evaluate(scope);
+        ArgumentList args = new ArgumentList(scope, (Parentheses) right);
+        if (callable.hasOwner()) {
+            args.setTarget(callable.getOwner());
+            callable = ((Attribute) callable).getValue();
         }
-        return call(executable, arguments);
+        return call(callable, args);
     }
 
-    public static Value call(Value executable, ArgumentList args) {
-        if (executable.isType("Function")) {
-            return ((LFunction) executable).call(args);
-        } else if (executable.isType("Type")) {
-            return ((Type) executable).instantiate(args);
+    private static Value call(Value callable, ArgumentList args) {
+        if (callable.isType("Function")) {
+            return ((LFunction) callable).call(args);
+        } else if (callable.isType("Type")) {
+            return ((Type) callable).instantiate(args);
         }
-        throw new RuntimeException("Cannot invoke object of type '" + executable.type().getName() + "'");
+        throw new RuntimeException("Cannot invoke object of type '" + callable.type().getName() + "'");
+    }
+
+    public static void parse(int operIndex, TokenLine line) {
+        Expression callable = line.get(operIndex - 1).asExpression();
+        Parentheses args = (Parentheses) line.get(operIndex + 1).asExpression();
+        InvokeOperation operation = new InvokeOperation(callable, args);
+        line.consolidate(Token.newExpression(OPERATOR, operation), operIndex - 1, 3);
     }
 
 }

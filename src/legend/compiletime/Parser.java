@@ -26,7 +26,7 @@ import static legend.compiletime.Token.TokenType.OPERATOR;
  *   return 10 + compute(x)
  *
  * translates to a single statement of type {@link legend.compiletime.statement.basic.ReturnStatement} that contains an
- * expression of type {@link legend.compiletime.expression.operation.ArithmeticOperation}. The expression is actually only the
+ * expression of type {@link legend.compiletime.expression.operation.BinaryOperation}. The expression is actually only the
  * root of an expression tree represented by nested sub-expressions:
  *
  *                 +

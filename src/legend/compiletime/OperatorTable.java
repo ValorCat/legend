@@ -45,6 +45,10 @@ public final class OperatorTable {
             "and", "def", "else", "end", "for", "if", "mod", "or", "nor", "not", "repeat", "return", "while"
     );
 
+    private static final Set<String> LEFT_UNARY = Set.of("#", "not");
+    private static final Set<String> RIGHT_UNARY = Set.of("?");
+    private static final Set<String> SPECIAL = Set.of(".", "()", ":=", ",");
+
     /**
      * Verify an operator's environmental constraints are met (e.g. for the '+'
      * operator, there must be a value on either side) and then build a partial
@@ -52,32 +56,51 @@ public final class OperatorTable {
      * consolidated into this operation's newly created token. Flow control
      * structures are also pushed on and popped off the stack as they are
      * encountered.
-     * @param tokenPos the index of the operator in the list
+     * @param operIndex the index of the operator in the list
      * @param tokens the list of tokens
      */
-    public static void parseOperation(int tokenPos, List<Token> tokens) {
-        Token token = tokens.get(tokenPos);
-        switch (token.VALUE) {
-            case ".":       new DotOperation(tokenPos, tokens); break;
-            case "()":      new InvokeOperation(tokenPos, tokens); break;
-            case "[]":      new IndexOperation(tokenPos, tokens); break;
-            case "#":       new LengthOperation(tokenPos, tokens); break;
-            case "?":       new NullableOperation(tokenPos, tokens); break;
-            case "not":     new NotOperation(tokenPos, tokens); break;
-            case "^": case "*": case "/": case "mod": case "+": case "-":
-                            new ArithmeticOperation(tokenPos, tokens); break;
-            case "==": case "!=":
-                            new EqualsOperation(tokenPos, tokens); break;
-            case "<": case ">": case "<=": case ">=":
-                            new ComparisonOperation(tokenPos, tokens); break;
-            case "&":       new ConcatenationOperation(tokenPos, tokens); break;
-            case "and": case "or": case "nor":
-                            new LogicalOperation(tokenPos, tokens); break;
-            case ":=":      new AssignmentExpression(tokenPos, tokens); break;
-            case ",":       new CommaList(tokenPos, tokens); break;
-            case "in":      break; // ignore
-            default:        throw getException(token.VALUE);
+    public static void parseOperation(int operIndex, List<Token> tokens) {
+        String operator = tokens.get(operIndex).VALUE;
+        TokenLine line = (TokenLine) tokens;
+
+        if (LEFT_UNARY.contains(operator)) {
+            UnaryOperation.parseLeft(operIndex, line);
+        } else if (RIGHT_UNARY.contains(operator)) {
+            UnaryOperation.parseRight(operIndex, line);
+        } else if (!SPECIAL.contains(operator)) {
+            BinaryOperation.parse(operIndex, line);
+        } else {
+            switch (operator) {
+                case ".":   MemberSelectOperation.parse(operIndex, line); break;
+                case "()":  InvokeOperation.parse(operIndex, line); break;
+                case ":=":  InlineAssignOperation.parse(operIndex, line); break;
+                case ",":   CommaOperation.parse(operIndex, line); break;
+                case "in":  break;
+                default:    throw getException(operator);
+            }
         }
+//
+//        switch (operator.VALUE) {
+//            case ".":       new DotOperation(operIndex, tokens); break;
+//            case "()":      new InvokeOperation(operIndex, tokens); break;
+//            case "[]":      new IndexOperation(operIndex, tokens); break;
+//            case "#":       new LengthOperation(operIndex, tokens); break;
+//            case "?":       new NullableOperation(operIndex, tokens); break;
+//            case "not":     new NotOperation(operIndex, tokens); break;
+//            case "^": case "*": case "/": case "mod": case "+": case "-":
+//                            new ArithmeticOperation(operIndex, tokens); break;
+//            case "==": case "!=":
+//                            new EqualsOperation(operIndex, tokens); break;
+//            case "<": case ">": case "<=": case ">=":
+//                            new ComparisonOperation(operIndex, tokens); break;
+//            case "&":       new ConcatenationOperation(operIndex, tokens); break;
+//            case "and": case "or": case "nor":
+//                            new LogicalOperation(operIndex, tokens); break;
+//            case ":=":      new AssignmentExpression(operIndex, tokens); break;
+//            case ",":       new CommaList(operIndex, tokens); break;
+//            case "in":      break; // ignore
+//            default:        throw getException(operator.VALUE);
+//        }
     }
 
     /**
