@@ -7,7 +7,6 @@ import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.Variable;
 import legend.compiletime.expression.value.Attribute;
 import legend.compiletime.expression.value.Value;
-import legend.compiletime.expression.value.function.BuiltinFunction;
 import legend.runtime.Scope;
 
 import java.util.List;
@@ -30,12 +29,8 @@ public class MemberSelectOperation extends Operation {
 
     @Override
     public Value evaluate(Scope scope) {
-        if (target.matches("_")) {
-            return new BuiltinFunction(args -> args.arg(0).getAttribute(member));
-        } else {
-            Value targetValue = target.evaluate(scope);
-            return new Attribute(targetValue, targetValue.getAttribute(member));
-        }
+        Value targetValue = target.evaluate(scope);
+        return new Attribute(targetValue, targetValue.getAttribute(member));
     }
 
     @Override
