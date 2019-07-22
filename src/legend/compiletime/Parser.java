@@ -7,13 +7,13 @@ import legend.compiletime.expression.group.Parentheses;
 import legend.compiletime.expression.group.SquareBrackets;
 import legend.compiletime.statement.Statement;
 import legend.compiletime.statement.StatementType;
+import legend.compiletime.statement.basic.EndStatement;
 import legend.compiletime.statement.block.BlockStatementType;
 import legend.compiletime.statement.block.clause.ClauseStatementType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import java.util.StringJoiner;
 
 import static legend.compiletime.Token.TokenType.GROUP;
 import static legend.compiletime.Token.TokenType.OPERATOR;
@@ -67,7 +67,7 @@ public class Parser {
                 e.setLineNumber(line.getLineNumber());
             }
         }
-        checkMissingEnd(tokens);
+        checkMissingEnd(statements, tokens);
         return statements;
     }
 
@@ -93,11 +93,14 @@ public class Parser {
      * after the input has finished parsing, this indicates that the source code is missing 1 or more 'end' statements.
      * @param tokens the list of input tokens
      */
-    private void checkMissingEnd(List<TokenLine> tokens) {
+    private void checkMissingEnd(List<Statement> statements, List<TokenLine> tokens) {
         if (!controlStack.isEmpty()) {
             int lastLineNumber = tokens.get(tokens.size() - 1).getLineNumber();
-            ErrorLog.log(lastLineNumber, "Expected 'end' to close '%s'",
-                    controlStack.peek().getName());
+            ErrorLog.log(lastLineNumber, "Expected 'end' to close '%s'", controlStack.peek().getName());
+            while (!controlStack.isEmpty()) {
+                statements.add(new Statement(new EndStatement()));
+                controlStack.pop();
+            }
         }
     }
 
