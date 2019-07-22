@@ -1,5 +1,6 @@
 package legend.compiletime.expression.operation;
 
+import legend.compiletime.TokenLine;
 import legend.compiletime.expression.Expression;
 
 import java.util.List;
@@ -12,6 +13,8 @@ public abstract class Operation implements Expression {
     public Operation(String operator) {
         this.operator = operator;
     }
+
+    public abstract void parse(TokenLine line, int operIndex);
 
     @Override
     public abstract List<Expression> getChildren();

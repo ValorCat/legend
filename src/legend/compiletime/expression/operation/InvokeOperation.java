@@ -20,6 +20,11 @@ public class InvokeOperation extends BinaryOperation {
     }
 
     @Override
+    public void parse(TokenLine line, int operIndex) {
+        line.consolidate(Token.newExpression(operator, this), operIndex - 1, 3);
+    }
+
+    @Override
     public Value evaluate(Scope scope) {
         Value callable = left.evaluate(scope);
         ArgumentList args = new ArgumentList(scope, (Parentheses) right);
@@ -37,13 +42,6 @@ public class InvokeOperation extends BinaryOperation {
             return ((Type) callable).instantiate(args);
         }
         throw new RuntimeException("Cannot invoke object of type '" + callable.type().getName() + "'");
-    }
-
-    public static void parse(int operIndex, TokenLine line) {
-        Expression callable = line.get(operIndex - 1).asExpression();
-        Parentheses args = (Parentheses) line.get(operIndex + 1).asExpression();
-        InvokeOperation operation = new InvokeOperation(callable, args);
-        line.consolidate(Token.newExpression(OPERATOR, operation), operIndex - 1, 3);
     }
 
 }

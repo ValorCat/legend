@@ -43,6 +43,10 @@ public class TokenLine extends ArrayList<Token> {
         return new TokenLine(super.subList(from, to), lineNumber);
     }
 
+    public boolean exists(int index) {
+        return index >= 0 && index < size();
+    }
+
     /**
      * Replace all the tokens between two indices with a single token.
      * @param newToken the replacement token

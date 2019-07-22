@@ -1,10 +1,12 @@
 package legend.compiletime;
 
-import legend.compiletime.error.ErrorLog;
-import legend.compiletime.error.InterpreterException;
+import legend.compiletime.expression.Expression;
+import legend.compiletime.expression.group.Parentheses;
 import legend.compiletime.expression.operation.*;
 
-import java.util.*;
+import java.util.Set;
+
+import static legend.compiletime.OperationDegree.*;
 
 /**
  * This class stores valid operators and their precedence levels. It also instantiates
@@ -20,21 +22,22 @@ public final class OperatorTable {
     by an identifier followed by parentheses. These special operations are detected
     during tokenization and their corresponding operators are inserted implicitly.
      */
-    private static final OperatorTable OPERATORS = defineOperations(new String[][] {
-            {".", "()", "[]"},      // high precedence
-            {"#", "?"},
-            {"not"},
-            {"^"},
-            {"*", "/"},
-            {"+", "-"},
-            {"mod"},
-            {"==", "!=", "<", "<=", ">", ">="},
-            {"&"},
-            {"and", "or", "nor"},
-            {":="},
-            {","},
-            {"in"}                  // low precedence
-    });
+    public static final TableRow[] OPERATORS = {
+            row(BINARY, ".", "()", "[]"),
+            row(UNARYL, "#"),
+            row(UNARYR, "?"),
+            row(UNARYL, "not"),
+            row(BINARY, "^"),
+            row(BINARY, "*", "/"),
+            row(BINARY, "+", "-"),
+            row(BINARY, "mod"),
+            row(BINARY, "==", "!=", "<", "<=", ">", ">="),
+            row(BINARY, "&"),
+            row(BINARY, "and", "or", "nor"),
+            row(BINARY, ":="),
+            row(BINARY, ","),
+            row(BINARY, "in"),
+    };
 
     /*
     These two constants are used by the lexer to assign the correct type
@@ -45,117 +48,51 @@ public final class OperatorTable {
             "and", "def", "else", "end", "for", "if", "mod", "or", "nor", "not", "repeat", "return", "while"
     );
 
-    private static final Set<String> LEFT_UNARY = Set.of("#", "not");
-    private static final Set<String> RIGHT_UNARY = Set.of("?");
-    private static final Set<String> SPECIAL = Set.of(".", "()", ":=", ",");
+    public static void parseBinary(TokenLine line, int operIndex) {
+        String operator = line.get(operIndex).VALUE;
+        Expression left = line.get(operIndex - 1).asExpression();
+        Expression right = line.get(operIndex + 1).asExpression();
 
-    /**
-     * Verify an operator's environmental constraints are met (e.g. for the '+'
-     * operator, there must be a value on either side) and then build a partial
-     * syntax tree around the operator. If they are met, the operand tokens are
-     * consolidated into this operation's newly created token. Flow control
-     * structures are also pushed on and popped off the stack as they are
-     * encountered.
-     * @param operIndex the index of the operator in the list
-     * @param tokens the list of tokens
-     */
-    public static void parseOperation(int operIndex, List<Token> tokens) {
-        String operator = tokens.get(operIndex).VALUE;
-        TokenLine line = (TokenLine) tokens;
+        Operation operation;
+        switch (operator) {
+            case ".":   operation = new MemberSelectOperation(left, right.getIdentifier()); break;
+            case "()":  operation = new InvokeOperation(left, ((Parentheses) right));       break;
+            case ":=":  operation = new InlineAssignOperation(left.getIdentifier(), right); break;
+            case ",":   operation = new CommaOperation(left, right);                        break;
+            case "in":  return;
+            default:    operation = new BinaryOperation(operator, left, right);             break;
+        }
 
-        if (LEFT_UNARY.contains(operator)) {
-            UnaryOperation.parseLeft(operIndex, line);
-        } else if (RIGHT_UNARY.contains(operator)) {
-            UnaryOperation.parseRight(operIndex, line);
-        } else if (!SPECIAL.contains(operator)) {
-            BinaryOperation.parse(operIndex, line);
+        operation.parse(line, operIndex);
+    }
+
+    public static void parseUnary(TokenLine line, int operIndex, OperationDegree degree) {
+        String operator = line.get(operIndex).VALUE;
+        Operation operation;
+        if (degree == UNARYL) {
+            Expression operand = line.get(operIndex + 1).asExpression();
+            operation = new LeftUnaryOperation(operator, operand);
         } else {
-            switch (operator) {
-                case ".":   MemberSelectOperation.parse(operIndex, line); break;
-                case "()":  InvokeOperation.parse(operIndex, line); break;
-                case ":=":  InlineAssignOperation.parse(operIndex, line); break;
-                case ",":   CommaOperation.parse(operIndex, line); break;
-                case "in":  break;
-                default:    throw getException(operator);
-            }
+            Expression operand = line.get(operIndex - 1).asExpression();
+            operation = new RightUnaryOperation(operator, operand);
         }
-//
-//        switch (operator.VALUE) {
-//            case ".":       new DotOperation(operIndex, tokens); break;
-//            case "()":      new InvokeOperation(operIndex, tokens); break;
-//            case "[]":      new IndexOperation(operIndex, tokens); break;
-//            case "#":       new LengthOperation(operIndex, tokens); break;
-//            case "?":       new NullableOperation(operIndex, tokens); break;
-//            case "not":     new NotOperation(operIndex, tokens); break;
-//            case "^": case "*": case "/": case "mod": case "+": case "-":
-//                            new ArithmeticOperation(operIndex, tokens); break;
-//            case "==": case "!=":
-//                            new EqualsOperation(operIndex, tokens); break;
-//            case "<": case ">": case "<=": case ">=":
-//                            new ComparisonOperation(operIndex, tokens); break;
-//            case "&":       new ConcatenationOperation(operIndex, tokens); break;
-//            case "and": case "or": case "nor":
-//                            new LogicalOperation(operIndex, tokens); break;
-//            case ":=":      new AssignmentExpression(operIndex, tokens); break;
-//            case ",":       new CommaList(operIndex, tokens); break;
-//            case "in":      break; // ignore
-//            default:        throw getException(operator.VALUE);
-//        }
+        operation.parse(line, operIndex);
     }
 
-    /**
-     * Operations are internally stored in this map, where the keys represent
-     * operators and the values represent precedence levels.
-     */
-    private Map<String, Integer> implTable;
-
-    private OperatorTable(int initialCapacity) {
-        implTable = new HashMap<>(initialCapacity);
+    private static TableRow row(OperationDegree degree, String... operators) {
+        return new TableRow(degree, operators);
     }
 
-    /**
-     * Build and return  a token comparator that orders elements by their
-     * operator precedence level from high to low.
-     * @return a comparator that orders tokens by descending precedence level
-     */
-    public static Comparator<Token> byPrecedence() {
-        return Comparator.comparing(token -> OPERATORS.getPrecedence(token.VALUE));
-    }
+    public static class TableRow {
 
-    /**
-     * Determine the precedence level of an operator.
-     * @param operator the operator to look up
-     * @return the operator's precedence level, where 0 is the highest
-     */
-    private int getPrecedence(String operator) {
-        Integer precedence = implTable.get(operator);
-        if (precedence == null) {
-            throw getException(operator);
+        public final OperationDegree DEGREE;
+        public final Set<String> OPERATORS;
+
+        public TableRow(OperationDegree DEGREE, String[] OPERATORS) {
+            this.DEGREE = DEGREE;
+            this.OPERATORS = Set.of(OPERATORS);
         }
-        return precedence;
-    }
 
-    /**
-     * An internal utility method to facilitate adding new operators
-     * to the operation table.
-     * @param operators the operators to add
-     * @return the complete operator table
-     */
-    private static OperatorTable defineOperations(String[][] operators) {
-        OperatorTable temp = new OperatorTable(operators.length);
-        for (int i = 0; i < operators.length; i++) {
-            for (String symbol : operators[i]) {
-                temp.implTable.put(symbol, i);
-            }
-        }
-        return temp;
-    }
-
-    private static InterpreterException getException(String operator) {
-        if (operator.equals("=")) {
-            return ErrorLog.get("Cannot use '=' in an expression (did you mean ':='?)");
-        }
-        return ErrorLog.get("Unrecognized operator '%s'", operator);
     }
 
 }
