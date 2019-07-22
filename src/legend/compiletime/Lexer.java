@@ -93,15 +93,14 @@ public class Lexer {
      */
     private void buildToken(char c) {
         // check if the character is the start or end of a string
-        if (c == '\'' || c == '"') {
-            if (stringType == 0) {
-                // we are now inside a string
-                stringType = c;
-                currToken.append(c);
-            } else {
-                // we are now outside a string
-                stringType = 0;
-            }
+        boolean isStrDelimiter = c == '\'' || c == '"';
+        if (isStrDelimiter && stringType == 0) {
+            // start of string
+            stringType = c;
+            currToken.append(c);
+        } else if (isStrDelimiter && stringType == c) {
+            // end of string
+            stringType = 0;
         } else if (stringType != 0 || !Character.isWhitespace(c)) {
             currToken.append(c);
         }
