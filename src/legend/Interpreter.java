@@ -45,9 +45,9 @@ public class Interpreter {
             System.out.print("Enter the path to the source file: ");
             sourcePath = scanner.nextLine();
         } else if (args.length > 1) {
-            System.err.println("Usage: ./bin/legend input.leg          (bundled interpreter)"
+            System.err.println("Usage: ./bin/legend input.leg          (standalone interpreter)"
                     .replace('/', File.separatorChar));
-            System.err.println("Usage: java -jar legend.jar input.leg  (standalone interpreter)");
+            System.err.println("Usage: java -jar legend.jar input.leg  (java-dependent interpreter)");
         } else {
             sourcePath = args[0];
         }
@@ -90,6 +90,7 @@ public class Interpreter {
         Compiler compiler = new Compiler();
 
         List<TokenLine> tokens = lexer.tokenize(input);
+        System.out.println(tokens);
         List<Statement> statements = parser.parse(tokens);
         List<Instruction> instructions = compiler.compile(statements);
 
