@@ -55,12 +55,12 @@ public final class OperatorTable {
 
         Operation operation;
         switch (operator) {
-            case ".":   operation = new MemberSelectOperation(left, right.getIdentifier()); break;
-            case "()":  operation = new InvokeOperation(left, ((Parentheses) right));       break;
-            case ":=":  operation = new InlineAssignOperation(left.getIdentifier(), right); break;
-            case ",":   operation = new CommaOperation(left, right);                        break;
+            case ".":   operation = new MemberSelectOperation(left, right);             break;
+            case "()":  operation = new InvokeOperation(left, ((Parentheses) right));   break;
+            case ":=":  operation = new InlineAssignOperation(left, right);             break;
+            case ",":   operation = new CommaOperation(left, right);                    break;
             case "in":  return;
-            default:    operation = new BinaryOperation(operator, left, right);             break;
+            default:    operation = new BinaryOperation(operator, left, right);         break;
         }
 
         operation.parse(line, operIndex);

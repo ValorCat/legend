@@ -90,7 +90,6 @@ public class Interpreter {
         Compiler compiler = new Compiler();
 
         List<TokenLine> tokens = lexer.tokenize(input);
-        System.out.println(tokens);
         List<Statement> statements = parser.parse(tokens);
         List<Instruction> instructions = compiler.compile(statements);
 
