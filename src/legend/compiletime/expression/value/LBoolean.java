@@ -36,10 +36,6 @@ public final class LBoolean extends Value {
         return value;
     }
 
-    public boolean getValue() {
-        return value;
-    }
-
     public LBoolean not() {
         return this == TRUE ? FALSE : TRUE;
     }

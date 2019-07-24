@@ -27,10 +27,6 @@ public class LInteger extends Value {
         return String.valueOf(value);
     }
 
-    public int getValue() {
-        return value;
-    }
-
     @Override
     public boolean equals(Value other) {
         return type() == other.type()

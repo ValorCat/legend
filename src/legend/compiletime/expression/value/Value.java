@@ -5,6 +5,8 @@ import legend.compiletime.expression.value.type.LazyType;
 import legend.compiletime.expression.value.type.Type;
 import legend.runtime.Scope;
 
+import java.util.List;
+
 /**
  * Represents a value in the language, like an integer or list. Primitive types are concrete subclasses of this class,
  * while other types (i.e. more complex built-in types and user-defined types) are instances of {@link LObject}. A
@@ -44,6 +46,10 @@ public abstract class Value implements Expression {
 
     public boolean asBoolean() {
         throw errorOnCast("Boolean");
+    }
+
+    public List<Value> asList() {
+        throw errorOnCast("List");
     }
 
     public Object asNative() {

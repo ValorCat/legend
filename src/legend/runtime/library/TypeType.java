@@ -33,7 +33,7 @@ public class TypeType extends BuiltinType {
 
     private static Value read(ArgumentList args) {
         if (args.size() > 0) {
-            System.out.print(((LString) args.arg(0)).getValue());
+            System.out.print(args.arg(0).asString());
         }
         if (!args.target().equals(Type.of("String"))) {
             throw new RuntimeException("Reading non-string types is not yet implemented");

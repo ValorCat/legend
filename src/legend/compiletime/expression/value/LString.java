@@ -32,19 +32,6 @@ public class LString extends Value {
     }
 
     @Override
-    public boolean asBoolean() {
-        switch (value) {
-            case "true": return true;
-            case "false": return false;
-            default: throw new RuntimeException("String '" + value + "' cannot be converted to a boolean");
-        }
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    @Override
     public boolean equals(Value other) {
         return type() == other.type()
                 && ((LString) other).value.equals(value);
