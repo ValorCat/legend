@@ -19,13 +19,30 @@ def fact(n)
     return n * fact(n - 1)
 end
 
-for i in 0.to(6)
+for i in 0 to 6
     fact(i).show()
 end
 
 for n in List(10, 20, 30, 40)
     (n - 5 & ' xxx').show()
 end
+
+l = List(1, 2, 3)
+l[1].show()
+(-10).show()
+(105%).show()
+(Integer?).show()
+(3/4).show()
+(3//4).show()
+(512 mod 13).show()
+(10 - 4).show()
+('hello ' & 'there').show()
+(l & 5).show()
+(3 in l).show()
+(10 not in l).show()
+(5 to 10).show()
+(true and false).show()
+
 
 "Quick done"
 return
@@ -34,7 +51,7 @@ def test_recursion(n)
     if n == 0
         return
     end
-    for i in 0.to(3)
+    for i in 0 to 3
         ('n = ' & n & ', i = ' & i).show()
         test_recursion(n - 1)
     end

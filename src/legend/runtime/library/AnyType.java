@@ -14,7 +14,9 @@ public class AnyType extends BuiltinType {
                 .shared("show", AnyType::show)
                 .binaryOper("&", AnyType::operConcat)
                 .binaryOper("==", AnyType::operEquals)
+                .binaryOper("?", AnyType::operNonNullSelect)
                 .binaryOper("!=", AnyType::operNotEquals)
+                .binaryOper("not in", AnyType::operNotIn)
         );
     }
 
@@ -27,12 +29,20 @@ public class AnyType extends BuiltinType {
         return new LString(left.asString() + right.asString());
     }
 
-    private static LBoolean operEquals(Value left, Value right) {
+    private static Value operEquals(Value left, Value right) {
         return LBoolean.resolve(left.equals(right));
     }
 
+    private static Value operNonNullSelect(Value left, Value right) {
+        return (left == LNull.NULL) ? right : left;
+    }
+
     private static Value operNotEquals(Value left, Value right) {
-        return operEquals(left, right).not();
+        return LBoolean.resolve(!left.equals(right));
+    }
+
+    private static Value operNotIn(Value aggregate, Value element) {
+        return aggregate.operateBinary("in", element).operateUnary("not");
     }
 
 }

@@ -17,6 +17,10 @@ public class SquareBrackets implements Expression {
         this.contents = contents;
     }
 
+    public Expression getContents() {
+        return contents;
+    }
+
     @Override
     public Value evaluate(Scope scope) {
         contents.evaluate(scope);

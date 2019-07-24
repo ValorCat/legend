@@ -134,8 +134,8 @@ public class Parser {
             for (int i = 0; i < expression.size(); i++) {
                 Token token = expression.get(i);
                 if (token.TYPE == TokenType.OPERATOR && level.OPERATORS.contains(token.VALUE)) {
-                    boolean hasLeft = expression.exists(i - 1);
-                    boolean hasRight = expression.exists(i + 1);
+                    boolean hasLeft = expression.hasValueAt(i - 1);
+                    boolean hasRight = expression.hasValueAt(i + 1);
                     if (level.DEGREE.matches(hasLeft, hasRight)) {
                         if (level.DEGREE == OperationDegree.BINARY) {
                             OperatorTable.parseBinary(expression, i);
@@ -192,12 +192,20 @@ public class Parser {
         for (int i = 0; i < tokens.size(); i++) {
             Token current = tokens.get(i);
             int distanceFromEnd = tokens.size() - i - 1;
-            if (current.isValue() && distanceFromEnd > 0) {
+            if (distanceFromEnd > 0) {
                 Token next = tokens.get(i + 1);
-                if (next.matches("()", GROUP) && (i == 0 || !tokens.get(i - 1).matches("def"))) {
-                    tokens.add(i + 1, Token.newOperator("()"));
-                } else if (next.matches("[]", GROUP)) {
-                    tokens.add(i + 1, Token.newOperator("[]"));
+                if (current.isValue()) {
+                    if (next.matches("()", GROUP) && (i == 0 || !tokens.get(i - 1).matches("def"))) {
+                        tokens.add(i + 1, Token.newOperator("()"));
+                    } else if (next.matches("[]", GROUP)) {
+                        tokens.add(i + 1, Token.newOperator("[]"));
+                    }
+                } else if (current.matches("not") && next.matches("in")) {
+                    tokens.set(i, Token.newOperator("not in"));
+                    tokens.remove(i + 1);
+                } else if (current.matches("is") && next.matches("not")) {
+                    tokens.set(i, Token.newOperator("is not"));
+                    tokens.remove(i + 1);
                 }
             }
         }

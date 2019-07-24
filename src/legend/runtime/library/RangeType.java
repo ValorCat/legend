@@ -14,23 +14,25 @@ public class RangeType extends BuiltinType {
     public RangeType() {
         super(new BuiltinType.Builder("Range", "Any")
                 .personal("left", "right")
-                .shared("contains", RangeType::contains)
                 .shared("show", RangeType::show)
                 .unaryOper("for", RangeType::operIterate)
                 .unaryOper("#", RangeType::operSize)
+                .binaryOper("in", RangeType::operIn)
         );
-    }
-
-    private static Value contains(ArgumentList args) {
-        int value = args.arg(0).asInteger();
-        int left = args.target().getAttribute("left").asInteger();
-        int right = args.target().getAttribute("right").asInteger();
-        return LBoolean.resolve(value >= left && value <= right);
     }
 
     private static Value show(ArgumentList args) {
         System.out.println(args.target());
         return LNull.NULL;
+    }
+
+    private static Value operIn(Value range, Value element) {
+        int left = range.getAttribute("left").asInteger();
+        int right = range.getAttribute("right").asInteger();
+        int value = element.asInteger();
+        int min = Math.min(left, right);
+        int max = Math.max(left, right);
+        return LBoolean.resolve(value >= min && value <= max);
     }
 
     private static Value operIterate(Value operand) {

@@ -1,7 +1,5 @@
 package legend.compiletime.expression.operation;
 
-import legend.compiletime.Token;
-import legend.compiletime.TokenLine;
 import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.group.Parentheses;
@@ -17,11 +15,6 @@ public class InvokeOperation extends BinaryOperation {
 
     public InvokeOperation(Expression callable, Parentheses args) {
         super(OPERATOR, callable, args);
-    }
-
-    @Override
-    public void parse(TokenLine line, int operIndex) {
-        line.consolidate(Token.newExpression(operator, this), operIndex - 1, 3);
     }
 
     @Override

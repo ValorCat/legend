@@ -43,8 +43,8 @@ public class TokenLine extends ArrayList<Token> {
         return new TokenLine(super.subList(from, to), lineNumber);
     }
 
-    public boolean exists(int index) {
-        return index >= 0 && index < size();
+    public boolean hasValueAt(int index) {
+        return index >= 0 && index < size() && get(index).isValue();
     }
 
     /**

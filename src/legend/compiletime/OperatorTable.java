@@ -2,6 +2,7 @@ package legend.compiletime;
 
 import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.group.Parentheses;
+import legend.compiletime.expression.group.SquareBrackets;
 import legend.compiletime.expression.operation.*;
 
 import java.util.Set;
@@ -24,28 +25,26 @@ public final class OperatorTable {
      */
     public static final TableRow[] OPERATORS = {
             row(BINARY, ".", "()", "[]"),
-            row(UNARYL, "#"),
-            row(UNARYR, "?"),
+            row(UNARYL, "-", "#"),
+            row(UNARYR, "%", "?"),
             row(UNARYL, "not"),
             row(BINARY, "^"),
-            row(BINARY, "*", "/"),
+            row(BINARY, "*", "/", "//", "mod"),
             row(BINARY, "+", "-"),
-            row(BINARY, "mod"),
             row(BINARY, "==", "!=", "<", "<=", ">", ">="),
-            row(BINARY, "&"),
+            row(BINARY, "&", "?"),
+            row(BINARY, "in", "is", "is not", "not in", "to"),
             row(BINARY, "and", "or", "nor"),
             row(BINARY, ":="),
             row(BINARY, ","),
-            row(BINARY, "in"),
     };
 
     /*
-    These two constants are used by the lexer to assign the correct type
-    to unusual operators.
+    These two constants are used by the lexer to assign the correct type to unusual operators.
      */
-    public static final Set<String> LONG_SYMBOLS = Set.of("==", "!=", "<=", ">=", ":=");
-    public static final Set<String> KEYWORDS = Set.of(
-            "and", "def", "else", "end", "for", "if", "mod", "or", "nor", "not", "repeat", "return", "while"
+    public static final Set<String> LONG_SYMBOLS = Set.of("//", "==", "!=", "<=", ">=", ":=");
+    public static final Set<String> KEYWORDS = Set.of("and", "def", "else", "end", "for", "if", "in", "mod", "or",
+            "nor", "not", "repeat", "return", "to", "while"
     );
 
     public static void parseBinary(TokenLine line, int operIndex) {
@@ -55,12 +54,16 @@ public final class OperatorTable {
 
         Operation operation;
         switch (operator) {
-            case ".":   operation = new MemberSelectOperation(left, right);             break;
-            case "()":  operation = new InvokeOperation(left, ((Parentheses) right));   break;
-            case ":=":  operation = new InlineAssignOperation(left, right);             break;
-            case ",":   operation = new CommaOperation(left, right);                    break;
-            case "in":  return;
-            default:    operation = new BinaryOperation(operator, left, right);         break;
+            case ".":       operation = new MemberSelectOperation(left, right);                 break;
+            case "()":      operation = new InvokeOperation(left, ((Parentheses) right));       break;
+            case "[]":      operation = new SubscriptOperation(left, ((SquareBrackets) right)); break;
+            case "is":      operation = new IsOperation(left, right, false);                    break;
+            case "is not":  operation = new IsOperation(left, right, true);                     break;
+            case ":=":      operation = new InlineAssignOperation(left, right);                 break;
+            case ",":       operation = new CommaOperation(left, right);                        break;
+            case "in":
+            case "not in":  operation = new FlippedBinaryOperation(operator, left, right);      break;
+            default:        operation = new BinaryOperation(operator, left, right);             break;
         }
 
         operation.parse(line, operIndex);
