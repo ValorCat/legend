@@ -2,6 +2,7 @@ package legend.runtime.library;
 
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.value.*;
+import legend.compiletime.expression.value.function.LFunction;
 import legend.compiletime.expression.value.type.BuiltinType;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class ListType extends BuiltinType {
                 .binaryOper("-", ListType::operRemove)
                 .binaryOper("*", ListType::operRepeat)
                 .binaryOper("[]", ListType::operSubscript)
+                .binaryOper("where", ListType::operWhere)
         );
     }
 
@@ -100,6 +102,18 @@ public class ListType extends BuiltinType {
                     + " element(s)");
         }
         throw new RuntimeException("Cannot apply operator '[]' to types 'List' and '" + subscript.type().getName() + "'");
+    }
+
+    private static Value operWhere(Value left, Value right) {
+        List<Value> input = left.asList();
+        LFunction predicate = (LFunction) right;
+        List<Value> output = new ArrayList<>();
+        for (Value element : input) {
+            if (predicate.call(new ArgumentList(element)).asBoolean()) {
+                output.add(element);
+            }
+        }
+        return new LList(output);
     }
 
     private static class ListIteratorType extends BuiltinType {

@@ -137,10 +137,15 @@ public class Parser {
                     boolean hasLeft = expression.hasValueAt(i - 1);
                     boolean hasRight = expression.hasValueAt(i + 1);
                     if (level.DEGREE.matches(hasLeft, hasRight)) {
-                        if (level.DEGREE == OperationDegree.BINARY) {
-                            OperatorTable.parseBinary(expression, i);
-                        } else {
-                            OperatorTable.parseUnary(expression, i, level.DEGREE);
+                        switch (level.DEGREE) {
+                            case BINARY:
+                                OperatorTable.parseBinary(expression, i);
+                                break;
+                            case SYMBOL:
+                                OperatorTable.parseSymbol(expression, i);
+                                break;
+                            case UNARYL: case UNARYR:
+                                OperatorTable.parseUnary(expression, i, level.DEGREE);
                         }
                         i--;
                         operatorCount--;

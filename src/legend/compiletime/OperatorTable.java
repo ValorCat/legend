@@ -1,6 +1,7 @@
 package legend.compiletime;
 
 import legend.compiletime.expression.Expression;
+import legend.compiletime.expression.Variable;
 import legend.compiletime.expression.group.Parentheses;
 import legend.compiletime.expression.group.SquareBrackets;
 import legend.compiletime.expression.operation.*;
@@ -24,6 +25,7 @@ public final class OperatorTable {
     during tokenization and their corresponding operators are inserted implicitly.
      */
     public static final TableRow[] OPERATORS = {
+            row(SYMBOL, "*"),
             row(BINARY, ".", "()", "[]"),
             row(UNARYL, "-", "#"),
             row(UNARYR, "%", "?"),
@@ -33,7 +35,7 @@ public final class OperatorTable {
             row(BINARY, "+", "-"),
             row(BINARY, "==", "!=", "<", "<=", ">", ">="),
             row(BINARY, "&", "?"),
-            row(BINARY, "in", "is", "is not", "not in", "to"),
+            row(BINARY, "in", "is", "is not", "not in", "to", "where"),
             row(BINARY, "and", "or", "nor"),
             row(BINARY, ":="),
             row(BINARY, ","),
@@ -44,7 +46,7 @@ public final class OperatorTable {
      */
     public static final Set<String> LONG_SYMBOLS = Set.of("//", "==", "!=", "<=", ">=", ":=");
     public static final Set<String> KEYWORDS = Set.of("and", "def", "else", "end", "for", "if", "in", "mod", "or",
-            "nor", "not", "repeat", "return", "to", "while"
+            "nor", "not", "repeat", "return", "to", "where", "while"
     );
 
     public static void parseBinary(TokenLine line, int operIndex) {
@@ -54,15 +56,21 @@ public final class OperatorTable {
 
         Operation operation;
         switch (operator) {
+            // unique operations
             case ".":       operation = new MemberSelectOperation(left, right);                 break;
             case "()":      operation = new InvokeOperation(left, ((Parentheses) right));       break;
             case "[]":      operation = new SubscriptOperation(left, ((SquareBrackets) right)); break;
             case "is":      operation = new IsOperation(left, right, false);                    break;
             case "is not":  operation = new IsOperation(left, right, true);                     break;
+            case "where":   operation = new WhereOperation(left, right);                        break;
             case ":=":      operation = new InlineAssignOperation(left, right);                 break;
             case ",":       operation = new CommaOperation(left, right);                        break;
+
+            // flipped operations
             case "in":
             case "not in":  operation = new FlippedBinaryOperation(operator, left, right);      break;
+
+            // all other binary operations
             default:        operation = new BinaryOperation(operator, left, right);             break;
         }
 
@@ -80,6 +88,11 @@ public final class OperatorTable {
             operation = new RightUnaryOperation(operator, operand);
         }
         operation.parse(line, operIndex);
+    }
+
+    public static void parseSymbol(TokenLine line, int symIndex) {
+        String symbol = line.get(symIndex).VALUE;
+        line.set(symIndex, Token.newExpression(symbol, new Variable(symbol)));
     }
 
     private static TableRow row(OperationDegree degree, String... operators) {

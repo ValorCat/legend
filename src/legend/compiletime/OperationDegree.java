@@ -4,7 +4,8 @@ public enum OperationDegree {
 
     UNARYL(false, true),
     UNARYR(true, false),
-    BINARY(true, true);
+    BINARY(true, true),
+    SYMBOL(false, false);
 
     private boolean left, right;
 

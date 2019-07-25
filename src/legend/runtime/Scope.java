@@ -58,7 +58,11 @@ public class Scope {
     public Value getVariableValue(String name) {
         Optional<Scope> scope = getDefiningScope(name);
         if (scope.isEmpty()) {
-            throw new RuntimeException("Variable '" + name + "' is not defined");
+            if (name.equals("*")) {
+                throw new RuntimeException("Cannot use '*' wildcard outside of 'where' expression");
+            } else {
+                throw new RuntimeException("Variable '" + name + "' is not defined");
+            }
         }
         int address = scope.get().namespace.get(name);
         Value value = memory.get(address);
