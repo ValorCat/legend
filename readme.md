@@ -5,13 +5,13 @@ Here's an example of a simple program:
 
 ```
 "What's your name?"
-name = String read
+name = String.read()
 if #name == 0
     "You must enter a name!"
 else if name == 'ValorCat'
     "I doubt that."
 else
-    ('Hello, ' :: name) show
+    ('Hello, ' & name).show()
 end
 ```
 
