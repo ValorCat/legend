@@ -1,5 +1,6 @@
 package legend.compiletime;
 
+import legend.compiletime.OperatorTable.TableRow;
 import legend.compiletime.Token.TokenType;
 import legend.compiletime.error.ErrorLog;
 import legend.compiletime.error.InterpreterException;
@@ -128,35 +129,34 @@ public class Parser {
 
         injectImplicitOperators(expression);
         resolveGroups(expression);
-
         int operatorCount = getOperatorCount(expression);
-        for (OperatorTable.TableRow level : OperatorTable.OPERATORS) {
-            for (int i = 0; i < expression.size(); i++) {
-                Token token = expression.get(i);
-                if (token.TYPE == TokenType.OPERATOR && level.OPERATORS.contains(token.VALUE)) {
-                    boolean hasLeft = expression.hasValueAt(i - 1);
-                    boolean hasRight = expression.hasValueAt(i + 1);
-                    if (level.DEGREE.matches(hasLeft, hasRight)) {
-                        switch (level.DEGREE) {
-                            case BINARY:
-                                OperatorTable.parseBinary(expression, i);
-                                break;
-                            case SYMBOL:
-                                OperatorTable.parseSymbol(expression, i);
-                                break;
-                            case UNARYL: case UNARYR:
-                                OperatorTable.parseUnary(expression, i, level.DEGREE);
-                        }
-                        i--;
-                        operatorCount--;
+
+        outerloop:
+        for (TableRow level : OperatorTable.OPERATORS) {
+            for (int index = 0; index < expression.size(); index++) {
+                Token token = expression.get(index);
+                if (token.TYPE == TokenType.OPERATOR                         // if token is an operator
+                        && level.OPERATORS.contains(token.VALUE)             // and has the right precedence
+                        && matchesArity(expression, index, level.ARITY)) {   // and has the right number of operands...
+                    switch (level.ARITY) {
+                        case BINARY:
+                            OperatorTable.parseBinary(expression, index);
+                            break;
+                        case NULLARY:
+                            OperatorTable.parseSymbol(expression, index);
+                            break;
+                        case UNARY_L: case UNARY_R:
+                            OperatorTable.parseUnary(expression, index, level.ARITY);
+                    }
+                    if (--operatorCount <= 0) {
+                        break outerloop;
+                    }
+                    if (level.ARITY.hasLeft()) {
+                        index--;
                     }
                 }
             }
-            if (operatorCount <= 0) {
-                break;
-            }
         }
-
         if (expression.size() > 1) {
             throw ErrorLog.get("Malformed expression");
         }
@@ -190,7 +190,7 @@ public class Parser {
 
     /**
      * Insert special implict operators into the token list prior to beginning the main process of parsing. Examples of
-     * implicit operations include function calls and custom operators.
+     * implicit operations include function calls and subscripts.
      * @param tokens the token list to insert into
      */
     private static void injectImplicitOperators(List<Token> tokens) {
@@ -216,6 +216,11 @@ public class Parser {
         }
     }
 
+    /**
+     * Return the number of operators in the specified expression.
+     * @param expression the expression to search
+     * @return the number of operators
+     */
     private static int getOperatorCount(TokenLine expression) {
         int operatorCount = 0;
         for (Token token : expression) {
@@ -224,6 +229,19 @@ public class Parser {
             }
         }
         return operatorCount;
+    }
+
+    /**
+     * Return whether the operation at the specified index has the specified number of operands.
+     * @param expression the tokens
+     * @param index the index of the operator
+     * @param arity the number of operands to check for
+     * @return true if the operation has the specified number of operands, otherwise false
+     */
+    private static boolean matchesArity(TokenLine expression, int index, OperationArity arity) {
+        boolean hasLeft = expression.hasValueAt(index - 1);
+        boolean hasRight = expression.hasValueAt(index + 1);
+        return arity.matches(hasLeft, hasRight);
     }
 
 }

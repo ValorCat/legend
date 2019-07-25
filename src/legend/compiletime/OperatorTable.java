@@ -8,37 +8,31 @@ import legend.compiletime.expression.operation.*;
 
 import java.util.Set;
 
-import static legend.compiletime.OperationDegree.*;
+import static legend.compiletime.OperationArity.*;
 
 /**
- * This class stores valid operators and their precedence levels. It also instantiates
- * the expression objects that form syntax trees during parsing.
+ * This class stores the precedence level and arity (unary, binary, etc.) of all operators.
+ * @see Operation
+ * @see OperationArity
  * @since 12/22/2018
  */
 public final class OperatorTable {
 
-    /*
-    Below is the list of operators defined in Legend, ordered by descending precedence
-    level. Some operators, like "[]", don't correspond to a particular token, but
-    instead an arrangement of other tokens. For example, a function call is indicated
-    by an identifier followed by parentheses. These special operations are detected
-    during tokenization and their corresponding operators are inserted implicitly.
-     */
     public static final TableRow[] OPERATORS = {
-            row(SYMBOL, "*"),
-            row(BINARY, ".", "()", "[]"),
-            row(UNARYL, "-", "#"),
-            row(UNARYR, "%", "?"),
-            row(UNARYL, "not"),
-            row(BINARY, "^"),
-            row(BINARY, "*", "/", "//", "mod"),
-            row(BINARY, "+", "-"),
-            row(BINARY, "==", "!=", "<", "<=", ">", ">="),
-            row(BINARY, "&", "?"),
-            row(BINARY, "in", "is", "is not", "not in", "to", "where"),
-            row(BINARY, "and", "or", "nor"),
-            row(BINARY, ":="),
-            row(BINARY, ","),
+            row(NULLARY, "*"),
+            row(BINARY,  ".", "()", "[]"),
+            row(UNARY_L, "-", "#"),
+            row(UNARY_R, "%", "?"),
+            row(UNARY_L, "not"),
+            row(BINARY,  "^"),
+            row(BINARY,  "*", "/", "//", "mod"),
+            row(BINARY,  "+", "-"),
+            row(BINARY,  "==", "!=", "<", "<=", ">", ">="),
+            row(BINARY,  "&", "?"),
+            row(BINARY,  "in", "is", "is not", "not in", "to", "where"),
+            row(BINARY,  "and", "or", "nor"),
+            row(BINARY,  ":="),
+            row(BINARY,  ","),
     };
 
     /*
@@ -77,10 +71,10 @@ public final class OperatorTable {
         operation.parse(line, operIndex);
     }
 
-    public static void parseUnary(TokenLine line, int operIndex, OperationDegree degree) {
+    public static void parseUnary(TokenLine line, int operIndex, OperationArity arity) {
         String operator = line.get(operIndex).VALUE;
         Operation operation;
-        if (degree == UNARYL) {
+        if (arity == UNARY_L) {
             Expression operand = line.get(operIndex + 1).asExpression();
             operation = new LeftUnaryOperation(operator, operand);
         } else {
@@ -95,18 +89,18 @@ public final class OperatorTable {
         line.set(symIndex, Token.newExpression(symbol, new Variable(symbol)));
     }
 
-    private static TableRow row(OperationDegree degree, String... operators) {
-        return new TableRow(degree, operators);
+    private static TableRow row(OperationArity arity, String... operators) {
+        return new TableRow(arity, operators);
     }
 
     public static class TableRow {
 
-        public final OperationDegree DEGREE;
+        public final OperationArity ARITY;
         public final Set<String> OPERATORS;
 
-        public TableRow(OperationDegree DEGREE, String[] OPERATORS) {
-            this.DEGREE = DEGREE;
-            this.OPERATORS = Set.of(OPERATORS);
+        public TableRow(OperationArity arity, String[] operators) {
+            this.ARITY = arity;
+            this.OPERATORS = Set.of(operators);
         }
 
     }

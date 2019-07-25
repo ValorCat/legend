@@ -20,17 +20,17 @@ public abstract class Type extends Value {
 
     protected String name;
     private LazyType supertype;
-    private Map<String, Integer> personal;
-    private Map<String, Value> shared;
-    private Map<String, UnaryOperator<Value>> unaryOps;
-    private Map<String, BinaryOperator<Value>> binaryOps;
+    private Map<String, Integer> personal;                  // personal members
+    private Map<String, Value> shared;                      // shared members
+    private Map<String, UnaryOperator<Value>> unaryOps;     // unary operation handlers
+    private Map<String, BinaryOperator<Value>> binaryOps;   // binary operation handlers
 
     public Type(String name, String supertype, String[] personal) {
         this(name, supertype, personal, Map.of(), Map.of(), Map.of());
     }
 
-    public Type(String name, String supertype, String[] personal, Map<String, Value> shared,Map<String, UnaryOperator<Value>> unaryOps,
-                Map<String, BinaryOperator<Value>> binaryOps) {
+    public Type(String name, String supertype, String[] personal, Map<String, Value> shared, Map<String,
+            UnaryOperator<Value>> unaryOps, Map<String, BinaryOperator<Value>> binaryOps) {
         super("Type");
         this.name = name;
         //noinspection StringEquality
@@ -98,12 +98,26 @@ public abstract class Type extends Value {
                 .apply(left, right);
     }
 
+    /**
+     * Get the operation handler for the specified operator from the specified table (either unaryOps or binaryOps). If
+     * this type does not define a handler, its supertype is queried recursively until either a handler is found or no
+     * more supertypes exist, which results in an empty Optional being returned.
+     * @param operator the operator to look up
+     * @param mapGetter a function that accepts a type and returns a handler table, e.g. t -> t.binaryOps
+     * @param <Handler> the functional interface that the operation handler implements
+     * @return an optional containing the operation handler, if found
+     */
     private <Handler> Optional<Handler> getOperatorHandler(String operator,
                                                            Function<Type, Map<String, Handler>> mapGetter) {
         return Optional.ofNullable(mapGetter.apply(this).get(operator))
                 .or(() -> getSuperType().flatMap(parent -> parent.getOperatorHandler(operator, mapGetter)));
     }
 
+    /**
+     * Return whether this type is equal to or a supertype of the specified type.
+     * @param other the other type
+     * @return true if this type is equal to or a supertype of the specified type, otherwise false
+     */
     public boolean encompasses(Type other) {
         return this == other || other.getSuperType()
                 .map(this::encompasses)
@@ -121,7 +135,7 @@ public abstract class Type extends Value {
 
     @Override
     public String toString() {
-        return "type[" + getName() + "]";
+        return "type[" + name + "]";
     }
 
     private Optional<Value> getPersonal(Value target, String attribute) {
