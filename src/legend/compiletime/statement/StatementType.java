@@ -36,7 +36,6 @@ public interface StatementType {
             new FunctionDefinition(),
             new IfStatement(),
             new PrintStringStatement(),
-            new RepeatLoop(),
             new ReturnStatement(),
             new WhileLoop(),
             new ExpressionStatement()

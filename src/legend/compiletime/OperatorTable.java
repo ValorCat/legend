@@ -46,7 +46,7 @@ public final class OperatorTable {
      */
     public static final Set<String> LONG_SYMBOLS = Set.of("//", "==", "!=", "<=", ">=", ":=");
     public static final Set<String> KEYWORDS = Set.of("and", "def", "else", "end", "for", "if", "in", "mod", "or",
-            "nor", "not", "repeat", "return", "to", "where", "while"
+            "nor", "not", "return", "to", "where", "while"
     );
 
     public static void parseBinary(TokenLine line, int operIndex) {
