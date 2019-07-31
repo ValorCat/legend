@@ -2,7 +2,6 @@ package legend.runtime;
 
 import legend.compiletime.expression.value.LNull;
 import legend.compiletime.expression.value.Value;
-import legend.compiletime.expression.value.type.Type;
 
 import java.util.*;
 
@@ -35,10 +34,6 @@ public class Scope {
     public void setVariable(String name, Value value) {
         Scope scope = getDefiningScope(name).orElse(this);
         scope.setLocalVariable(name, value);
-        if (value.type() == Type.of("type")) {
-            // todo deanonymize functions
-            ((Type) value).deanonymize(name);
-        }
     }
 
     /**

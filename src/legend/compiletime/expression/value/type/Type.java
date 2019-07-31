@@ -52,7 +52,6 @@ public abstract class Type extends Value {
     }
 
     public abstract Value instantiate(ArgumentList args);
-    public abstract void deanonymize(String name);
 
     @Override
     public boolean matches(String name) {

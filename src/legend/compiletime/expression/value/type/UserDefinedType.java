@@ -9,11 +9,8 @@ import legend.compiletime.expression.value.Value;
  */
 public class UserDefinedType extends Type {
 
-    private boolean anonymous;
-
     public UserDefinedType(String[] personal) {
         super("(anonymous type)", "any", personal);
-        this.anonymous = true;
     }
 
     @Override
@@ -23,13 +20,6 @@ public class UserDefinedType extends Type {
         }
         // todo check params = args
         return new LObject(this, args.args());
-    }
-
-    public void deanonymize(String name) {
-        if (anonymous) {
-            this.name = name;
-            this.anonymous = false;
-        }
     }
 
 }

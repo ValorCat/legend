@@ -36,9 +36,6 @@ public abstract class BuiltinType extends Type {
         throw new RuntimeException("Attribute '" + attribute + "' of type '" + name + "' is read-only");
     }
 
-    @Override
-    public void deanonymize(String name) {}
-
     protected Value initialize(ArgumentList args) {
         if (!args.keywords().isEmpty()) {
             throw new RuntimeException("Type '" + getName() + "' does not accept keyword arguments");

@@ -22,11 +22,6 @@ public class NullableType extends Type {
     }
 
     @Override
-    public void deanonymize(String name) {
-        wrappedType.deanonymize(name);
-    }
-
-    @Override
     public boolean encompasses(Type other) {
         return wrappedType.encompasses(other) || other == LNull.NULL.type();
     }
