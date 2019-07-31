@@ -64,11 +64,6 @@ public abstract class Value implements Expression {
         return type().matches(type);
     }
 
-    // todo eliminate setType
-    public void setType(Type type) {
-        this.type = type.asLazy();
-    }
-
     public Value getAttribute(String name) {
         return type().getAttribute(name, this);
     }

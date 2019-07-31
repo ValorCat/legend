@@ -36,7 +36,7 @@ public class RangeType extends BuiltinType {
     }
 
     private static Value operIterate(Value operand) {
-        return iterator.instantiate(new ArgumentList(operand.getAttribute("left"), operand.getAttribute("right")));
+        return iterator.buildNew(new ArgumentList(operand.getAttribute("left"), operand.getAttribute("right")));
     }
 
     private static Value operSize(Value operand) {

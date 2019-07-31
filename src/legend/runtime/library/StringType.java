@@ -30,7 +30,7 @@ public class StringType extends BuiltinType {
     }
 
     private static Value operIterate(Value operand) {
-        return iterator.instantiate(new ArgumentList(new LInteger(0), operand));
+        return iterator.buildNew(new ArgumentList(new LInteger(0), operand));
     }
 
     private static Value operSize(Value operand) {

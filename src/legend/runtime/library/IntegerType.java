@@ -91,7 +91,7 @@ public class IntegerType extends BuiltinType {
     }
 
     private static Value operTo(Value left, Value right) {
-        return Type.of("range").instantiate(new ArgumentList(left, right));
+        return Type.of("range").buildNew(new ArgumentList(left, right));
     }
 
 }

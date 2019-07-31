@@ -28,7 +28,7 @@ public class ListType extends BuiltinType {
     }
 
     @Override
-    protected Value initialize(ArgumentList args) {
+    public Value buildNew(ArgumentList args) {
         return new LList(Arrays.asList(args.args()));
     }
 
@@ -55,7 +55,7 @@ public class ListType extends BuiltinType {
     }
 
     private static Value operIterate(Value operand) {
-        return iterator.instantiate(new ArgumentList(new LInteger(0), operand));
+        return iterator.buildNew(new ArgumentList(new LInteger(0), operand));
     }
 
     private static Value operRemove(Value list, Value element) {

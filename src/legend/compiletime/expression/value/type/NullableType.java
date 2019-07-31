@@ -17,8 +17,8 @@ public class NullableType extends Type {
     }
 
     @Override
-    public Value instantiate(ArgumentList args) {
-        return wrappedType.instantiate(args);
+    public Value buildNew(ArgumentList args) {
+        throw new RuntimeException("Cannot create instance of nullable type '" + getName() + "'");
     }
 
     @Override

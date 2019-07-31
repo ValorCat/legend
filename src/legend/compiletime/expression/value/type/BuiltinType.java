@@ -22,25 +22,13 @@ public abstract class BuiltinType extends Type {
     }
 
     @Override
-    public Value instantiate(ArgumentList args) {
-        Value instance = initialize(args);
-        if (instance == null) {
-            return new LObject(this, args.args());
-        }
-        instance.setType(this);
-        return instance;
+    public Value buildNew(ArgumentList args) {
+        return new LObject(this, args.args());
     }
 
     @Override
     protected boolean setShared(String attribute, Value value) {
         throw new RuntimeException("Attribute '" + attribute + "' of type '" + name + "' is read-only");
-    }
-
-    protected Value initialize(ArgumentList args) {
-        if (!args.keywords().isEmpty()) {
-            throw new RuntimeException("Type '" + getName() + "' does not accept keyword arguments");
-        }
-        return null;
     }
 
     public static class Builder {

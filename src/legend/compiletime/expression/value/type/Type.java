@@ -51,7 +51,7 @@ public abstract class Type extends Value {
         this.binaryOps = other.binaryOps;
     }
 
-    public abstract Value instantiate(ArgumentList args);
+    public abstract Value buildNew(ArgumentList args);
 
     @Override
     public boolean matches(String name) {

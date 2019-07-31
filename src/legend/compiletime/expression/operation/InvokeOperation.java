@@ -6,7 +6,6 @@ import legend.compiletime.expression.group.Parentheses;
 import legend.compiletime.expression.value.Attribute;
 import legend.compiletime.expression.value.Value;
 import legend.compiletime.expression.value.function.LFunction;
-import legend.compiletime.expression.value.type.Type;
 import legend.runtime.Scope;
 
 public class InvokeOperation extends BinaryOperation {
@@ -32,7 +31,7 @@ public class InvokeOperation extends BinaryOperation {
         if (callable.isType("function")) {
             return ((LFunction) callable).call(args);
         } else if (callable.isType("type")) {
-            return ((Type) callable).instantiate(args);
+            return callable.asType().buildNew(args);
         }
         throw new RuntimeException("Cannot invoke object of type '" + callable.type().getName() + "'");
     }

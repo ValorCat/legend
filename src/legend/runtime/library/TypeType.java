@@ -8,7 +8,6 @@ import legend.compiletime.expression.value.Value;
 import legend.compiletime.expression.value.type.BuiltinType;
 import legend.compiletime.expression.value.type.NullableType;
 import legend.compiletime.expression.value.type.Type;
-import legend.compiletime.expression.value.type.UserDefinedType;
 
 import java.util.Scanner;
 
@@ -22,13 +21,6 @@ public class TypeType extends BuiltinType {
                 .shared("show", TypeType::show)
                 .unaryOper("?", TypeType::operNullify)
         );
-    }
-
-    @Override
-    protected Value initialize(ArgumentList args) {
-        String[] attributes = args.keywords().keySet().toArray(new String[0]);
-        // todo use attribute types/bounds
-        return new UserDefinedType(attributes);
     }
 
     private static Value read(ArgumentList args) {
