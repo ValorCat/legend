@@ -21,7 +21,6 @@ public class TypeLibrary {
             new FunctionType(),
             new IntegerType(),
             new ListType(),
-            new NativeType(),
             new NullType(),
             new RangeType(),
             new StringType(),

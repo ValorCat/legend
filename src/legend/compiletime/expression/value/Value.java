@@ -52,8 +52,8 @@ public abstract class Value implements Expression {
         throw errorOnCast("list");
     }
 
-    public Object asNative() {
-        throw errorOnCast("Native");
+    public Type asType() {
+        throw errorOnCast("type");
     }
 
     public Type type() {
