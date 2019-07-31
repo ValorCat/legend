@@ -23,7 +23,7 @@ public class IsOperation extends BinaryOperation {
     public Value evaluate(Scope scope) {
         Value value = left.evaluate(scope);
         Value type = right.evaluate(scope);
-        if (!type.isType("Type")) {
+        if (!type.isType("type")) {
             throw new RuntimeException("Cannot apply operator 'is' to types '" + value.type().getName() + "' and '"
                     + type.type().getName() + "'");
         }

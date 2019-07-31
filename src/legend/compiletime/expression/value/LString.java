@@ -8,7 +8,7 @@ public class LString extends Value {
     private String value;
 
     public LString(String value) {
-        super("String");
+        super("str");
         this.value = value;
     }
 

@@ -12,7 +12,7 @@ public class RangeType extends BuiltinType {
     private static RangeIteratorType iterator = new RangeIteratorType();
 
     public RangeType() {
-        super(new BuiltinType.Builder("Range", "Any")
+        super(new BuiltinType.Builder("range", "any")
                 .personal("left", "right")
                 .shared("show", RangeType::show)
                 .unaryOper("for", RangeType::operIterate)
@@ -48,7 +48,7 @@ public class RangeType extends BuiltinType {
     private static class RangeIteratorType extends BuiltinType {
 
         public RangeIteratorType() {
-            super(new BuiltinType.Builder("RangeIterator", "Any")
+            super(new BuiltinType.Builder("RangeIterator", "any")
                     .personal("pos", "end")
                     .unaryOper("next", RangeIteratorType::operNext)
             );

@@ -8,7 +8,7 @@ import legend.compiletime.expression.value.type.BuiltinType;
 public class NullType extends BuiltinType {
 
     public NullType() {
-        super(new BuiltinType.Builder("*Null", "Any")
+        super(new BuiltinType.Builder("*null", "any")
                 .shared("show", NullType::show)
         );
     }

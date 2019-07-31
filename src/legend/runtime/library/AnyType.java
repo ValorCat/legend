@@ -10,7 +10,7 @@ import legend.compiletime.expression.value.type.BuiltinType;
 public class AnyType extends BuiltinType {
 
     public AnyType() {
-        super(new Builder("Any", NO_PARENT)
+        super(new Builder("any", NO_PARENT)
                 .shared("show", AnyType::show)
                 .binaryOper("&", AnyType::operConcat)
                 .binaryOper("==", AnyType::operEquals)

@@ -8,7 +8,7 @@ public class LNative extends Value {
     private Object value;
 
     public LNative(Object javaValue) {
-        super("*Native");
+        super("*native");
         this.value = javaValue;
     }
 

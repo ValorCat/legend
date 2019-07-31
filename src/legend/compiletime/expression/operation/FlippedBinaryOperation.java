@@ -12,7 +12,7 @@ import legend.runtime.Scope;
  *
  *      10 in List(5, 10, 15)
  *
- * the implementation for 'in' should be defined by the List type, not the Integer type.
+ * the implementation for 'in' should be defined by the List type, not the int type.
  */
 public class FlippedBinaryOperation extends BinaryOperation {
 

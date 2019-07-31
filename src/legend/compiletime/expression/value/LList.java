@@ -11,7 +11,7 @@ public class LList extends Value {
     private List<Value> list;
 
     public LList(List<Value> list) {
-        super("List");
+        super("list");
         this.list = list;
     }
 

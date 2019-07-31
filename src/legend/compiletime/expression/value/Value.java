@@ -37,19 +37,19 @@ public abstract class Value implements Expression {
     }
 
     public int asInteger() {
-        throw errorOnCast("Integer");
+        throw errorOnCast("int");
     }
 
     public String asString() {
-        throw errorOnCast("String");
+        throw errorOnCast("str");
     }
 
     public boolean asBoolean() {
-        throw errorOnCast("Boolean");
+        throw errorOnCast("bool");
     }
 
     public List<Value> asList() {
-        throw errorOnCast("List");
+        throw errorOnCast("list");
     }
 
     public Object asNative() {

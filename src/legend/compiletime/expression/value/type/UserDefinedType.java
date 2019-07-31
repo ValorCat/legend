@@ -12,7 +12,7 @@ public class UserDefinedType extends Type {
     private boolean anonymous;
 
     public UserDefinedType(String[] personal) {
-        super("(anonymous type)", "Any", personal);
+        super("(anonymous type)", "any", personal);
         this.anonymous = true;
     }
 

@@ -8,7 +8,7 @@ public final class LNull extends Value {
     public static LNull NULL = new LNull();
 
     private LNull() {
-        super("*Null");
+        super("*null");
     }
 
     @Override

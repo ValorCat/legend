@@ -14,7 +14,7 @@ public class ListType extends BuiltinType {
     private static ListIteratorType iterator = new ListIteratorType();
 
     public ListType() {
-        super(new BuiltinType.Builder("List", "Any")
+        super(new BuiltinType.Builder("list", "any")
                 .shared("show", ListType::show)
                 .unaryOper("for", ListType::operIterate)
                 .unaryOper("#", ListType::operSize)
@@ -86,13 +86,13 @@ public class ListType extends BuiltinType {
 
     private static Value operSubscript(Value target, Value subscript) {
         List<Value> list = target.asList();
-        if (subscript.isType("Integer")) {
+        if (subscript.isType("int")) {
             int index = subscript.asInteger();
             if (index >= 0 && index < list.size()) {
                 return list.get(index);
             }
             throw new RuntimeException("Cannot get index " + index + " of list with " + list.size() + " elements(s)");
-        } else if (subscript.isType("Range")) {
+        } else if (subscript.isType("range")) {
             int left = subscript.getAttribute("left").asInteger();
             int right = subscript.getAttribute("right").asInteger();
             if (left >= 0 && right >= 0 && left < list.size() && right < list.size() && left <= right) {
@@ -101,7 +101,7 @@ public class ListType extends BuiltinType {
             throw new RuntimeException("Cannot get sublist [" + left + "," + right + "] of list with " + list.size()
                     + " element(s)");
         }
-        throw new RuntimeException("Cannot apply operator '[]' to types 'List' and '" + subscript.type().getName() + "'");
+        throw new RuntimeException("Cannot apply operator '[]' to types 'list' and '" + subscript.type().getName() + "'");
     }
 
     private static Value operWhere(Value left, Value right) {
@@ -119,7 +119,7 @@ public class ListType extends BuiltinType {
     private static class ListIteratorType extends BuiltinType {
 
         public ListIteratorType() {
-            super(new BuiltinType.Builder("ListIterator", "Any")
+            super(new BuiltinType.Builder("ListIterator", "any")
                     .personal("index", "list")
                     .unaryOper("next", ListIteratorType::operNext)
             );

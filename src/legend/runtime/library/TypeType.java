@@ -17,7 +17,7 @@ public class TypeType extends BuiltinType {
     private static Scanner scanner;
 
     public TypeType() {
-        super(new BuiltinType.Builder("Type", "Any")
+        super(new BuiltinType.Builder("type", "any")
                 .shared("read", TypeType::read)
                 .shared("show", TypeType::show)
                 .unaryOper("?", TypeType::operNullify)
@@ -35,7 +35,7 @@ public class TypeType extends BuiltinType {
         if (args.size() > 0) {
             System.out.print(args.arg(0).asString());
         }
-        if (!args.target().equals(Type.of("String"))) {
+        if (!args.target().equals(Type.of("str"))) {
             throw new RuntimeException("Reading non-string types is not yet implemented");
         }
         if (scanner == null) {

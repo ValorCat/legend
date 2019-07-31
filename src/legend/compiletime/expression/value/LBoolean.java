@@ -16,7 +16,7 @@ public final class LBoolean extends Value {
     private String string;
 
     private LBoolean(boolean value) {
-        super("Boolean");
+        super("bool");
         this.value = value;
         this.string = String.valueOf(value);
     }

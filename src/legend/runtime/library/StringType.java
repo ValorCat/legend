@@ -9,7 +9,7 @@ public class StringType extends BuiltinType {
     private static StringIteratorType iterator = new StringIteratorType();
 
     public StringType() {
-        super(new BuiltinType.Builder("String", "Any")
+        super(new BuiltinType.Builder("str", "any")
                 .shared("show", StringType::show)
                 .unaryOper("for", StringType::operIterate)
                 .unaryOper("#", StringType::operSize)
@@ -39,13 +39,13 @@ public class StringType extends BuiltinType {
 
     private static Value operSubscript(Value target, Value subscript) {
         String string = target.asString();
-        if (subscript.isType("Integer")) {
+        if (subscript.isType("int")) {
             int index = subscript.asInteger();
             if (index >= 0 && index < string.length()) {
                 return new LString(string.substring(index, index + 1));
             }
             throw new RuntimeException("Cannot get index " + index + " of string of length " + string.length());
-        } else if (subscript.isType("Range")) {
+        } else if (subscript.isType("range")) {
             int left = subscript.getAttribute("left").asInteger();
             int right = subscript.getAttribute("right").asInteger();
             if (left >= 0 && right >= 0 && left < string.length() && right < string.length() && left <= right) {
@@ -59,7 +59,7 @@ public class StringType extends BuiltinType {
     private static class StringIteratorType extends BuiltinType {
 
         public StringIteratorType() {
-            super(new BuiltinType.Builder("StringIterator", "Any")
+            super(new BuiltinType.Builder("StringIterator", "any")
                     .personal("index", "string")
                     .unaryOper("next", StringIteratorType::operNext)
             );

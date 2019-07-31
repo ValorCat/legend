@@ -8,7 +8,7 @@ public class LInteger extends Value {
     private int value;
 
     public LInteger(int value) {
-        super("Integer");
+        super("int");
         this.value = value;
     }
 

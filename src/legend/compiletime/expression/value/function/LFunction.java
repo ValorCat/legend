@@ -16,7 +16,7 @@ public abstract class LFunction extends Value {
     }
 
     public LFunction(String name) {
-        super("Function");
+        super("function");
         this.name = name;
     }
 

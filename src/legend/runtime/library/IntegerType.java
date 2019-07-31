@@ -11,7 +11,7 @@ import legend.compiletime.expression.value.type.Type;
 public class IntegerType extends BuiltinType {
 
     public IntegerType() {
-        super(new BuiltinType.Builder("Integer", "Any")
+        super(new BuiltinType.Builder("int", "any")
                 .shared("show", IntegerType::show)
                 .unaryOper("-", IntegerType::operNegate)
                 .unaryOper("%", IntegerType::operPercent)
@@ -68,7 +68,7 @@ public class IntegerType extends BuiltinType {
     }
 
     private static Value operMultiply(Value left, Value right) {
-        if (right.isType("List")) {
+        if (right.isType("list")) {
             return ListType.operRepeat(right, left);
         }
         return new LInteger(left.asInteger() * right.asInteger());
@@ -91,7 +91,7 @@ public class IntegerType extends BuiltinType {
     }
 
     private static Value operTo(Value left, Value right) {
-        return Type.of("Range").instantiate(new ArgumentList(left, right));
+        return Type.of("range").instantiate(new ArgumentList(left, right));
     }
 
 }

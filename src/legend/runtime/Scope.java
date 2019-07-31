@@ -35,7 +35,7 @@ public class Scope {
     public void setVariable(String name, Value value) {
         Scope scope = getDefiningScope(name).orElse(this);
         scope.setLocalVariable(name, value);
-        if (value.type() == Type.of("Type")) {
+        if (value.type() == Type.of("type")) {
             // todo deanonymize functions
             ((Type) value).deanonymize(name);
         }

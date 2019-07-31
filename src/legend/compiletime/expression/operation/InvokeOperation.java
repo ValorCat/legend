@@ -29,9 +29,9 @@ public class InvokeOperation extends BinaryOperation {
     }
 
     private static Value call(Value callable, ArgumentList args) {
-        if (callable.isType("Function")) {
+        if (callable.isType("function")) {
             return ((LFunction) callable).call(args);
-        } else if (callable.isType("Type")) {
+        } else if (callable.isType("type")) {
             return ((Type) callable).instantiate(args);
         }
         throw new RuntimeException("Cannot invoke object of type '" + callable.type().getName() + "'");

@@ -31,7 +31,7 @@ public abstract class Type extends Value {
 
     public Type(String name, String supertype, String[] personal, Map<String, Value> shared, Map<String,
             UnaryOperator<Value>> unaryOps, Map<String, BinaryOperator<Value>> binaryOps) {
-        super("Type");
+        super("type");
         this.name = name;
         //noinspection StringEquality
         this.supertype = supertype == NO_PARENT ? null : new LazyType(supertype);
@@ -42,7 +42,7 @@ public abstract class Type extends Value {
     }
 
     public Type(Type other) {
-        super("Type");
+        super("type");
         this.name = other.name;
         this.supertype = other.supertype;
         this.personal = other.personal;
