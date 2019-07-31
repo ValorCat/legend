@@ -22,7 +22,7 @@ public final class OperatorTable {
             row(NULLARY, "*"),
             row(BINARY,  ".", "()", "[]"),
             row(UNARY_L, "-", "#"),
-            row(UNARY_R, "%", "?"),
+            row(UNARY_R, "%"),
             row(UNARY_L, "not"),
             row(BINARY,  "^"),
             row(BINARY,  "*", "/", "//", "mod"),
