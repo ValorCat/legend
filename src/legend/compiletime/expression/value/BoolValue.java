@@ -3,19 +3,19 @@ package legend.compiletime.expression.value;
 /**
  * @since 12/28/2018
  */
-public final class LBoolean extends Value {
+public final class BoolValue extends Value {
 
-    public static final LBoolean TRUE = new LBoolean(true);
-    public static final LBoolean FALSE = new LBoolean(false);
+    public static final BoolValue TRUE = new BoolValue(true);
+    public static final BoolValue FALSE = new BoolValue(false);
 
-    public static LBoolean resolve(boolean b) {
+    public static BoolValue resolve(boolean b) {
         return b ? TRUE : FALSE;
     }
 
     private boolean value;
     private String string;
 
-    private LBoolean(boolean value) {
+    private BoolValue(boolean value) {
         super("bool");
         this.value = value;
         this.string = String.valueOf(value);
@@ -36,7 +36,7 @@ public final class LBoolean extends Value {
         return value;
     }
 
-    public LBoolean not() {
+    public BoolValue not() {
         return this == TRUE ? FALSE : TRUE;
     }
 

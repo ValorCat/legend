@@ -1,7 +1,7 @@
 package legend.runtime.library;
 
 import legend.compiletime.expression.type.PrimitiveType;
-import legend.compiletime.expression.value.LBoolean;
+import legend.compiletime.expression.value.BoolValue;
 import legend.compiletime.expression.value.Value;
 
 public class BooleanType extends PrimitiveType {
@@ -16,19 +16,19 @@ public class BooleanType extends PrimitiveType {
     }
 
     private static Value operAnd(Value left, Value right) {
-        return LBoolean.resolve(left.asBoolean() && right.asBoolean());
+        return BoolValue.resolve(left.asBoolean() && right.asBoolean());
     }
 
     private static Value operNor(Value left, Value right) {
-        return LBoolean.resolve(!left.asBoolean() && !right.asBoolean());
+        return BoolValue.resolve(!left.asBoolean() && !right.asBoolean());
     }
 
     private static Value operNot(Value operand) {
-        return LBoolean.resolve(!operand.asBoolean());
+        return BoolValue.resolve(!operand.asBoolean());
     }
 
     private static Value operOr(Value left, Value right) {
-        return LBoolean.resolve(left.asBoolean() || right.asBoolean());
+        return BoolValue.resolve(left.asBoolean() || right.asBoolean());
     }
 
 }

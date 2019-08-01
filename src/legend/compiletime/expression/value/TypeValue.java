@@ -2,11 +2,11 @@ package legend.compiletime.expression.value;
 
 import legend.compiletime.expression.type.Type;
 
-public class LType extends Value {
+public class TypeValue extends Value {
 
     private Type value;
 
-    public LType(Type type) {
+    public TypeValue(Type type) {
         super("type");
         this.value = type;
     }
@@ -29,7 +29,7 @@ public class LType extends Value {
     @Override
     public boolean equals(Value other) {
         return type() == other.type()
-                && value.equals(((LType) other).value);
+                && value.equals(((TypeValue) other).value);
     }
 
     @Override

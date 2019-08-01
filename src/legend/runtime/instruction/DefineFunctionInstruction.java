@@ -1,7 +1,7 @@
 package legend.runtime.instruction;
 
 import legend.compiletime.expression.group.Parentheses;
-import legend.compiletime.expression.value.function.UserDefinedFunction;
+import legend.compiletime.expression.value.UserDefinedFunction;
 import legend.runtime.Program;
 import legend.runtime.Scope;
 

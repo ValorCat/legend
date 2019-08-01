@@ -3,11 +3,11 @@ package legend.compiletime.expression.value;
 /**
  * @since 12/24/2018
  */
-public class LString extends Value {
+public class StrValue extends Value {
 
     private String value;
 
-    public LString(String value) {
+    public StrValue(String value) {
         super("str");
         this.value = value;
     }
@@ -34,7 +34,7 @@ public class LString extends Value {
     @Override
     public boolean equals(Value other) {
         return type() == other.type()
-                && ((LString) other).value.equals(value);
+                && ((StrValue) other).value.equals(value);
     }
 
     @Override

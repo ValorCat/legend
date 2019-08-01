@@ -4,7 +4,6 @@ import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.type.ClassType;
 import legend.compiletime.expression.type.PrimitiveType;
 import legend.compiletime.expression.value.*;
-import legend.compiletime.expression.value.function.LFunction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,35 +28,35 @@ public class ListType extends PrimitiveType {
 
     @Override
     public Value buildNew(ArgumentList args) {
-        return new LList(Arrays.asList(args.args()));
+        return new ListValue(Arrays.asList(args.args()));
     }
 
     private static Value operAppend(Value list, Value element) {
         List<Value> oldList = list.asList();
         List<Value> newList = new ArrayList<>(oldList);
         newList.add(element);
-        return new LList(newList);
+        return new ListValue(newList);
     }
 
     private static Value operIn(Value list, Value element) {
         List<Value> javaList = list.asList();
         for (Value value : javaList) {
             if (value.equals(element)) {
-                return LBoolean.TRUE;
+                return BoolValue.TRUE;
             }
         }
-        return LBoolean.FALSE;
+        return BoolValue.FALSE;
     }
 
     private static Value operIterate(Value operand) {
-        return iterator.buildNew(new ArgumentList(new LInteger(0), operand));
+        return iterator.buildNew(new ArgumentList(new IntValue(0), operand));
     }
 
     private static Value operRemove(Value list, Value element) {
         List<Value> oldList = list.asList();
         List<Value> newList = new ArrayList<>(oldList);
         newList.remove(element);
-        return new LList(newList);
+        return new ListValue(newList);
     }
 
     public static Value operRepeat(Value left, Value right) {
@@ -72,11 +71,11 @@ public class ListType extends PrimitiveType {
         for (int i = 0; i < multiplier; i++) {
             System.arraycopy(input, 0, result, i * input.length, input.length);
         }
-        return new LList(Arrays.asList(result));
+        return new ListValue(Arrays.asList(result));
     }
 
     private static Value operSize(Value operand) {
-        return new LInteger(operand.asList().size());
+        return new IntValue(operand.asList().size());
     }
 
     private static Value operSubscript(Value target, Value subscript) {
@@ -91,7 +90,7 @@ public class ListType extends PrimitiveType {
             int left = subscript.getAttribute("left").asInteger();
             int right = subscript.getAttribute("right").asInteger();
             if (left >= 0 && right >= 0 && left < list.size() && right < list.size() && left <= right) {
-                return new LList(list.subList(left, right + 1));
+                return new ListValue(list.subList(left, right + 1));
             }
             throw new RuntimeException("Cannot get sublist [" + left + "," + right + "] of list with " + list.size()
                     + " element(s)");
@@ -101,14 +100,14 @@ public class ListType extends PrimitiveType {
 
     private static Value operWhere(Value left, Value right) {
         List<Value> input = left.asList();
-        LFunction predicate = (LFunction) right;
+        FunctionValue predicate = (FunctionValue) right;
         List<Value> output = new ArrayList<>();
         for (Value element : input) {
             if (predicate.call(new ArgumentList(element)).asBoolean()) {
                 output.add(element);
             }
         }
-        return new LList(output);
+        return new ListValue(output);
     }
 
     private static class ListIteratorType extends ClassType {
@@ -124,10 +123,10 @@ public class ListType extends PrimitiveType {
             int index = operand.getAttribute("index").asInteger();
             List<Value> list = operand.getAttribute("list").asList();
             if (index < list.size()) {
-                operand.setAttribute("index", new LInteger(index + 1));
+                operand.setAttribute("index", new IntValue(index + 1));
                 return list.get(index);
             }
-            return LNull.NULL;
+            return NullValue.NULL;
         }
 
     }

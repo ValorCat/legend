@@ -1,8 +1,8 @@
 package legend.compiletime.expression.operation;
 
 import legend.compiletime.expression.Expression;
+import legend.compiletime.expression.value.BuiltinFunction;
 import legend.compiletime.expression.value.Value;
-import legend.compiletime.expression.value.function.BuiltinFunction;
 import legend.runtime.Scope;
 
 /**

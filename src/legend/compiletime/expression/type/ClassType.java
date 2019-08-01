@@ -1,9 +1,9 @@
 package legend.compiletime.expression.type;
 
 import legend.compiletime.expression.group.ArgumentList;
-import legend.compiletime.expression.value.LObject;
+import legend.compiletime.expression.value.BuiltinFunction;
+import legend.compiletime.expression.value.ObjectValue;
 import legend.compiletime.expression.value.Value;
-import legend.compiletime.expression.value.function.BuiltinFunction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 
-import static legend.compiletime.expression.value.function.BuiltinFunction.FunctionBody;
+import static legend.compiletime.expression.value.BuiltinFunction.FunctionBody;
 
 public class ClassType extends Type {
 
@@ -26,7 +26,7 @@ public class ClassType extends Type {
 
     @Override
     public Value buildNew(ArgumentList args) {
-        return new LObject(this, args.args());
+        return new ObjectValue(this, args.args());
     }
 
     @Override

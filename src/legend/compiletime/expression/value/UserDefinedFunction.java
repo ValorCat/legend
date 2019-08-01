@@ -1,16 +1,15 @@
-package legend.compiletime.expression.value.function;
+package legend.compiletime.expression.value;
 
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.group.ParameterList;
 import legend.compiletime.expression.group.Parentheses;
-import legend.compiletime.expression.value.Value;
 import legend.runtime.Program;
 import legend.runtime.Scope;
 
 /**
  * @since 2/16/2019
  */
-public class UserDefinedFunction extends LFunction {
+public class UserDefinedFunction extends FunctionValue {
 
     private Scope parentScope;
     private ParameterList params;

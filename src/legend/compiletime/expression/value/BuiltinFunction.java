@@ -1,14 +1,13 @@
-package legend.compiletime.expression.value.function;
+package legend.compiletime.expression.value;
 
 import legend.compiletime.expression.group.ArgumentList;
-import legend.compiletime.expression.value.Value;
 
 import java.util.function.Function;
 
 /**
  * @since 12/24/2018
  */
-public class BuiltinFunction extends LFunction {
+public class BuiltinFunction extends FunctionValue {
 
     @FunctionalInterface
     public interface FunctionBody extends Function<ArgumentList, Value> {}

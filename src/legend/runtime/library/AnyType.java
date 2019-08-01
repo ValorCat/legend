@@ -1,9 +1,9 @@
 package legend.runtime.library;
 
 import legend.compiletime.expression.type.PrimitiveType;
-import legend.compiletime.expression.value.LBoolean;
-import legend.compiletime.expression.value.LNull;
-import legend.compiletime.expression.value.LString;
+import legend.compiletime.expression.value.BoolValue;
+import legend.compiletime.expression.value.NullValue;
+import legend.compiletime.expression.value.StrValue;
 import legend.compiletime.expression.value.Value;
 
 public class AnyType extends PrimitiveType {
@@ -19,19 +19,19 @@ public class AnyType extends PrimitiveType {
     }
 
     private static Value operConcat(Value left, Value right) {
-        return new LString(left.asString() + right.asString());
+        return new StrValue(left.asString() + right.asString());
     }
 
     private static Value operEquals(Value left, Value right) {
-        return LBoolean.resolve(left.equals(right));
+        return BoolValue.resolve(left.equals(right));
     }
 
     private static Value operNonNullSelect(Value left, Value right) {
-        return (left == LNull.NULL) ? right : left;
+        return (left == NullValue.NULL) ? right : left;
     }
 
     private static Value operNotEquals(Value left, Value right) {
-        return LBoolean.resolve(!left.equals(right));
+        return BoolValue.resolve(!left.equals(right));
     }
 
     private static Value operNotIn(Value aggregate, Value element) {

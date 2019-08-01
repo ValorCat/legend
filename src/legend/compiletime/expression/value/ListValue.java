@@ -6,11 +6,11 @@ import java.util.StringJoiner;
 /**
  * @since 12/24/2018
  */
-public class LList extends Value {
+public class ListValue extends Value {
 
     private List<Value> list;
 
-    public LList(List<Value> list) {
+    public ListValue(List<Value> list) {
         super("list");
         this.list = list;
     }
@@ -39,7 +39,7 @@ public class LList extends Value {
         if (type() != other.type()) {
             return false;
         }
-        List<Value> otherList = ((LList) other).list;
+        List<Value> otherList = ((ListValue) other).list;
         if (list.size() != otherList.size()) {
             return false;
         }

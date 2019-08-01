@@ -1,7 +1,7 @@
 package legend.runtime;
 
 import legend.compiletime.expression.type.Type;
-import legend.compiletime.expression.value.LType;
+import legend.compiletime.expression.value.TypeValue;
 import legend.runtime.library.*;
 
 import java.util.HashMap;
@@ -36,7 +36,7 @@ public class TypeLibrary {
         // add the standard library types to the global namespace
         for (Type type : BUILTIN_TYPE_ARRAY) {
             BUILTIN_TYPES.put(type.getName(), type);
-            namespace.setLocalVariable(type.getName(), new LType(type));
+            namespace.setLocalVariable(type.getName(), new TypeValue(type));
         }
     }
 

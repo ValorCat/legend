@@ -3,11 +3,11 @@ package legend.compiletime.expression.value;
 /**
  * @since 12/24/2018
  */
-public class LInteger extends Value {
+public class IntValue extends Value {
 
     private int value;
 
-    public LInteger(int value) {
+    public IntValue(int value) {
         super("int");
         this.value = value;
     }
@@ -30,7 +30,7 @@ public class LInteger extends Value {
     @Override
     public boolean equals(Value other) {
         return type() == other.type()
-                && value == ((LInteger) other).value;
+                && value == ((IntValue) other).value;
     }
 
     @Override

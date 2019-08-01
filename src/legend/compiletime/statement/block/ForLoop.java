@@ -5,8 +5,8 @@ import legend.compiletime.Token.TokenType;
 import legend.compiletime.TokenLine;
 import legend.compiletime.error.ErrorLog;
 import legend.compiletime.expression.Expression;
-import legend.compiletime.expression.value.LBoolean;
-import legend.compiletime.expression.value.LNull;
+import legend.compiletime.expression.value.BoolValue;
+import legend.compiletime.expression.value.NullValue;
 import legend.compiletime.statement.Statement;
 import legend.compiletime.statement.block.clause.Clause;
 import legend.runtime.instruction.*;
@@ -40,7 +40,7 @@ public class ForLoop implements BlockStatementType {
 
         Expression getIterator = scope -> iterable.evaluate(scope).operateUnary("for");
         Expression getNext = scope -> TOP_OF_STACK.evaluate(scope).operateUnary("next");
-        Expression hasNext = scope -> LBoolean.resolve(TOP_OF_STACK.evaluate(scope) != LNull.NULL);
+        Expression hasNext = scope -> BoolValue.resolve(TOP_OF_STACK.evaluate(scope) != NullValue.NULL);
 
         return asList(body.size() + 5,
                 new PushStackInstruction(getIterator),

@@ -3,10 +3,10 @@ package legend.compiletime;
 import legend.compiletime.error.ErrorLog;
 import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.Variable;
-import legend.compiletime.expression.value.LBoolean;
-import legend.compiletime.expression.value.LInteger;
-import legend.compiletime.expression.value.LNull;
-import legend.compiletime.expression.value.LString;
+import legend.compiletime.expression.value.BoolValue;
+import legend.compiletime.expression.value.IntValue;
+import legend.compiletime.expression.value.NullValue;
+import legend.compiletime.expression.value.StrValue;
 
 /**
  * A token is a fundamental symbol in the source code, such as an operator,
@@ -76,13 +76,13 @@ public final class Token {
                 return new Variable(VALUE);
             case LITERAL:
                 if (VALUE.matches("\\d+")) {
-                    return new LInteger(Integer.parseInt(VALUE));
+                    return new IntValue(Integer.parseInt(VALUE));
                 } else if (VALUE.equals("true") || VALUE.equals("false")) {
-                    return LBoolean.resolve(VALUE.equals("true"));
+                    return BoolValue.resolve(VALUE.equals("true"));
                 } else if (VALUE.equals("null")) {
-                    return LNull.NULL;
+                    return NullValue.NULL;
                 } else {
-                    return new LString(VALUE);
+                    return new StrValue(VALUE);
                 }
             default:
                 throw ErrorLog.get("Unexpected symbol '%s'", VALUE);

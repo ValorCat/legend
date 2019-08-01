@@ -4,8 +4,8 @@ import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.group.Parentheses;
 import legend.compiletime.expression.value.Attribute;
+import legend.compiletime.expression.value.FunctionValue;
 import legend.compiletime.expression.value.Value;
-import legend.compiletime.expression.value.function.LFunction;
 import legend.runtime.Scope;
 
 public class InvokeOperation extends BinaryOperation {
@@ -29,7 +29,7 @@ public class InvokeOperation extends BinaryOperation {
 
     private static Value call(Value callable, ArgumentList args) {
         if (callable.isType("function")) {
-            return ((LFunction) callable).call(args);
+            return ((FunctionValue) callable).call(args);
         } else if (callable.isType("type")) {
             return callable.asType().buildNew(args);
         }

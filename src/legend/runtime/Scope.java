@@ -1,6 +1,6 @@
 package legend.runtime;
 
-import legend.compiletime.expression.value.LNull;
+import legend.compiletime.expression.value.NullValue;
 import legend.compiletime.expression.value.Value;
 
 import java.util.*;
@@ -69,7 +69,7 @@ public class Scope {
     }
 
     public Value getReturnValue() {
-        return returnValue == null ? LNull.NULL : returnValue;
+        return returnValue == null ? NullValue.NULL : returnValue;
     }
 
     public void setReturnValue(Value returnValue) {

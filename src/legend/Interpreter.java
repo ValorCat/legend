@@ -6,7 +6,7 @@ import legend.compiletime.Parser;
 import legend.compiletime.TokenLine;
 import legend.compiletime.error.ErrorLog;
 import legend.compiletime.error.InterpreterException;
-import legend.compiletime.expression.value.LNull;
+import legend.compiletime.expression.value.NullValue;
 import legend.compiletime.expression.value.Value;
 import legend.compiletime.statement.Statement;
 import legend.runtime.Program;
@@ -106,7 +106,7 @@ public class Interpreter {
         Program.PROGRAM = new Program(instructions);
         Value returnValue = Program.PROGRAM.execute();
 
-        if (returnValue != LNull.NULL) {
+        if (returnValue != NullValue.NULL) {
             System.out.println("Program returned value: " + returnValue.asString());
         }
     }

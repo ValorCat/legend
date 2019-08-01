@@ -2,7 +2,7 @@ package legend.compiletime.expression.operation;
 
 import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.type.Type;
-import legend.compiletime.expression.value.LBoolean;
+import legend.compiletime.expression.value.BoolValue;
 import legend.compiletime.expression.value.Value;
 import legend.runtime.Scope;
 
@@ -24,7 +24,7 @@ public class IsOperation extends BinaryOperation {
     public Value evaluate(Scope scope) {
         Value value = left.evaluate(scope);
         Type type = right.evaluate(scope).asType();
-        return LBoolean.resolve(value.type() == type && !negate);
+        return BoolValue.resolve(value.type() == type && !negate);
     }
 
 }

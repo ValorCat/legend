@@ -3,11 +3,11 @@ package legend.compiletime.expression.value;
 /**
  * @since 2/9/2019
  */
-public final class LNull extends Value {
+public final class NullValue extends Value {
 
-    public static LNull NULL = new LNull();
+    public static NullValue NULL = new NullValue();
 
-    private LNull() {
+    private NullValue() {
         super("*null");
     }
 
