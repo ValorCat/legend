@@ -12,7 +12,7 @@ public class RangeType extends ClassType {
     private static RangeIteratorType iterator = new RangeIteratorType();
 
     public RangeType() {
-        super(new ClassType.Builder("range")
+        super(new ClassType.Builder("Range")
                 .personal("left", "right")
                 .shared("show", RangeType::show)
                 .unaryOper("for", RangeType::operIterate)
