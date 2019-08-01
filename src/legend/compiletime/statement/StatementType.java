@@ -35,6 +35,7 @@ public interface StatementType {
             new ForLoop(),
             new FunctionDefinition(),
             new IfStatement(),
+            new PrintStatement(),
             new PrintStringStatement(),
             new ReturnStatement(),
             new WhileLoop(),

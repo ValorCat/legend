@@ -38,6 +38,6 @@ public class PrintStringStatement implements BasicStatementType {
 
     @Override
     public String getName() {
-        return "print";
+        return "pstr";
     }
 }

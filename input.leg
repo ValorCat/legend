@@ -3,13 +3,12 @@
 n = 14
 
 if n == 10
-    "if"
-    "if 2"
+    >> 'if'
+    >> 'if 2'
 else if n == 14
-    "else if"
+    >> 'else if'
 else
-    "else"
-    "else 2"
+    >> 'else'
 end
 
 def fact(n)
@@ -20,28 +19,27 @@ def fact(n)
 end
 
 for i in 0 to 6
-    fact(i).show()
+    >> fact(i)
 end
 
 for n in list(10, 20, 30, 40)
-    (n - 5 & ' xxx').show()
+    >> n - 5 & ' xxx'
 end
 
 l = list(1, 2, 3)
-l[1].show()
-(-10).show()
-(105%).show()
-(int?).show()
-(3/4).show()
-(3//4).show()
-(512 mod 13).show()
-(10 - 4).show()
-('hello ' & 'there').show()
-(l & 5).show()
-(3 in l).show()
-(10 not in l).show()
+>> l[1]
+>> -10
+>> 105%
+>> 3/4
+>> 3//4
+>> 512 mod 13
+>> 10 - 4
+>> 'hello ' & 'there'
+>> l & 5
+>> 3 in l
+>> 10 not in l
 (5 to 10).show()
-(true and false).show()
+>> true and false
 
 
 "Quick done"
@@ -52,7 +50,7 @@ def test_recursion(n)
         return
     end
     for i in 0 to 3
-        ('n = ' & n & ', i = ' & i).show()
+        >> 'n = ' & n & ', i = ' & i
         test_recursion(n - 1)
     end
 end
