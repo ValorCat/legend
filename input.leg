@@ -6,7 +6,7 @@ if n == 10
     >> 'if'
     >> 'if 2'
 else if n == 14
-    >> 'else if'
+    >> "else if"
 else
     >> 'else'
 end
@@ -42,7 +42,7 @@ l = list(1, 2, 3)
 >> true and false
 
 
-"Quick done"
+>> 'Quick done'
 return
 
 def test_recursion(n)
@@ -56,7 +56,7 @@ def test_recursion(n)
 end
 
 test_recursion(3)
-"Done!"
+>> 'Done!'
 
 ~ 3 0
 ~ 2 0

@@ -5,25 +5,15 @@ import legend.runtime.Scope;
 
 public class PrintInstruction implements Instruction {
 
-    private String value;
-    private Expression valueTree;
+    private Expression value;
 
-    public PrintInstruction(String value) {
+    public PrintInstruction(Expression value) {
         this.value = value;
-    }
-
-    public PrintInstruction(Expression valueTree) {
-        this.valueTree = valueTree;
     }
 
     @Override
     public void execute(Scope scope) {
-        System.out.println(value != null ? value : valueTree.evaluate(scope).asString());
-    }
-
-    @Override
-    public String toString() {
-        return String.format("prt \"%s\"", value);
+        System.out.println(value.evaluate(scope).asString());
     }
 
 }

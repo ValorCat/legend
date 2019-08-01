@@ -20,7 +20,7 @@ import legend.compiletime.expression.value.StrValue;
  */
 public final class Token {
 
-    public enum TokenType { EXPRESSION, GROUP, IDENTIFIER, INVALID, LITERAL, OPERATOR, PRINT_STRING }
+    public enum TokenType { EXPRESSION, GROUP, IDENTIFIER, INVALID, LITERAL, OPERATOR }
 
     public final TokenType TYPE;
     public final String VALUE;

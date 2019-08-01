@@ -16,14 +16,14 @@ import static legend.compiletime.Token.TokenType.*;
  * whitespace and comments, but preserves original line numbers for use in error messages. For example:
  *
  *  1  if #name == 0
- *  2      "You must enter a name."
+ *  2      >> 'You must enter a name.'
  *  3      return
  *  4  end
  *
  * The above source code produces the following token stream:
  *
  *    [op 'if', op '#', id 'name', op '==', lt '0'] line=1
- *    [ps 'You must enter a name']                  line=2
+ *    [op '>>', lt 'You must enter a name']         line=2
  *    [op 'return']                                 line=3
  *    [op 'end']                                    line=4
  *
@@ -115,7 +115,7 @@ public class Lexer {
         TokenType type = null;
         if (stringType == c) {
             // we are at the end of a string
-            type = c == '\'' ? LITERAL : PRINT_STRING;
+            type = LITERAL;
             currToken.deleteCharAt(0);
         } else if (stringType == 0) {
             // we are not in a string
