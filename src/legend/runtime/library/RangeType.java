@@ -1,18 +1,18 @@
 package legend.runtime.library;
 
 import legend.compiletime.expression.group.ArgumentList;
-import legend.compiletime.expression.type.ClassType;
 import legend.compiletime.expression.value.BoolValue;
 import legend.compiletime.expression.value.IntValue;
 import legend.compiletime.expression.value.NullValue;
 import legend.compiletime.expression.value.Value;
+import legend.runtime.type.ClassType;
 
 public class RangeType extends ClassType {
 
     private static RangeIteratorType iterator = new RangeIteratorType();
 
     public RangeType() {
-        super(new ClassType.Builder("range", "any")
+        super(new ClassType.Builder("range")
                 .personal("left", "right")
                 .shared("show", RangeType::show)
                 .unaryOper("for", RangeType::operIterate)
@@ -48,7 +48,7 @@ public class RangeType extends ClassType {
     private static class RangeIteratorType extends ClassType {
 
         public RangeIteratorType() {
-            super(new ClassType.Builder("RangeIterator", "any")
+            super(new ClassType.Builder("RangeIterator")
                     .personal("pos", "end")
                     .unaryOper("next", RangeIteratorType::operNext)
             );

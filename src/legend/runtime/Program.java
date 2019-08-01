@@ -2,6 +2,7 @@ package legend.runtime;
 
 import legend.compiletime.expression.value.Value;
 import legend.runtime.instruction.Instruction;
+import legend.runtime.type.BuiltinType;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +24,7 @@ public class Program {
         this.counterMoved = false;
         this.stack = new Stack<>();
         this.globalNamespace = new Scope();
-        TypeLibrary.updateNamespace(globalNamespace);
+        BuiltinType.addAllToScope(globalNamespace);
     }
 
     public Value execute() {

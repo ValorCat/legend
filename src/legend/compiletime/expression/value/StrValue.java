@@ -1,5 +1,7 @@
 package legend.compiletime.expression.value;
 
+import legend.runtime.type.BuiltinType;
+
 /**
  * @since 12/24/2018
  */
@@ -8,7 +10,7 @@ public class StrValue extends Value {
     private String value;
 
     public StrValue(String value) {
-        super("str");
+        super(BuiltinType.STR);
         this.value = value;
     }
 

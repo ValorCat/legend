@@ -1,16 +1,16 @@
 package legend.runtime.library;
 
 import legend.compiletime.expression.group.ArgumentList;
-import legend.compiletime.expression.type.ClassType;
-import legend.compiletime.expression.type.PrimitiveType;
 import legend.compiletime.expression.value.*;
+import legend.runtime.type.ClassType;
+import legend.runtime.type.PrimitiveType;
 
 public class StringType extends PrimitiveType {
 
     private static StringIteratorType iterator = new StringIteratorType();
 
     public StringType() {
-        super(new PrimitiveType.Builder("str", "any")
+        super(new PrimitiveType.Builder("str")
                 .unaryOper("for", StringType::operIterate)
                 .unaryOper("#", StringType::operSize)
                 .binaryOper("in", StringType::operIn)
@@ -54,7 +54,7 @@ public class StringType extends PrimitiveType {
     private static class StringIteratorType extends ClassType {
 
         public StringIteratorType() {
-            super(new ClassType.Builder("StringIterator", "any")
+            super(new ClassType.Builder("StringIterator")
                     .personal("index", "string")
                     .unaryOper("next", StringIteratorType::operNext)
             );

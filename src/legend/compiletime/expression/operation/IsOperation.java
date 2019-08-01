@@ -1,10 +1,10 @@
 package legend.compiletime.expression.operation;
 
 import legend.compiletime.expression.Expression;
-import legend.compiletime.expression.type.Type;
 import legend.compiletime.expression.value.BoolValue;
 import legend.compiletime.expression.value.Value;
 import legend.runtime.Scope;
+import legend.runtime.type.Type;
 
 /**
  * @since 2/9/2019

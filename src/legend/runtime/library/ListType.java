@@ -1,9 +1,9 @@
 package legend.runtime.library;
 
 import legend.compiletime.expression.group.ArgumentList;
-import legend.compiletime.expression.type.ClassType;
-import legend.compiletime.expression.type.PrimitiveType;
 import legend.compiletime.expression.value.*;
+import legend.runtime.type.ClassType;
+import legend.runtime.type.PrimitiveType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +14,7 @@ public class ListType extends PrimitiveType {
     private static ListIteratorType iterator = new ListIteratorType();
 
     public ListType() {
-        super(new PrimitiveType.Builder("list", "any")
+        super(new PrimitiveType.Builder("list")
                 .unaryOper("for", ListType::operIterate)
                 .unaryOper("#", ListType::operSize)
                 .binaryOper("+", ListType::operAppend)
@@ -113,7 +113,7 @@ public class ListType extends PrimitiveType {
     private static class ListIteratorType extends ClassType {
 
         public ListIteratorType() {
-            super(new ClassType.Builder("ListIterator", "any")
+            super(new ClassType.Builder("ListIterator")
                     .personal("index", "list")
                     .unaryOper("next", ListIteratorType::operNext)
             );

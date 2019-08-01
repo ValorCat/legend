@@ -1,9 +1,9 @@
 package legend.compiletime.expression.value;
 
 import legend.compiletime.expression.Expression;
-import legend.compiletime.expression.type.LazyType;
-import legend.compiletime.expression.type.Type;
 import legend.runtime.Scope;
+import legend.runtime.type.Type;
+import legend.runtime.type.TypeReference;
 
 import java.util.List;
 
@@ -18,16 +18,16 @@ import java.util.List;
  */
 public abstract class Value implements Expression {
 
-    private LazyType type;
+    private TypeReference type;
     private Value[] attributes;
 
-    public Value(String type, Value... attributes) {
-        this.type = new LazyType(type);
+    public Value(TypeReference type, Value... attributes) {
+        this.type = type;
         this.attributes = attributes;
     }
 
     public Value(Type type, Value... attributes) {
-        this.type = type.asLazy();
+        this.type = TypeReference.to(type);
         this.attributes = attributes;
     }
 

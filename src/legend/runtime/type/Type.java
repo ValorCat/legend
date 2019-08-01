@@ -1,8 +1,7 @@
-package legend.compiletime.expression.type;
+package legend.runtime.type;
 
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.value.Value;
-import legend.runtime.TypeLibrary;
 
 import java.util.Map;
 import java.util.Optional;
@@ -13,18 +12,18 @@ import java.util.function.UnaryOperator;
 public abstract class Type {
 
     private String name;
-    private LazyType supertype;
+    private TypeReference supertype;
     private Map<String, UnaryOperator<Value>> unaryOps;     // unary operation handlers
     private Map<String, BinaryOperator<Value>> binaryOps;   // binary operation handlers
 
-    public Type(String name, String supertype) {
+    public Type(String name, TypeReference supertype) {
         this(name, supertype, Map.of(), Map.of());
     }
 
-    public Type(String name, String supertype, Map<String, UnaryOperator<Value>> unaryOps,
+    public Type(String name, TypeReference supertype, Map<String, UnaryOperator<Value>> unaryOps,
                 Map<String, BinaryOperator<Value>> binaryOps) {
         this.name = name;
-        this.supertype = supertype == null ? null : new LazyType(supertype);
+        this.supertype = supertype;
         this.unaryOps = unaryOps;
         this.binaryOps = binaryOps;
     }
@@ -87,17 +86,9 @@ public abstract class Type {
                 .orElse(false);
     }
 
-    public LazyType asLazy() {
-        return new LazyType(this);
-    }
-
     @Override
     public String toString() {
         return "type[" + name + "]";
-    }
-
-    public static Type of(String name) {
-        return TypeLibrary.getType(name);
     }
 
 }

@@ -1,13 +1,14 @@
 package legend.compiletime.expression.value;
 
-import legend.compiletime.expression.type.Type;
+import legend.runtime.type.BuiltinType;
+import legend.runtime.type.Type;
 
 public class TypeValue extends Value {
 
     private Type value;
 
     public TypeValue(Type type) {
-        super("type");
+        super(BuiltinType.TYPE);
         this.value = type;
     }
 

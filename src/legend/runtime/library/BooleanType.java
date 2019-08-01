@@ -1,13 +1,13 @@
 package legend.runtime.library;
 
-import legend.compiletime.expression.type.PrimitiveType;
 import legend.compiletime.expression.value.BoolValue;
 import legend.compiletime.expression.value.Value;
+import legend.runtime.type.PrimitiveType;
 
 public class BooleanType extends PrimitiveType {
 
     public BooleanType() {
-        super(new PrimitiveType.Builder("bool", "any")
+        super(new PrimitiveType.Builder("bool")
                 .unaryOper("not", BooleanType::operNot)
                 .binaryOper("and", BooleanType::operAnd)
                 .binaryOper("nor", BooleanType::operNor)

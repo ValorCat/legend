@@ -1,16 +1,16 @@
 package legend.runtime.library;
 
 import legend.compiletime.expression.group.ArgumentList;
-import legend.compiletime.expression.type.PrimitiveType;
-import legend.compiletime.expression.type.Type;
 import legend.compiletime.expression.value.BoolValue;
 import legend.compiletime.expression.value.IntValue;
 import legend.compiletime.expression.value.Value;
+import legend.runtime.type.BuiltinType;
+import legend.runtime.type.PrimitiveType;
 
 public class IntegerType extends PrimitiveType {
 
     public IntegerType() {
-        super(new PrimitiveType.Builder("int", "any")
+        super(new PrimitiveType.Builder("int")
                 .unaryOper("-", IntegerType::operNegate)
                 .unaryOper("%", IntegerType::operPercent)
                 .binaryOper("+", IntegerType::operAdd)
@@ -84,7 +84,7 @@ public class IntegerType extends PrimitiveType {
     }
 
     private static Value operTo(Value left, Value right) {
-        return Type.of("range").buildNew(new ArgumentList(left, right));
+        return BuiltinType.RANGE.get().buildNew(new ArgumentList(left, right));
     }
 
 }

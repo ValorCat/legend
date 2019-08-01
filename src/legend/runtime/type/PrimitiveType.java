@@ -1,4 +1,4 @@
-package legend.compiletime.expression.type;
+package legend.runtime.type;
 
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.value.Value;
@@ -32,11 +32,15 @@ public class PrimitiveType extends Type {
     public static class Builder {
 
         private String name;
-        private String supertype;
+        private TypeReference supertype;
         private Map<String, UnaryOperator<Value>> unaryOps;
         private Map<String, BinaryOperator<Value>> binaryOps;
 
-        public Builder(String name, String supertype) {
+        public Builder(String name) {
+            this(name, BuiltinType.ANY);
+        }
+
+        public Builder(String name, TypeReference supertype) {
             this.name = name;
             this.supertype = supertype;
             this.unaryOps = new HashMap<>();

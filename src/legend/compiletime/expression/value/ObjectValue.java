@@ -1,6 +1,6 @@
 package legend.compiletime.expression.value;
 
-import legend.compiletime.expression.type.Type;
+import legend.runtime.type.Type;
 
 import java.util.Arrays;
 

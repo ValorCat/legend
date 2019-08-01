@@ -1,10 +1,10 @@
 package legend.runtime.library;
 
-import legend.compiletime.expression.type.PrimitiveType;
 import legend.compiletime.expression.value.BoolValue;
 import legend.compiletime.expression.value.NullValue;
 import legend.compiletime.expression.value.StrValue;
 import legend.compiletime.expression.value.Value;
+import legend.runtime.type.PrimitiveType;
 
 public class AnyType extends PrimitiveType {
 

@@ -1,12 +1,12 @@
 package legend.runtime.library;
 
 
-import legend.compiletime.expression.type.PrimitiveType;
+import legend.runtime.type.PrimitiveType;
 
 public class TypeType extends PrimitiveType {
 
     public TypeType() {
-        super(new PrimitiveType.Builder("type", "any"));
+        super(new PrimitiveType.Builder("type"));
     }
 
 }

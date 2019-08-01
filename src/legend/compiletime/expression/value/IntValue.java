@@ -1,5 +1,7 @@
 package legend.compiletime.expression.value;
 
+import legend.runtime.type.BuiltinType;
+
 /**
  * @since 12/24/2018
  */
@@ -8,7 +10,7 @@ public class IntValue extends Value {
     private int value;
 
     public IntValue(int value) {
-        super("int");
+        super(BuiltinType.INT);
         this.value = value;
     }
 

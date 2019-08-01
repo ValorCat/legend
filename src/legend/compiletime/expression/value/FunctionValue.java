@@ -2,6 +2,7 @@ package legend.compiletime.expression.value;
 
 import legend.compiletime.expression.group.ArgumentList;
 import legend.runtime.Scope;
+import legend.runtime.type.BuiltinType;
 
 /**
  * @since 12/24/2018
@@ -15,7 +16,7 @@ public abstract class FunctionValue extends Value {
     }
 
     public FunctionValue(String name) {
-        super("function");
+        super(BuiltinType.FUNCTION);
         this.name = name;
     }
 

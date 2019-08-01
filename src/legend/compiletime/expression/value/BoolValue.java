@@ -1,5 +1,7 @@
 package legend.compiletime.expression.value;
 
+import legend.runtime.type.BuiltinType;
+
 /**
  * @since 12/28/2018
  */
@@ -16,7 +18,7 @@ public final class BoolValue extends Value {
     private String string;
 
     private BoolValue(boolean value) {
-        super("bool");
+        super(BuiltinType.BOOL);
         this.value = value;
         this.string = String.valueOf(value);
     }

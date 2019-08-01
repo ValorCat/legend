@@ -1,5 +1,7 @@
 package legend.compiletime.expression.value;
 
+import legend.runtime.type.BuiltinType;
+
 /**
  * @since 2/9/2019
  */
@@ -8,7 +10,7 @@ public final class NullValue extends Value {
     public static NullValue NULL = new NullValue();
 
     private NullValue() {
-        super("*null");
+        super(BuiltinType.NULL);
     }
 
     @Override

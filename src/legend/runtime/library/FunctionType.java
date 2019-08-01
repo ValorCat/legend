@@ -1,11 +1,11 @@
 package legend.runtime.library;
 
-import legend.compiletime.expression.type.PrimitiveType;
+import legend.runtime.type.PrimitiveType;
 
 public class FunctionType extends PrimitiveType {
 
     public FunctionType() {
-        super(new PrimitiveType.Builder("function", "any"));
+        super(new PrimitiveType.Builder("function"));
     }
 
 }

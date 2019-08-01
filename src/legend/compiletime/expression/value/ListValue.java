@@ -1,5 +1,7 @@
 package legend.compiletime.expression.value;
 
+import legend.runtime.type.BuiltinType;
+
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -11,7 +13,7 @@ public class ListValue extends Value {
     private List<Value> list;
 
     public ListValue(List<Value> list) {
-        super("list");
+        super(BuiltinType.LIST);
         this.list = list;
     }
 
