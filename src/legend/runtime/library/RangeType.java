@@ -1,18 +1,18 @@
 package legend.runtime.library;
 
 import legend.compiletime.expression.group.ArgumentList;
+import legend.compiletime.expression.type.ClassType;
 import legend.compiletime.expression.value.LBoolean;
 import legend.compiletime.expression.value.LInteger;
 import legend.compiletime.expression.value.LNull;
 import legend.compiletime.expression.value.Value;
-import legend.compiletime.expression.value.type.BuiltinType;
 
-public class RangeType extends BuiltinType {
+public class RangeType extends ClassType {
 
     private static RangeIteratorType iterator = new RangeIteratorType();
 
     public RangeType() {
-        super(new BuiltinType.Builder("range", "any")
+        super(new ClassType.Builder("range", "any")
                 .personal("left", "right")
                 .shared("show", RangeType::show)
                 .unaryOper("for", RangeType::operIterate)
@@ -45,10 +45,10 @@ public class RangeType extends BuiltinType {
         return new LInteger(right - left + 1);
     }
 
-    private static class RangeIteratorType extends BuiltinType {
+    private static class RangeIteratorType extends ClassType {
 
         public RangeIteratorType() {
-            super(new BuiltinType.Builder("RangeIterator", "any")
+            super(new ClassType.Builder("RangeIterator", "any")
                     .personal("pos", "end")
                     .unaryOper("next", RangeIteratorType::operNext)
             );

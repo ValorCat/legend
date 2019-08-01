@@ -1,26 +1,18 @@
 package legend.runtime.library;
 
-import legend.compiletime.expression.group.ArgumentList;
+import legend.compiletime.expression.type.PrimitiveType;
 import legend.compiletime.expression.value.LBoolean;
-import legend.compiletime.expression.value.LNull;
 import legend.compiletime.expression.value.Value;
-import legend.compiletime.expression.value.type.BuiltinType;
 
-public class BooleanType extends BuiltinType {
+public class BooleanType extends PrimitiveType {
 
     public BooleanType() {
-        super(new BuiltinType.Builder("bool", "any")
-                .shared("show", BooleanType::show)
+        super(new PrimitiveType.Builder("bool", "any")
                 .unaryOper("not", BooleanType::operNot)
                 .binaryOper("and", BooleanType::operAnd)
                 .binaryOper("nor", BooleanType::operNor)
                 .binaryOper("or", BooleanType::operOr)
         );
-    }
-
-    private static Value show(ArgumentList args) {
-        System.out.println(args.target());
-        return LNull.NULL;
     }
 
     private static Value operAnd(Value left, Value right) {

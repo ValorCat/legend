@@ -1,8 +1,8 @@
 package legend.compiletime.expression.value;
 
 import legend.compiletime.expression.Expression;
-import legend.compiletime.expression.value.type.LazyType;
-import legend.compiletime.expression.value.type.Type;
+import legend.compiletime.expression.type.LazyType;
+import legend.compiletime.expression.type.Type;
 import legend.runtime.Scope;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
  * while other types (i.e. more complex built-in types and user-defined types) are instances of {@link LObject}. A
  * value is defined as having a type and 0 or more personal attributes, which are themselves values. A primitive value
  * has no personal attributes.
- * @see legend.compiletime.expression.value.type.Type
+ * @see Type
  * @see legend.runtime.library
  * @since 12/24/2018
  */
@@ -55,13 +55,13 @@ public abstract class Value implements Expression {
     public Type asType() {
         throw errorOnCast("type");
     }
-
+    
     public Type type() {
         return type.get();
     }
 
     public boolean isType(String type) {
-        return type().matches(type);
+        return type().getName().equals(type);
     }
 
     public Value getAttribute(String name) {

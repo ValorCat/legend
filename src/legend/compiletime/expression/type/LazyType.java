@@ -1,4 +1,4 @@
-package legend.compiletime.expression.value.type;
+package legend.compiletime.expression.type;
 
 public class LazyType {
 

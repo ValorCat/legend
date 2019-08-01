@@ -1,21 +1,11 @@
 package legend.runtime.library;
 
-import legend.compiletime.expression.group.ArgumentList;
-import legend.compiletime.expression.value.LNull;
-import legend.compiletime.expression.value.Value;
-import legend.compiletime.expression.value.type.BuiltinType;
+import legend.compiletime.expression.type.PrimitiveType;
 
-public class NullType extends BuiltinType {
+public class NullType extends PrimitiveType {
 
     public NullType() {
-        super(new BuiltinType.Builder("*null", "any")
-                .shared("show", NullType::show)
-        );
-    }
-
-    private static Value show(ArgumentList args) {
-        System.out.println(args.target());
-        return LNull.NULL;
+        super(new PrimitiveType.Builder("*null", "any"));
     }
 
 }

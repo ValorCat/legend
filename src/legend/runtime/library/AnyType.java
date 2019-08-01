@@ -1,28 +1,21 @@
 package legend.runtime.library;
 
-import legend.compiletime.expression.group.ArgumentList;
+import legend.compiletime.expression.type.PrimitiveType;
 import legend.compiletime.expression.value.LBoolean;
 import legend.compiletime.expression.value.LNull;
 import legend.compiletime.expression.value.LString;
 import legend.compiletime.expression.value.Value;
-import legend.compiletime.expression.value.type.BuiltinType;
 
-public class AnyType extends BuiltinType {
+public class AnyType extends PrimitiveType {
 
     public AnyType() {
-        super(new Builder("any", NO_PARENT)
-                .shared("show", AnyType::show)
+        super(new Builder("any", null)
                 .binaryOper("&", AnyType::operConcat)
                 .binaryOper("==", AnyType::operEquals)
                 .binaryOper("?", AnyType::operNonNullSelect)
                 .binaryOper("!=", AnyType::operNotEquals)
                 .binaryOper("not in", AnyType::operNotIn)
         );
-    }
-
-    private static Value show(ArgumentList args) {
-        System.out.println(args.target());
-        return LNull.NULL;
     }
 
     private static Value operConcat(Value left, Value right) {

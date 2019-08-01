@@ -1,26 +1,21 @@
 package legend.runtime.library;
 
 import legend.compiletime.expression.group.ArgumentList;
+import legend.compiletime.expression.type.ClassType;
+import legend.compiletime.expression.type.PrimitiveType;
 import legend.compiletime.expression.value.*;
-import legend.compiletime.expression.value.type.BuiltinType;
 
-public class StringType extends BuiltinType {
+public class StringType extends PrimitiveType {
 
     private static StringIteratorType iterator = new StringIteratorType();
 
     public StringType() {
-        super(new BuiltinType.Builder("str", "any")
-                .shared("show", StringType::show)
+        super(new PrimitiveType.Builder("str", "any")
                 .unaryOper("for", StringType::operIterate)
                 .unaryOper("#", StringType::operSize)
                 .binaryOper("in", StringType::operIn)
                 .binaryOper("[]", StringType::operSubscript)
         );
-    }
-
-    private static Value show(ArgumentList args) {
-        System.out.println(args.target().asString());
-        return LNull.NULL;
     }
 
     private static Value operIn(Value string, Value substring) {
@@ -56,10 +51,10 @@ public class StringType extends BuiltinType {
         throw new RuntimeException("Cannot apply operator '[]' to types 'List' and '" + subscript.type().getName() + "'");
     }
 
-    private static class StringIteratorType extends BuiltinType {
+    private static class StringIteratorType extends ClassType {
 
         public StringIteratorType() {
-            super(new BuiltinType.Builder("StringIterator", "any")
+            super(new ClassType.Builder("StringIterator", "any")
                     .personal("index", "string")
                     .unaryOper("next", StringIteratorType::operNext)
             );

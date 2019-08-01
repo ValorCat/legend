@@ -1,21 +1,21 @@
 package legend.runtime.library;
 
 import legend.compiletime.expression.group.ArgumentList;
+import legend.compiletime.expression.type.ClassType;
+import legend.compiletime.expression.type.PrimitiveType;
 import legend.compiletime.expression.value.*;
 import legend.compiletime.expression.value.function.LFunction;
-import legend.compiletime.expression.value.type.BuiltinType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ListType extends BuiltinType {
+public class ListType extends PrimitiveType {
 
     private static ListIteratorType iterator = new ListIteratorType();
 
     public ListType() {
-        super(new BuiltinType.Builder("list", "any")
-                .shared("show", ListType::show)
+        super(new PrimitiveType.Builder("list", "any")
                 .unaryOper("for", ListType::operIterate)
                 .unaryOper("#", ListType::operSize)
                 .binaryOper("+", ListType::operAppend)
@@ -30,11 +30,6 @@ public class ListType extends BuiltinType {
     @Override
     public Value buildNew(ArgumentList args) {
         return new LList(Arrays.asList(args.args()));
-    }
-
-    private static Value show(ArgumentList args) {
-        System.out.println(args.target().asString());
-        return LNull.NULL;
     }
 
     private static Value operAppend(Value list, Value element) {
@@ -116,10 +111,10 @@ public class ListType extends BuiltinType {
         return new LList(output);
     }
 
-    private static class ListIteratorType extends BuiltinType {
+    private static class ListIteratorType extends ClassType {
 
         public ListIteratorType() {
-            super(new BuiltinType.Builder("ListIterator", "any")
+            super(new ClassType.Builder("ListIterator", "any")
                     .personal("index", "list")
                     .unaryOper("next", ListIteratorType::operNext)
             );

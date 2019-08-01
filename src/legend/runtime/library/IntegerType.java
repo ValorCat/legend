@@ -1,18 +1,16 @@
 package legend.runtime.library;
 
 import legend.compiletime.expression.group.ArgumentList;
+import legend.compiletime.expression.type.PrimitiveType;
+import legend.compiletime.expression.type.Type;
 import legend.compiletime.expression.value.LBoolean;
 import legend.compiletime.expression.value.LInteger;
-import legend.compiletime.expression.value.LNull;
 import legend.compiletime.expression.value.Value;
-import legend.compiletime.expression.value.type.BuiltinType;
-import legend.compiletime.expression.value.type.Type;
 
-public class IntegerType extends BuiltinType {
+public class IntegerType extends PrimitiveType {
 
     public IntegerType() {
-        super(new BuiltinType.Builder("int", "any")
-                .shared("show", IntegerType::show)
+        super(new PrimitiveType.Builder("int", "any")
                 .unaryOper("-", IntegerType::operNegate)
                 .unaryOper("%", IntegerType::operPercent)
                 .binaryOper("+", IntegerType::operAdd)
@@ -28,11 +26,6 @@ public class IntegerType extends BuiltinType {
                 .binaryOper("-", IntegerType::operSubtract)
                 .binaryOper("to", IntegerType::operTo)
         );
-    }
-
-    private static Value show(ArgumentList args) {
-        System.out.println(args.target());
-        return LNull.NULL;
     }
 
     private static Value operAdd(Value left, Value right) {
