@@ -39,7 +39,7 @@ public final class OperatorTable {
     These two constants are used by the lexer to assign the correct type to unusual operators.
      */
     public static final Set<String> LONG_SYMBOLS = Set.of("//", "==", "!=", "<=", ">=", ":=", ">>");
-    public static final Set<String> KEYWORDS = Set.of("and", "def", "else", "end", "for", "if", "in", "mod", "or",
+    public static final Set<String> KEYWORDS = Set.of("and", "def", "else", "end", "for", "if", "in", "is", "mod", "or",
             "nor", "not", "return", "to", "where", "while"
     );
 
