@@ -24,7 +24,7 @@ public class IsOperation extends BinaryOperation {
     public Value evaluate(Scope scope) {
         Value value = left.evaluate(scope);
         Type type = right.evaluate(scope).asType();
-        return BoolValue.resolve(value.type() == type && !negate);
+        return BoolValue.resolve(type.isSupertypeOf(value.type()) != negate);
     }
 
 }
