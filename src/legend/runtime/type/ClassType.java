@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 
 import static legend.compiletime.expression.value.BuiltinFunction.FunctionBody;
 
-public class ClassType extends Type {
+public class ClassType extends RuntimeType {
 
     private Map<String, Integer> personal;
     private Map<String, Value> shared;

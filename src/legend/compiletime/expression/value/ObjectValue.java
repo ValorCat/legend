@@ -1,6 +1,6 @@
 package legend.compiletime.expression.value;
 
-import legend.runtime.type.Type;
+import legend.runtime.type.RuntimeType;
 
 import java.util.Arrays;
 
@@ -9,7 +9,7 @@ import java.util.Arrays;
  */
 public class ObjectValue extends Value {
 
-    public ObjectValue(Type type, Value... attributes) {
+    public ObjectValue(RuntimeType type, Value... attributes) {
         super(type, attributes);
     }
 

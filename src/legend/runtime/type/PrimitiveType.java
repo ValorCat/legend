@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 
-public class PrimitiveType extends Type {
+public class PrimitiveType extends RuntimeType {
 
     public PrimitiveType(Builder builder) {
         super(builder.name, builder.supertype, builder.unaryOps, builder.binaryOps);

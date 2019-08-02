@@ -2,6 +2,7 @@ package legend.compiletime.expression.value;
 
 import legend.compiletime.expression.Expression;
 import legend.runtime.Scope;
+import legend.runtime.type.RuntimeType;
 import legend.runtime.type.Type;
 import legend.runtime.type.TypeReference;
 
@@ -26,7 +27,7 @@ public abstract class Value implements Expression {
         this.attributes = attributes;
     }
 
-    public Value(Type type, Value... attributes) {
+    public Value(RuntimeType type, Value... attributes) {
         this.type = TypeReference.to(type);
         this.attributes = attributes;
     }
@@ -56,7 +57,7 @@ public abstract class Value implements Expression {
         throw errorOnCast("type");
     }
     
-    public Type type() {
+    public RuntimeType type() {
         return type.get();
     }
 

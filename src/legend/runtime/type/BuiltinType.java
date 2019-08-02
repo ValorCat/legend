@@ -16,19 +16,19 @@ public enum BuiltinType implements TypeReference {
     STR(new StringType()),
     TYPE(new TypeType());
 
-    private final Type type;
+    private final RuntimeType type;
 
-    BuiltinType(Type type) {
+    BuiltinType(RuntimeType type) {
         this.type = type;
     }
 
-    public Type get() {
+    public RuntimeType get() {
         return type;
     }
 
     public static void addAllToScope(Scope scope) {
         for (BuiltinType ref : values()) {
-            Type type = ref.get();
+            RuntimeType type = ref.get();
             scope.setLocalVariable(type.getName(), new TypeValue(type));
         }
     }
