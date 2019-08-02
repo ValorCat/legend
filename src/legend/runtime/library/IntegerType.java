@@ -61,7 +61,7 @@ public class IntegerType extends PrimitiveType {
     }
 
     private static Value operMultiply(Value left, Value right) {
-        if (right.isType("list")) {
+        if (right.isType(BuiltinType.LIST)) {
             return ListType.operRepeat(right, left);
         }
         return new IntValue(left.asInteger() * right.asInteger());

@@ -7,6 +7,7 @@ import legend.compiletime.expression.value.Attribute;
 import legend.compiletime.expression.value.FunctionValue;
 import legend.compiletime.expression.value.Value;
 import legend.runtime.Scope;
+import legend.runtime.type.BuiltinType;
 
 public class InvokeOperation extends BinaryOperation {
 
@@ -28,9 +29,9 @@ public class InvokeOperation extends BinaryOperation {
     }
 
     private static Value call(Value callable, ArgumentList args) {
-        if (callable.isType("function")) {
+        if (callable.isType(BuiltinType.FUNCTION)) {
             return ((FunctionValue) callable).call(args);
-        } else if (callable.isType("type")) {
+        } else if (callable.isType(BuiltinType.TYPE)) {
             return callable.asType().buildNew(args);
         }
         throw new RuntimeException("Cannot invoke object of type '" + callable.type().getName() + "'");

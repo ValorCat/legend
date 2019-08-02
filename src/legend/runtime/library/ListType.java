@@ -2,6 +2,7 @@ package legend.runtime.library;
 
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.value.*;
+import legend.runtime.type.BuiltinType;
 import legend.runtime.type.ClassType;
 import legend.runtime.type.PrimitiveType;
 
@@ -80,13 +81,13 @@ public class ListType extends PrimitiveType {
 
     private static Value operSubscript(Value target, Value subscript) {
         List<Value> list = target.asList();
-        if (subscript.isType("int")) {
+        if (subscript.isType(BuiltinType.INT)) {
             int index = subscript.asInteger();
             if (index >= 0 && index < list.size()) {
                 return list.get(index);
             }
             throw new RuntimeException("Cannot get index " + index + " of list with " + list.size() + " elements(s)");
-        } else if (subscript.isType("range")) {
+        } else if (subscript.isType(BuiltinType.RANGE)) {
             int left = subscript.getAttribute("left").asInteger();
             int right = subscript.getAttribute("right").asInteger();
             if (left >= 0 && right >= 0 && left < list.size() && right < list.size() && left <= right) {

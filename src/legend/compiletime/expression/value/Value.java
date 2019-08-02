@@ -60,8 +60,8 @@ public abstract class Value implements Expression {
         return type.get();
     }
 
-    public boolean isType(String type) {
-        return type().getName().equals(type);
+    public boolean isType(TypeReference type) {
+        return type() == type.get();
     }
 
     public Value getAttribute(String name) {

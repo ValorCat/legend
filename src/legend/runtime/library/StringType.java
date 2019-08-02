@@ -2,6 +2,7 @@ package legend.runtime.library;
 
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.value.*;
+import legend.runtime.type.BuiltinType;
 import legend.runtime.type.ClassType;
 import legend.runtime.type.PrimitiveType;
 
@@ -34,13 +35,13 @@ public class StringType extends PrimitiveType {
 
     private static Value operSubscript(Value target, Value subscript) {
         String string = target.asString();
-        if (subscript.isType("int")) {
+        if (subscript.isType(BuiltinType.INT)) {
             int index = subscript.asInteger();
             if (index >= 0 && index < string.length()) {
                 return new StrValue(string.substring(index, index + 1));
             }
             throw new RuntimeException("Cannot get index " + index + " of string of length " + string.length());
-        } else if (subscript.isType("range")) {
+        } else if (subscript.isType(BuiltinType.RANGE)) {
             int left = subscript.getAttribute("left").asInteger();
             int right = subscript.getAttribute("right").asInteger();
             if (left >= 0 && right >= 0 && left < string.length() && right < string.length() && left <= right) {
@@ -48,7 +49,7 @@ public class StringType extends PrimitiveType {
             }
             throw new RuntimeException("Cannot get substring [" + left + "," + right + "] of string of length " + string.length());
         }
-        throw new RuntimeException("Cannot apply operator '[]' to types 'List' and '" + subscript.type().getName() + "'");
+        throw new RuntimeException("Cannot apply operator '[]' to types 'str' and '" + subscript.type().getName() + "'");
     }
 
     private static class StringIteratorType extends ClassType {

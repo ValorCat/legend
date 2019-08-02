@@ -69,8 +69,7 @@ public abstract class Type {
      * @param <Handler> the functional interface that the operation handler implements
      * @return an optional containing the operation handler, if found
      */
-    private <Handler> Optional<Handler> getOperatorHandler(String operator,
-                                                           Function<Type, Map<String, Handler>> mapGetter) {
+    private <Handler> Optional<Handler> getOperatorHandler(String operator, Function<Type, Map<String, Handler>> mapGetter) {
         return Optional.ofNullable(mapGetter.apply(this).get(operator))
                 .or(() -> getSuperType().flatMap(parent -> parent.getOperatorHandler(operator, mapGetter)));
     }
