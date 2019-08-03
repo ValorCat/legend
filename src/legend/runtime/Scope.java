@@ -3,14 +3,14 @@ package legend.runtime;
 import legend.compiletime.expression.value.NullValue;
 import legend.compiletime.expression.value.Value;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class Scope {
 
-    private static List<Value> memory = new ArrayList<>(); // todo garbage collection
-
     private final Scope parent;
-    private final Map<String, Integer> namespace;
+    private final Map<String, Value> namespace;
     private Value returnValue;
     private boolean returned;
 
@@ -42,7 +42,7 @@ public class Scope {
      * @param value the value to store
      */
     public void setLocalVariable(String name, Value value) {
-        namespace.put(name, store(value));
+        namespace.put(name, value);
     }
 
     /**
@@ -50,7 +50,7 @@ public class Scope {
      * @param name the name to retrieve
      * @return the variable's value
      */
-    public Value getVariableValue(String name) {
+    public Value getVariable(String name) {
         Optional<Scope> scope = getDefiningScope(name);
         if (scope.isEmpty()) {
             if (name.equals("*")) {
@@ -59,13 +59,7 @@ public class Scope {
                 throw new RuntimeException("Variable '" + name + "' is not defined");
             }
         }
-        int address = scope.get().namespace.get(name);
-        Value value = memory.get(address);
-        if (value == null) {
-            throw new RuntimeException("Variable '" + name + "' (address "
-                    + Integer.toHexString(address) + ") points to null");
-        }
-        return value;
+        return scope.get().namespace.get(name);
     }
 
     public Value getReturnValue() {
@@ -97,16 +91,6 @@ public class Scope {
             current = current.parent;
         }
         return Optional.ofNullable(current);
-    }
-
-    /**
-     * Store a value in memory and return its address.
-     * @param value the value to store
-     * @return the value's new address
-     */
-    private static int store(Value value) {
-        memory.add(value);
-        return memory.size() - 1;
     }
 
 }

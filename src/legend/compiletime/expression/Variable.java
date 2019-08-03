@@ -16,7 +16,7 @@ public class Variable implements Expression {
 
     @Override
     public Value evaluate(Scope scope) {
-        return scope.getVariableValue(name);
+        return scope.getVariable(name);
     }
 
     @Override
