@@ -4,13 +4,24 @@ import legend.compiletime.Parser;
 import legend.compiletime.Token.TokenType;
 import legend.compiletime.TokenLine;
 import legend.compiletime.error.ErrorLog;
+import legend.compiletime.expression.Expression;
 import legend.compiletime.statement.Statement;
 import legend.runtime.instruction.AssignInstruction;
 import legend.runtime.instruction.Instruction;
 
 import java.util.List;
 
-public class AssignmentStatement implements BasicStatementType {
+public class AssignmentStatement implements BasicStatement {
+
+    private String target;
+    private Expression value;
+
+    public AssignmentStatement() {}
+
+    private AssignmentStatement(String target, Expression value) {
+        this.target = target;
+        this.value = value;
+    }
 
     @Override
     public boolean matches(TokenLine tokens) {
@@ -25,19 +36,19 @@ public class AssignmentStatement implements BasicStatementType {
         } else if (equalsPos == tokens.size() - 1 || !tokens.get(equalsPos + 1).isValue()) {
             throw ErrorLog.get("Missing assignment value on right of '='");
         }
-        return new Statement(this,
-                parser.parseFrom(tokens, equalsPos + 1),  // value
-                tokens.get(equalsPos - 1).VALUE                    // target
-        );
+        String target = tokens.get(equalsPos - 1).VALUE;
+        Expression value = parser.parseFrom(tokens, equalsPos + 1);
+        return new AssignmentStatement(target, value);
     }
 
     @Override
-    public List<Instruction> build(Statement stmt) {
-         return List.of(new AssignInstruction(stmt.STRING, stmt.EXPRESSION));
+    public List<Instruction> build() {
+         return List.of(new AssignInstruction(target, value));
     }
 
     @Override
     public String getName() {
         return "=";
     }
+
 }

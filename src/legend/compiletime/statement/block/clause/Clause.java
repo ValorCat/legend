@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Represents a clause within a multi-line statement, such as an 'else if' clause within an if statement. This class
  * stores the clause's name, header data, and compiled body.
- * @see ClauseStatementType
+ * @see ClauseStatement
  */
 public class Clause {
 
@@ -17,7 +17,7 @@ public class Clause {
     public final List<Instruction> BODY;
 
     public Clause(Statement header, List<Instruction> body) {
-        this.NAME = header.TYPE.getName();
+        this.NAME = header.getName();
         this.HEADER = header;
         this.BODY = body;
     }

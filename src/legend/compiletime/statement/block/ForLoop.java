@@ -18,7 +18,17 @@ import static legend.compiletime.expression.TopOfStack.TOP_OF_STACK;
 /**
  * @since 1/19/2019
  */
-public class ForLoop implements BlockStatementType {
+public class ForLoop implements BlockStatement {
+
+    private String variable;
+    private Expression iterable;
+
+    public ForLoop() {}
+
+    private ForLoop(String variable, Expression iterable) {
+        this.variable = variable;
+        this.iterable = iterable;
+    }
 
     @Override
     public Statement parseHeader(TokenLine tokens, Parser parser) {
@@ -29,13 +39,14 @@ public class ForLoop implements BlockStatementType {
         } else if (tokens.size() == 3) {
             throw ErrorLog.get("Expected loop expression after 'in'");
         }
-        return new Statement(this, parser.parseFrom(tokens, 3), tokens.get(1).VALUE);
+        return new ForLoop(tokens.get(1).VALUE, parser.parseFrom(tokens, 3));
     }
 
     @Override
     public List<Instruction> build(Clause base, List<Clause> optional) {
-        String variable = base.HEADER.STRING;
-        Expression iterable = base.HEADER.EXPRESSION;
+        ForLoop header = (ForLoop) base.HEADER;
+        String variable = header.variable;
+        Expression iterable = header.iterable;
         List<Instruction> body = base.BODY;
 
         Expression getIterator = scope -> iterable.evaluate(scope).operateUnary("for");

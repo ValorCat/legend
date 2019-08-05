@@ -2,7 +2,6 @@ package legend.compiletime.statement.block.clause;
 
 import legend.compiletime.Compiler;
 import legend.compiletime.statement.Statement;
-import legend.compiletime.statement.StatementType;
 import legend.runtime.instruction.Instruction;
 
 import java.util.List;
@@ -12,10 +11,10 @@ import java.util.List;
  * mostly useful for instanceof checks.
  * @see legend.compiletime.statement.block.clause
  */
-public interface ClauseStatementType extends StatementType {
+public interface ClauseStatement extends Statement {
 
     @Override
-    default List<Instruction> compile(Statement stmt, Compiler compiler) {
+    default List<Instruction> compile(Compiler compiler) {
         // should never be reached
         throw new UnsupportedOperationException("Cannot compile clause statement");
     }

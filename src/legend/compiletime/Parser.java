@@ -8,10 +8,9 @@ import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.group.Parentheses;
 import legend.compiletime.expression.group.SquareBrackets;
 import legend.compiletime.statement.Statement;
-import legend.compiletime.statement.StatementType;
 import legend.compiletime.statement.basic.EndStatement;
-import legend.compiletime.statement.block.BlockStatementType;
-import legend.compiletime.statement.block.clause.ClauseStatementType;
+import legend.compiletime.statement.block.BlockStatement;
+import legend.compiletime.statement.block.clause.ClauseStatement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +40,12 @@ import static legend.compiletime.Token.TokenType.GROUP;
  * @see Lexer
  * @see Token
  * @see Statement
- * @see StatementType
  * @see Expression
  */
 public class Parser {
 
     /* tracks the nesting of control structures */
-    private Stack<BlockStatementType> controlStack;
+    private Stack<BlockStatement> controlStack;
 
     /**
      * Translate a sequence of tokens into parsed statements, as detailed at the top of this class.
@@ -59,11 +57,11 @@ public class Parser {
         controlStack = new Stack<>();
         for (TokenLine line : tokens) {
             try {
-                StatementType type = StatementType.resolve(line);
-                if (type instanceof ClauseStatementType) {
-                    checkEnclosingStructure(type);
+                Statement stmt = Statement.resolve(line, this);
+                if (stmt instanceof ClauseStatement) {
+                    checkEnclosingStructure(stmt);
                 }
-                statements.add(type.parse(line, this));
+                statements.add(stmt);
             } catch (InterpreterException e) {
                 e.setLineNumber(line.getLineNumber());
             }
@@ -75,17 +73,17 @@ public class Parser {
     /**
      * Verify that the specified statement type is permitted as a clause header within the current control structure.
      * Log and raise an interpreter error if the statement is not supported, or there is no active control structure.
-     * @param type the clause type to verify
+     * @param stmt the clause type to verify
      * @throws InterpreterException if the clause is not supported by the current control structure, or the clause is not
      *                         inside a control structure
-     * @see BlockStatementType#allowsClause
+     * @see BlockStatement#allowsClause
      */
-    private void checkEnclosingStructure(StatementType type) {
+    private void checkEnclosingStructure(Statement stmt) {
         if (controlStack.isEmpty()) {
-            throw ErrorLog.get("'%s' statement must be inside a control structure", type.getName());
-        } else if (!controlStack.peek().allowsClause(type.getName())) {
+            throw ErrorLog.get("'%s' statement must be inside a control structure", stmt.getName());
+        } else if (!controlStack.peek().allowsClause(stmt.getName())) {
             throw ErrorLog.get("Structure '%s' does not support '%s' clauses", controlStack.peek().getName(),
-                    type.getName());
+                    stmt.getName());
         }
     }
 
@@ -99,7 +97,7 @@ public class Parser {
             int lastLineNumber = tokens.get(tokens.size() - 1).getLineNumber();
             ErrorLog.log(lastLineNumber, "Expected 'end' to close '%s'", controlStack.peek().getName());
             while (!controlStack.isEmpty()) {
-                statements.add(new Statement(new EndStatement()));
+                statements.add(new EndStatement());
                 controlStack.pop();
             }
         }
@@ -184,7 +182,7 @@ public class Parser {
         }
     }
 
-    public Stack<BlockStatementType> getControlStack() {
+    public Stack<BlockStatement> getControlStack() {
         return controlStack;
     }
 

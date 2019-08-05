@@ -15,19 +15,27 @@ import java.util.List;
 /**
  * @since 1/19/2019
  */
-public class WhileLoop implements BlockStatementType {
+public class WhileLoop implements BlockStatement {
+
+    private Expression condition;
+
+    public WhileLoop() {}
+
+    private WhileLoop(Expression condition) {
+        this.condition = condition;
+    }
 
     @Override
     public Statement parseHeader(TokenLine tokens, Parser parser) {
         if (tokens.size() == 1) {
             throw ErrorLog.get("Expected expression after 'while'");
         }
-        return new Statement(this, parser.parseFrom(tokens, 1));
+        return new WhileLoop(parser.parseFrom(tokens, 1));
     }
 
     @Override
     public List<Instruction> build(Clause base, List<Clause> optional) {
-        Expression condition = base.HEADER.EXPRESSION;
+        Expression condition = ((WhileLoop) base.HEADER).condition;
         List<Instruction> body = base.BODY;
         return asList(body.size() + 2,
                 new JumpUnlessInstruction(body.size() + 2, condition),

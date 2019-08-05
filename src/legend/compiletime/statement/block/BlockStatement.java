@@ -4,7 +4,6 @@ import legend.compiletime.Compiler;
 import legend.compiletime.Parser;
 import legend.compiletime.TokenLine;
 import legend.compiletime.statement.Statement;
-import legend.compiletime.statement.StatementType;
 import legend.compiletime.statement.block.clause.Clause;
 import legend.runtime.instruction.Instruction;
 
@@ -16,7 +15,7 @@ import java.util.List;
  * Represents a multi-line statement, such as an if statement or for loop.
  * @see legend.compiletime.statement.block
  */
-public interface BlockStatementType extends StatementType {
+public interface BlockStatement extends Statement {
 
     /**
      * Extract the necessary values from the specified list of tokens and package them into a single object. If the
@@ -52,8 +51,8 @@ public interface BlockStatementType extends StatementType {
     }
 
     @Override
-    default List<Instruction> compile(Statement stmt, Compiler compiler) {
-        return compiler.compileBlockStatement(stmt);
+    default List<Instruction> compile(Compiler compiler) {
+        return compiler.compileBlockStatement(this);
     }
 
     /**

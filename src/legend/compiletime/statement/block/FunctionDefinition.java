@@ -17,7 +17,17 @@ import java.util.List;
 /**
  * @since 2/16/2019
  */
-public class FunctionDefinition implements BlockStatementType {
+public class FunctionDefinition implements BlockStatement {
+
+    private String name;
+    private Parentheses params;
+
+    public FunctionDefinition() {}
+
+    private FunctionDefinition(String name, Parentheses params) {
+        this.name = name;
+        this.params = params;
+    }
 
     @Override
     public Statement parseHeader(TokenLine tokens, Parser parser) {
@@ -26,13 +36,14 @@ public class FunctionDefinition implements BlockStatementType {
         } else if (tokens.size() == 2 || !tokens.get(2).matches("()", TokenType.GROUP)) {
             throw ErrorLog.get("Expected function parameters after '%s'", tokens.get(1));
         }
-        return new Statement(this, parser.parseFrom(tokens, 2), tokens.get(1).VALUE);
+        String name = tokens.get(1).VALUE;
+        Parentheses params = (Parentheses) parser.parseFrom(tokens, 2);
+        return new FunctionDefinition(name, params);
     }
 
     @Override
     public List<Instruction> build(Clause base, List<Clause> optional) {
-        String name = base.HEADER.STRING;
-        Parentheses params = (Parentheses) base.HEADER.EXPRESSION;
+        FunctionDefinition header = (FunctionDefinition) base.HEADER;
         List<Instruction> body = base.BODY;
 
         if (!(body.get(body.size() - 1) instanceof ReturnInstruction)) {
@@ -40,7 +51,7 @@ public class FunctionDefinition implements BlockStatementType {
         }
 
         return asList(body.size() + 2,
-                new DefineFunctionInstruction(name, params),
+                new DefineFunctionInstruction(header.name, header.params),
                 new JumpInstruction(body.size() + 1),
                 body);
     }

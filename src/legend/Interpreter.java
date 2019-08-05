@@ -32,7 +32,7 @@ import java.util.Scanner;
  * 4. The instructions are executed by the {@link Program}.
  *
  * @see legend.compiletime.Token
- * @see legend.compiletime.statement.Statement
+ * @see Statement
  * @see legend.runtime.instruction.Instruction
  * @since 1/15/2019
  */

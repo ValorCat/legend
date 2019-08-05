@@ -3,8 +3,10 @@ package legend.compiletime.statement.block;
 import legend.compiletime.Parser;
 import legend.compiletime.TokenLine;
 import legend.compiletime.error.ErrorLog;
+import legend.compiletime.expression.Expression;
 import legend.compiletime.statement.Statement;
 import legend.compiletime.statement.block.clause.Clause;
+import legend.compiletime.statement.block.clause.ElseIfClause;
 import legend.runtime.instruction.Instruction;
 import legend.runtime.instruction.JumpInstruction;
 import legend.runtime.instruction.JumpUnlessInstruction;
@@ -15,14 +17,22 @@ import java.util.List;
 /**
  * @since 1/27/2019
  */
-public class IfStatement implements BlockStatementType {
+public class IfStatement implements BlockStatement {
+
+    private Expression condition;
+
+    public IfStatement() {}
+
+    private IfStatement(Expression condition) {
+        this.condition = condition;
+    }
 
     @Override
     public Statement parseHeader(TokenLine tokens, Parser parser) {
         if (tokens.size() == 1) {
             throw ErrorLog.get("Expected expression after 'if'");
         }
-        return new Statement(this, parser.parseFrom(tokens, 1));
+        return new IfStatement(parser.parseFrom(tokens, 1));
     }
 
     @Override
@@ -37,7 +47,11 @@ public class IfStatement implements BlockStatementType {
                 compiled.addAll(clause.BODY);
             } else {
                 int offset = remaining > 0 ? 2 : 1;
-                compiled.add(new JumpUnlessInstruction(clause.BODY.size() + offset, clause.HEADER.EXPRESSION));
+                Statement header = clause.HEADER;
+                Expression condition = header instanceof IfStatement
+                        ? ((IfStatement) header).condition
+                        : ((ElseIfClause) header).getCondition();
+                compiled.add(new JumpUnlessInstruction(clause.BODY.size() + offset, condition));
                 compiled.addAll(clause.BODY);
                 if (remaining > 0) {
                     compiled.add(new JumpInstruction(remaining));

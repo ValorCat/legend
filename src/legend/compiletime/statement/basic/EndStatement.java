@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @since 1/19/2019
  */
-public class EndStatement implements BasicStatementType {
+public class EndStatement implements BasicStatement {
 
     @Override
     public Statement parse(TokenLine tokens, Parser parser) {
@@ -21,11 +21,11 @@ public class EndStatement implements BasicStatementType {
             throw ErrorLog.get("Mismatched 'end'");
         }
         parser.getControlStack().pop();
-        return new Statement(this);
+        return new EndStatement();
     }
 
     @Override
-    public List<Instruction> build(Statement stmt) {
+    public List<Instruction> build() {
         return List.of();
     }
 
@@ -33,4 +33,5 @@ public class EndStatement implements BasicStatementType {
     public String getName() {
         return "end";
     }
+
 }
