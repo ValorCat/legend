@@ -3,14 +3,12 @@ package legend.runtime;
 import legend.compiletime.expression.value.NullValue;
 import legend.compiletime.expression.value.Value;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class Scope {
 
     private final Scope parent;
-    private final Map<String, Value> namespace;
+    private final Namespace namespace;
     private Value returnValue;
     private boolean returned;
 
@@ -20,7 +18,7 @@ public class Scope {
 
     public Scope(Scope parent) {
         this.parent = parent;
-        this.namespace = new HashMap<>();
+        this.namespace = new Namespace();
     }
 
     /**
@@ -42,7 +40,7 @@ public class Scope {
      * @param value the value to store
      */
     public void setLocalVariable(String name, Value value) {
-        namespace.put(name, value);
+        namespace.assign(name, value);
     }
 
     /**
@@ -59,7 +57,7 @@ public class Scope {
                 throw new RuntimeException("Variable '" + name + "' is not defined");
             }
         }
-        return scope.get().namespace.get(name);
+        return scope.get().namespace.retrieve(name);
     }
 
     public Value getReturnValue() {
@@ -87,7 +85,7 @@ public class Scope {
      */
     private Optional<Scope> getDefiningScope(String name) {
         Scope current = this;
-        while (current != null && !current.namespace.containsKey(name)) {
+        while (current != null && !current.namespace.defines(name)) {
             current = current.parent;
         }
         return Optional.ofNullable(current);

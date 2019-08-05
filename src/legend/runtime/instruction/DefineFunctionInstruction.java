@@ -19,7 +19,7 @@ public class DefineFunctionInstruction implements Instruction {
     public void execute(Scope scope) {
         int startAddress = Program.PROGRAM.getCounter() + 2;
         UserDefinedFunction function = new UserDefinedFunction(name, params, scope, startAddress);
-        scope.setVariable(name, function);
+        scope.setLocalVariable(name, function);
     }
 
     @Override
