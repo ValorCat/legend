@@ -38,6 +38,11 @@ public class SquareBrackets implements Expression {
     }
 
     @Override
+    public boolean isCompact() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         return "bracket(" + contents + ")";
     }

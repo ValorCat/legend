@@ -46,4 +46,20 @@ public interface Expression {
         return Collections.emptyList();
     }
 
+    /**
+     * Return whether this expression's tokens are conventionally written without whitespace between them. This is used
+     * for determining whether an expression should be allowed as an inline type in a typed variable definition.
+     * Consider the following examples:
+     *
+     *      int x = 5               ~ allowed, 'int' is compact
+     *      type(x) y = 10          ~ allowed, function calls are compact
+     *      (int or str) z = 15     ~ allowed, parentheses make an expression compact
+     *      int or str w = 20       ~ not allowed, 'or' requires whitespace
+     *
+     * @return true if this expression is compact, otherwise false
+     */
+    default boolean isCompact() {
+        return false;
+    }
+
 }

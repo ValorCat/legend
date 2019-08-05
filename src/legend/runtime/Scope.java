@@ -2,6 +2,7 @@ package legend.runtime;
 
 import legend.compiletime.expression.value.NullValue;
 import legend.compiletime.expression.value.Value;
+import legend.runtime.type.Type;
 
 import java.util.Optional;
 
@@ -34,6 +35,11 @@ public class Scope {
         scope.setLocalVariable(name, value);
     }
 
+    public void setVariable(String name, Type type, Value value) {
+        Scope scope = getDefiningScope(name).orElse(this);
+        scope.setLocalVariable(name, type, value);
+    }
+
     /**
      * Store a value in memory and then map it to a variable name.
      * @param name the name of the variable
@@ -41,6 +47,10 @@ public class Scope {
      */
     public void setLocalVariable(String name, Value value) {
         namespace.assign(name, value);
+    }
+
+    public void setLocalVariable(String name, Type type, Value value) {
+        namespace.assign(name, type, value);
     }
 
     /**

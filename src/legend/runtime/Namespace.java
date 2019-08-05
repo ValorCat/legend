@@ -26,7 +26,7 @@ public class Namespace {
     public void assign(String name, Value value) {
         Definition mapping = namespace.get(name);
         if (mapping != null) {
-            checkType(value, mapping.type);
+            checkType(value, mapping.type, name);
             mapping.value = value;
         } else {
             namespace.put(name, new Definition(DynamicType.UNTYPED, value));
@@ -34,9 +34,9 @@ public class Namespace {
     }
 
     public void assign(String name, Type type, Value value) {
+        checkType(value, type, name);
         Definition mapping = namespace.get(name);
         if (mapping != null) {
-            checkType(value, mapping.type);
             mapping.type = type;
             mapping.value = value;
         } else {
@@ -44,10 +44,10 @@ public class Namespace {
         }
     }
 
-    private static void checkType(Value value, Type type) {
+    private static void checkType(Value value, Type type, String name) {
         if (!type.isSupertypeOf(value.type())) {
-            throw new RuntimeException("Cannot assign '" + value.asString() + "' (type '" + value.type().getName()
-                    + "') to '" + type.getName() + "' variable");
+            throw new RuntimeException(String.format("Cannot assign %s value '%s' to %s variable '%s'",
+                    value.type().getName(), value.asString(), type.getName(), name));
         }
     }
 

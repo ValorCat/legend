@@ -30,6 +30,11 @@ public class Variable implements Expression {
     }
 
     @Override
+    public boolean isCompact() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         return name;
     }

@@ -4,6 +4,7 @@ import legend.compiletime.TokenLine;
 import legend.compiletime.expression.Expression;
 
 import java.util.List;
+import java.util.Set;
 import java.util.StringJoiner;
 
 /**
@@ -15,6 +16,8 @@ import java.util.StringJoiner;
  * @see legend.runtime.library for operator implementations for each built-in type
  */
 public abstract class Operation implements Expression {
+
+    private static final Set<String> COMPACT = Set.of(".", "()", "[]");
 
     protected String operator;
 
@@ -36,6 +39,11 @@ public abstract class Operation implements Expression {
     @Override
     public boolean matches(String pattern) {
         return operator.equals(pattern);
+    }
+
+    @Override
+    public boolean isCompact() {
+        return COMPACT.contains(operator);
     }
 
     @Override

@@ -101,6 +101,11 @@ public abstract class Value implements Expression {
         throw new UnsupportedOperationException("Cannot get owner of non-attribute");
     }
 
+    @Override
+    public boolean isCompact() {
+        return true;
+    }
+
     public abstract boolean equals(Value other);
 
     private RuntimeException errorOnCast(String resultType) {

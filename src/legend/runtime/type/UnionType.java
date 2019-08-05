@@ -14,7 +14,7 @@ public class UnionType implements Type {
 
     @Override
     public String getName() {
-        return String.format("%s | %s", left.getName(), right.getName());
+        return String.format("%s|%s", left.getName(), right.getName());
     }
 
     @Override

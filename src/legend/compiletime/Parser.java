@@ -114,6 +114,17 @@ public class Parser {
     }
 
     /**
+     * Translate part of a list of tokens into an abstract syntax tree.
+     * @param expression the tokens to translate, which are mutated during parsing
+     * @param startIndex the leftmost index to consider while parsing
+     * @param endIndex the rightmost index to consider while parsing
+     * @return the root of a parsed abstract syntax tree
+     */
+    public Expression parseBetween(TokenLine expression, int startIndex, int endIndex) {
+        return parseExpression(expression.subList(startIndex, endIndex + 1));
+    }
+
+    /**
      * Translate a list of tokens into an abstract syntax tree.
      * @param expression the tokens to translate, which are mutated during parsing
      * @return the root of a parsed abstract syntax tree
