@@ -36,11 +36,10 @@ public class Namespace {
     public void assign(String name, Type type, Value value) {
         checkType(value, type, name);
         Definition mapping = namespace.get(name);
-        if (mapping != null) {
-            mapping.type = type;
-            mapping.value = value;
-        } else {
+        if (mapping == null) {
             namespace.put(name, new Definition(type, value));
+        } else {
+            throw new RuntimeException("Variable '" + name + "' already exists");
         }
     }
 
