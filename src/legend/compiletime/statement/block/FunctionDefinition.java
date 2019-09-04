@@ -1,10 +1,11 @@
 package legend.compiletime.statement.block;
 
 import legend.compiletime.Parser;
+import legend.compiletime.Token;
 import legend.compiletime.Token.TokenType;
 import legend.compiletime.TokenLine;
 import legend.compiletime.error.ErrorLog;
-import legend.compiletime.expression.group.Parentheses;
+import legend.compiletime.expression.group.ParameterList;
 import legend.compiletime.statement.Statement;
 import legend.compiletime.statement.block.clause.Clause;
 import legend.runtime.instruction.DefineFunctionInstruction;
@@ -20,11 +21,11 @@ import java.util.List;
 public class FunctionDefinition implements BlockStatement {
 
     private String name;
-    private Parentheses params;
+    private ParameterList params;
 
     public FunctionDefinition() {}
 
-    private FunctionDefinition(String name, Parentheses params) {
+    private FunctionDefinition(String name, ParameterList params) {
         this.name = name;
         this.params = params;
     }
@@ -37,7 +38,7 @@ public class FunctionDefinition implements BlockStatement {
             throw ErrorLog.get("Expected function parameters after '%s'", tokens.get(1));
         }
         String name = tokens.get(1).VALUE;
-        Parentheses params = (Parentheses) parser.parseFrom(tokens, 2);
+        ParameterList params = parseParameters(name, tokens.get(2).CHILDREN);
         return new FunctionDefinition(name, params);
     }
 
@@ -59,6 +60,27 @@ public class FunctionDefinition implements BlockStatement {
     @Override
     public String getName() {
         return "def";
+    }
+
+    private static ParameterList parseParameters(String name, TokenLine tokens) {
+        List<Token[]> params = tokens.split(",");
+        String[] paramNames = new String[params.size()];
+        String[] paramTypes = new String[params.size()];
+        for (int i = 0; i < params.size(); i++) {
+            Token[] param = params.get(i);
+            switch (param.length) {
+                case 1:
+                    paramNames[i] = param[0].asExpression().getIdentifier();
+                    break;
+                case 2:
+                    paramTypes[i] = param[0].asExpression().getIdentifier();
+                    paramNames[i] = param[1].asExpression().getIdentifier();
+                    break;
+                default:
+                    throw new RuntimeException("Malformed parameter #" + (i + 1) + " on line " + tokens.getLineNumber());
+            }
+        }
+        return new ParameterList(name, paramNames, paramTypes);
     }
 
 }

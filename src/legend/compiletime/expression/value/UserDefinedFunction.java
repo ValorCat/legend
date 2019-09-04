@@ -2,7 +2,6 @@ package legend.compiletime.expression.value;
 
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.group.ParameterList;
-import legend.compiletime.expression.group.Parentheses;
 import legend.runtime.Program;
 import legend.runtime.Scope;
 
@@ -15,10 +14,10 @@ public class UserDefinedFunction extends FunctionValue {
     private ParameterList params;
     private int beginAddress;
 
-    public UserDefinedFunction(String name, Parentheses params, Scope parentScope, int beginAddress) {
+    public UserDefinedFunction(String name, ParameterList params, Scope parentScope, int beginAddress) {
         super(name);
         this.parentScope = parentScope;
-        this.params = new ParameterList(name, params.getContents());
+        this.params = params;
         this.beginAddress = beginAddress;
     }
 

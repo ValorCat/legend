@@ -1,6 +1,7 @@
 package legend.compiletime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class TokenLine extends ArrayList<Token> {
     }
 
     public int indexOf(String token) {
-        for (int i = 0; i < this.size(); i++) {
+        for (int i = 0; i < size(); i++) {
             if (get(i).matches(token)) {
                 return i;
             }
@@ -45,6 +46,22 @@ public class TokenLine extends ArrayList<Token> {
 
     public boolean hasValueAt(int index) {
         return index >= 0 && index < size() && get(index).isValue();
+    }
+
+    public List<Token[]> split(String separator) {
+        Token[] array = toArray(new Token[size()]);
+        List<Token[]> partitions = new ArrayList<>();
+        int last = -1;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].matches(separator)) {
+                partitions.add(Arrays.copyOfRange(array, last + 1, i));
+                last = i;
+            }
+        }
+        if (array.length > 0) {
+            partitions.add(Arrays.copyOfRange(array, last + 1, array.length));
+        }
+        return partitions;
     }
 
     /**

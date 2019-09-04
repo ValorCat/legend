@@ -11,7 +11,7 @@ else
     >> 'else'
 end
 
-def fact(n)
+def fact(int n)
     if n < 2
         return n
     end
@@ -48,13 +48,13 @@ l = list(1, 2, 3)
 >> 'Quick done'
 return
 
-def test_recursion(n)
-    if n == 0
+def test_recursion(m)
+    if m == 0
         return
     end
     for i in 0 to 3
-        >> 'n = ' & n & ', i = ' & i
-        test_recursion(n - 1)
+        >> 'm = ' & m & ', i = ' & i
+        test_recursion(m - 1)
     end
 end
 
