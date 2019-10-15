@@ -30,7 +30,7 @@ At the bottom under "Assets", download `legend-standalone.zip`. Unzip it and nav
 You can also run the interpreter from the terminal with:
 
 ```
-./bin/legend path/to/input.leg
+./bin/legend <source-file>
 ```
 
 ### Java-Dependent Version
@@ -45,5 +45,5 @@ Once Java is installed, go to the Legend releases page and choose the latest ver
 At the bottom under "Assets", download `legend.jar`. On some systems, you can double-click the JAR file to run it. Otherwise, you can run the interpreter from the terminal with:
 
 ```
-java -jar legend.jar path/to/input.leg
+java -jar legend.jar <source-file>
 ```

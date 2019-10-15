@@ -45,13 +45,16 @@ public class Interpreter {
             System.out.print("Enter the path to the source file: ");
             sourcePath = scanner.nextLine();
         } else if (args.length > 1) {
-            System.err.println("Usage: ./bin/legend input.leg          (standalone interpreter)"
+            System.err.println("Usage: ./bin/legend <source-file>          (standalone interpreter)"
                     .replace('/', File.separatorChar));
-            System.err.println("Usage: java -jar legend.jar input.leg  (java-dependent interpreter)");
+            System.err.println("Usage: java -jar legend.jar <source-file>  (java-dependent interpreter)");
         } else {
             sourcePath = args[0];
         }
         if (!sourcePath.isEmpty()) {
+            if (!sourcePath.endsWith(".leg")) {
+                sourcePath += ".leg";
+            }
             Path path = Paths.get(sourcePath);
             if (Files.exists(path) && !Files.isDirectory(path)) {
                 interpret(path.toFile());
