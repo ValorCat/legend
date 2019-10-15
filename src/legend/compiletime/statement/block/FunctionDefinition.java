@@ -5,6 +5,7 @@ import legend.compiletime.Token;
 import legend.compiletime.Token.TokenType;
 import legend.compiletime.TokenLine;
 import legend.compiletime.error.ErrorLog;
+import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.group.ParameterList;
 import legend.compiletime.statement.Statement;
 import legend.compiletime.statement.block.clause.Clause;
@@ -22,12 +23,14 @@ public class FunctionDefinition implements BlockStatement {
 
     private String name;
     private ParameterList params;
+    private Expression returnType;
 
     public FunctionDefinition() {}
 
-    private FunctionDefinition(String name, ParameterList params) {
+    private FunctionDefinition(String name, ParameterList params, Expression returnType) {
         this.name = name;
         this.params = params;
+        this.returnType = returnType;
     }
 
     @Override
@@ -35,11 +38,21 @@ public class FunctionDefinition implements BlockStatement {
         if (tokens.size() == 1 || tokens.get(1).TYPE != TokenType.IDENTIFIER) {
             throw ErrorLog.get("Expected function name after 'def'");
         } else if (tokens.size() == 2 || !tokens.get(2).matches("()", TokenType.GROUP)) {
-            throw ErrorLog.get("Expected function parameters after '%s'", tokens.get(1));
+            throw ErrorLog.get("Expected function parameters after '%s'", tokens.get(1).VALUE);
+        } else if (tokens.size() > 3 && !tokens.get(3).matches("->")) {
+            throw ErrorLog.get("Unexpected symbol '%s' in function header", tokens.get(3).VALUE);
+        } else if (tokens.size() == 4) {
+            throw ErrorLog.get("Expected function return type after '->'");
         }
         String name = tokens.get(1).VALUE;
         ParameterList params = parseParameters(name, tokens.get(2).CHILDREN);
-        return new FunctionDefinition(name, params);
+
+        Expression returnType = null;
+        if (tokens.size() > 3) {
+            returnType = parser.parseFrom(tokens, 4);
+        }
+
+        return new FunctionDefinition(name, params, returnType);
     }
 
     @Override
@@ -52,7 +65,7 @@ public class FunctionDefinition implements BlockStatement {
         }
 
         return asList(body.size() + 2,
-                new DefineFunctionInstruction(header.name, header.params),
+                new DefineFunctionInstruction(header.name, header.params, header.returnType),
                 new JumpInstruction(body.size() + 1),
                 body);
     }

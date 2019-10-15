@@ -1,5 +1,11 @@
 "Starting!"
 
+def test(x) -> any
+    return x
+end
+
+test(10)
+
 n = 14
 
 if n == 10

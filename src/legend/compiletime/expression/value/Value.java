@@ -109,7 +109,7 @@ public abstract class Value implements Expression {
     public abstract boolean equals(Value other);
 
     private RuntimeException errorOnCast(String resultType) {
-        return new RuntimeException("Type '" + type().getName() + "' cannot be converted to " + resultType);
+        return new RuntimeException("Type '" + type().getName() + "' cannot be converted to '" + resultType + "'");
     }
 
 }
