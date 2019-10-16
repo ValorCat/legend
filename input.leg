@@ -1,10 +1,10 @@
-"Starting!"
+>> "Starting!"
 
-def test(x) -> any
-    return x
+int i = 0
+for a in args
+    >> "Arg " & i & ": " & a
+    i = i + 1
 end
-
-test(10)
 
 n = 14
 

@@ -46,6 +46,8 @@ public class Interpreter {
     private static boolean strictTyping = false;    // -s flag
     private static boolean waitOnExit = false;      // -w flag
 
+    private static String[] programArgs;
+
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println(USAGE);
@@ -95,7 +97,7 @@ public class Interpreter {
                 break;
             }
         }
-        String[] programArgs = Arrays.copyOfRange(args, i + 1, args.length);
+        programArgs = Arrays.copyOfRange(args, i + 1, args.length);
         return success ? path : null;
     }
 
@@ -142,6 +144,10 @@ public class Interpreter {
         if (returnValue != NullValue.NULL) {
             System.out.println("Program returned value: " + returnValue.asString());
         }
+    }
+
+    public static String[] getProgramArgs() {
+        return programArgs;
     }
 
 }

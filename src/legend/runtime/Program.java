@@ -1,9 +1,13 @@
 package legend.runtime;
 
+import legend.Interpreter;
+import legend.compiletime.expression.value.ListValue;
+import legend.compiletime.expression.value.StrValue;
 import legend.compiletime.expression.value.Value;
 import legend.runtime.instruction.Instruction;
 import legend.runtime.type.BuiltinType;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
@@ -25,6 +29,7 @@ public class Program {
         this.stack = new Stack<>();
         this.globalNamespace = new Scope();
         BuiltinType.addAllToScope(globalNamespace);
+        globalNamespace.setLocalVariable("args", BuiltinType.LIST.get(), getProgramArguments());
     }
 
     public Value execute() {
@@ -60,6 +65,15 @@ public class Program {
 
     public Stack<Value> getStack() {
         return stack;
+    }
+
+    private static Value getProgramArguments() {
+        String[] args = Interpreter.getProgramArgs();
+        List<Value> values = new ArrayList<>(args.length);
+        for (String arg : args) {
+            values.add(new StrValue(arg));
+        }
+        return new ListValue(values);
     }
 
 }
