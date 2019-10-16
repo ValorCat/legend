@@ -47,7 +47,7 @@ public class ParameterList {
         for (int i = 0; i < args.size(); i++) {
             RuntimeType argType = args.arg(i).type();
             if (paramTypes[i].isSupertypeOf(argType)) {
-                scope.setLocalVariable(paramNames[i], args.arg(i));
+                scope.setLocalVariable(paramNames[i], paramTypes[i], args.arg(i));
             } else {
                 throw new RuntimeException(String.format("Cannot assign %s value '%s' to %s parameter '%s'",
                         argType.getName(), args.arg(i).asString(), paramTypes[i].getName(), paramNames[i]));

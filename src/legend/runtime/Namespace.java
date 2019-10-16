@@ -1,5 +1,6 @@
 package legend.runtime;
 
+import legend.Interpreter;
 import legend.compiletime.expression.value.Value;
 import legend.runtime.type.DynamicType;
 import legend.runtime.type.Type;
@@ -29,6 +30,9 @@ public class Namespace {
             checkType(value, mapping.type, name);
             mapping.value = value;
         } else {
+            if (Interpreter.strictTyping) {
+                throw new RuntimeException("Expected type definition for variable '" + name + "'");
+            }
             namespace.put(name, new Definition(DynamicType.UNTYPED, value));
         }
     }
@@ -38,6 +42,8 @@ public class Namespace {
         Definition mapping = namespace.get(name);
         if (mapping == null) {
             namespace.put(name, new Definition(type, value));
+        } else if (mapping.type == type) {
+            mapping.value = value;
         } else {
             throw new RuntimeException("Variable '" + name + "' already exists");
         }
@@ -58,6 +64,10 @@ public class Namespace {
         public Definition(Type type, Value value) {
             this.type = type;
             this.value = value;
+        }
+
+        public String toString() {
+            return String.format("Definition(%s,%s)", type.getName(), value);
         }
 
     }

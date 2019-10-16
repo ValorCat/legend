@@ -7,9 +7,11 @@ import legend.compiletime.error.ErrorLog;
 import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.value.BoolValue;
 import legend.compiletime.expression.value.NullValue;
+import legend.compiletime.expression.value.TypeValue;
 import legend.compiletime.statement.Statement;
 import legend.compiletime.statement.block.clause.Clause;
 import legend.runtime.instruction.*;
+import legend.runtime.type.BuiltinType;
 
 import java.util.List;
 
@@ -57,7 +59,7 @@ public class ForLoop implements BlockStatement {
                 new PushStackInstruction(getIterator),
                 new PushStackInstruction(getNext),
                 new JumpUnlessInstruction(body.size() + 4, hasNext),
-                new AssignUntypedInstruction(variable, TOP_OF_STACK),
+                new AssignTypedInstruction(variable, new TypeValue(BuiltinType.ANY.get()), TOP_OF_STACK),
                 new PopStackInstruction(),
                 body,
                 new JumpInstruction(-body.size() - 4),

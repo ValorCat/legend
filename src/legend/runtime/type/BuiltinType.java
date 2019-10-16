@@ -1,5 +1,6 @@
 package legend.runtime.type;
 
+import legend.Interpreter;
 import legend.compiletime.expression.value.TypeValue;
 import legend.runtime.Scope;
 import legend.runtime.library.*;
@@ -29,7 +30,11 @@ public enum BuiltinType implements TypeReference {
     public static void addAllToScope(Scope scope) {
         for (BuiltinType ref : values()) {
             RuntimeType type = ref.get();
-            scope.setLocalVariable(type.getName(), new TypeValue(type));
+            if (Interpreter.strictTyping) {
+                scope.setLocalVariable(type.getName(), TYPE.get(), new TypeValue(type));
+            } else {
+                scope.setLocalVariable(type.getName(), new TypeValue(type));
+            }
         }
     }
 

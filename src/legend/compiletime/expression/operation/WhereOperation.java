@@ -4,6 +4,7 @@ import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.value.BuiltinFunction;
 import legend.compiletime.expression.value.Value;
 import legend.runtime.Scope;
+import legend.runtime.type.BuiltinType;
 
 /**
  * @since 2/9/2019
@@ -21,7 +22,7 @@ public class WhereOperation extends BinaryOperation {
         Value input = left.evaluate(scope);
         Scope predScope = new Scope(scope);
         Value predicate = new BuiltinFunction(args -> {
-            predScope.setLocalVariable("*", args.arg(0));
+            predScope.setLocalVariable("*", BuiltinType.ANY.get(), args.arg(0));
             return right.evaluate(predScope);
         });
         return input.operateBinary("where", predicate);

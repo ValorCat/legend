@@ -43,7 +43,7 @@ public class Interpreter {
             "  Source File: path to .leg source file (may omit file extension)\n" +
             "  Args: user-defined program arguments";
 
-    private static boolean strictTyping = false;    // -s flag
+    public static boolean strictTyping = false;    // -s flag
     private static boolean waitOnExit = false;      // -w flag
 
     private static String[] programArgs;
@@ -104,13 +104,8 @@ public class Interpreter {
     private static boolean parseFlag(String flag) {
         for (int i = 1; i < flag.length(); i++) {
             switch (flag.charAt(i)) {
-                case 's':
-                    strictTyping = true;
-                    System.err.println("Interpreter flag -s is not yet supported. Proceeding without it...");
-                    break;
-                case 'w':
-                    waitOnExit = true;
-                    break;
+                case 's': strictTyping = true; break;
+                case 'w': waitOnExit = true; break;
                 default:
                     System.err.printf("Unrecognized interpreter flag '%s'\n", flag.charAt(i));
                     return false;

@@ -6,8 +6,7 @@ for a in args
     i = i + 1
 end
 
-n = 14
-
+int n = 14
 if n == 10
     >> 'if'
     >> 'if 2'
@@ -24,15 +23,15 @@ def fact(int n)
     return n * fact(n - 1)
 end
 
-for i in 0 to 6
-    >> fact(i)
+for j in 0 to 6
+    >> fact(j)
 end
 
-for n in list(10, 20, 30, 40)
-    >> n - 5 & ' xxx'
+for m in list(10, 20, 30, 40)
+    >> m - 5 & ' xxx'
 end
 
-l = list(1, 2, 3)
+list l = list(1, 2, 3)
 >> l[1]
 >> -10
 >> 105%
