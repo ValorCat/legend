@@ -1,17 +1,14 @@
 package legend.compiletime.statement.block;
 
 import legend.compiletime.Parser;
-import legend.compiletime.Token.TokenType;
 import legend.compiletime.TokenLine;
 import legend.compiletime.error.ErrorLog;
 import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.value.BoolValue;
 import legend.compiletime.expression.value.NullValue;
-import legend.compiletime.expression.value.TypeValue;
 import legend.compiletime.statement.Statement;
 import legend.compiletime.statement.block.clause.Clause;
 import legend.runtime.instruction.*;
-import legend.runtime.type.BuiltinType;
 
 import java.util.List;
 
@@ -23,31 +20,44 @@ import static legend.compiletime.expression.TopOfStack.TOP_OF_STACK;
 public class ForLoop implements BlockStatement {
 
     private String variable;
+    private Expression variableType;
     private Expression iterable;
 
     public ForLoop() {}
 
-    private ForLoop(String variable, Expression iterable) {
+    private ForLoop(String variable, Expression variableType, Expression iterable) {
         this.variable = variable;
+        this.variableType = variableType;
         this.iterable = iterable;
     }
 
     @Override
     public Statement parseHeader(TokenLine tokens, Parser parser) {
-        if (tokens.size() == 1 || tokens.get(1).TYPE != TokenType.IDENTIFIER) {
-            throw ErrorLog.get("Expected variable name after 'for'");
-        } else if (tokens.size() == 2 || !tokens.get(2).matches("in")) {
-            throw ErrorLog.get("Expected 'in' after variable '%s'", tokens.get(1));
-        } else if (tokens.size() == 3) {
+        int inPos = tokens.indexOf("in");
+        if (tokens.size() == 1 || inPos == 1) {
+            throw ErrorLog.get("Expected loop variable after 'for'");
+        } else if (inPos == -1) {
+            throw ErrorLog.get("Expected 'in' in loop header");
+        } else if (inPos == tokens.size() - 1) {
             throw ErrorLog.get("Expected loop expression after 'in'");
         }
-        return new ForLoop(tokens.get(1).VALUE, parser.parseFrom(tokens, 3));
+        String iterator = tokens.get(inPos - 1).VALUE;
+        Expression type = null;
+        Expression iterable = parser.parseFrom(tokens, inPos + 1);
+        if (inPos > 2) {
+            type = parser.parseBetween(tokens, 1, inPos - 2);
+            if (!type.isCompact()) {
+                throw ErrorLog.get("Loop variable type expression must be wrapped in parentheses");
+            }
+        }
+        return new ForLoop(iterator, type, iterable);
     }
 
     @Override
     public List<Instruction> build(Clause base, List<Clause> optional) {
         ForLoop header = (ForLoop) base.HEADER;
         String variable = header.variable;
+        Expression variableType = header.variableType;
         Expression iterable = header.iterable;
         List<Instruction> body = base.BODY;
 
@@ -59,7 +69,9 @@ public class ForLoop implements BlockStatement {
                 new PushStackInstruction(getIterator),
                 new PushStackInstruction(getNext),
                 new JumpUnlessInstruction(body.size() + 4, hasNext),
-                new AssignTypedInstruction(variable, new TypeValue(BuiltinType.ANY.get()), TOP_OF_STACK),
+                variableType == null
+                        ? new AssignUntypedInstruction(variable, TOP_OF_STACK)
+                        : new AssignTypedInstruction(variable, variableType, TOP_OF_STACK),
                 new PopStackInstruction(),
                 body,
                 new JumpInstruction(-body.size() - 4),

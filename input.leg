@@ -1,7 +1,7 @@
 >> "Starting!"
 
 int i = 0
-for a in args
+for str a in args
     >> "Arg " & i & ": " & a
     i = i + 1
 end
@@ -23,11 +23,11 @@ def fact(int n)
     return n * fact(n - 1)
 end
 
-for j in 0 to 6
-    >> fact(j)
+for int i in 0 to 6
+    >> fact(i)
 end
 
-for m in list(10, 20, 30, 40)
+for int m in list(10, 20, 30, 40)
     >> m - 5 & ' xxx'
 end
 
