@@ -4,6 +4,7 @@ import legend.compiletime.Parser;
 import legend.compiletime.Token.TokenType;
 import legend.compiletime.TokenLine;
 import legend.compiletime.error.ErrorLog;
+import legend.compiletime.expression.Declaration;
 import legend.compiletime.expression.Expression;
 import legend.compiletime.statement.Statement;
 import legend.runtime.instruction.AssignTypedInstruction;
@@ -39,16 +40,9 @@ public class AssignmentStatement implements BasicStatement {
         } else if (equalsPos == tokens.size() - 1) {
             throw ErrorLog.get("Missing assignment value on right of '='");
         }
-        String target = tokens.get(equalsPos - 1).VALUE;
-        Expression type = null;
+        Declaration target = Declaration.parseSingle(tokens.subList(0, equalsPos), parser);
         Expression value = parser.parseFrom(tokens, equalsPos + 1);
-        if (equalsPos > 1) {
-            type = parser.parseBetween(tokens, 0, equalsPos - 2);
-            if (!type.isCompact()) {
-                throw ErrorLog.get("Assignment type expression must be wrapped in parentheses");
-            }
-        }
-        return new AssignmentStatement(target, type, value);
+        return new AssignmentStatement(target.NAME, target.TYPE, value);
     }
 
     @Override

@@ -3,6 +3,7 @@ package legend.compiletime.statement.block;
 import legend.compiletime.Parser;
 import legend.compiletime.TokenLine;
 import legend.compiletime.error.ErrorLog;
+import legend.compiletime.expression.Declaration;
 import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.value.BoolValue;
 import legend.compiletime.expression.value.NullValue;
@@ -41,16 +42,9 @@ public class ForLoop implements BlockStatement {
         } else if (inPos == tokens.size() - 1) {
             throw ErrorLog.get("Expected loop expression after 'in'");
         }
-        String iterator = tokens.get(inPos - 1).VALUE;
-        Expression type = null;
+        Declaration iterVar = Declaration.parseSingle(tokens.subList(1, inPos), parser);
         Expression iterable = parser.parseFrom(tokens, inPos + 1);
-        if (inPos > 2) {
-            type = parser.parseBetween(tokens, 1, inPos - 2);
-            if (!type.isCompact()) {
-                throw ErrorLog.get("Loop variable type expression must be wrapped in parentheses");
-            }
-        }
-        return new ForLoop(iterator, type, iterable);
+        return new ForLoop(iterVar.NAME, iterVar.TYPE, iterable);
     }
 
     @Override
@@ -69,9 +63,7 @@ public class ForLoop implements BlockStatement {
                 new PushStackInstruction(getIterator),
                 new PushStackInstruction(getNext),
                 new JumpUnlessInstruction(body.size() + 4, hasNext),
-                variableType == null
-                        ? new AssignUntypedInstruction(variable, TOP_OF_STACK)
-                        : new AssignTypedInstruction(variable, variableType, TOP_OF_STACK),
+                new AssignTypedInstruction(variable, variableType, TOP_OF_STACK),
                 new PopStackInstruction(),
                 body,
                 new JumpInstruction(-body.size() - 4),

@@ -7,8 +7,6 @@ import legend.compiletime.expression.value.UserDefinedFunction;
 import legend.runtime.Program;
 import legend.runtime.Scope;
 import legend.runtime.type.BuiltinType;
-import legend.runtime.type.DynamicType;
-import legend.runtime.type.Type;
 
 public class DefineFunctionInstruction implements Instruction {
 
@@ -26,7 +24,7 @@ public class DefineFunctionInstruction implements Instruction {
     public void execute(Scope scope) {
         int startAddress = Program.PROGRAM.getCounter() + 2;
         params.resolveTypes(scope);
-        UserDefinedFunction function = new UserDefinedFunction(name, params, resolveType(returnType, scope),
+        UserDefinedFunction function = new UserDefinedFunction(name, params, returnType.evaluate(scope).asType(),
                 scope, startAddress);
         if (Interpreter.strictTyping) {
             scope.setLocalVariable(name, BuiltinType.FUNCTION.get(), function);
@@ -38,13 +36,6 @@ public class DefineFunctionInstruction implements Instruction {
     @Override
     public String toString() {
         return String.format("def %s %s", name, params);
-    }
-
-    private static Type resolveType(Expression type, Scope scope) {
-        if (type == null) {
-            return DynamicType.UNTYPED;
-        }
-        return type.evaluate(scope).asType();
     }
 
 }

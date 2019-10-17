@@ -27,7 +27,11 @@ public class TokenLine extends ArrayList<Token> {
     }
 
     public int indexOf(String token) {
-        for (int i = 0; i < size(); i++) {
+        return indexOf(token, 0);
+    }
+
+    public int indexOf(String token, int startIndex) {
+        for (int i = startIndex; i < size(); i++) {
             if (get(i).matches(token)) {
                 return i;
             }

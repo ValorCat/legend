@@ -38,14 +38,18 @@ public class Namespace {
     }
 
     public void assign(String name, Type type, Value value) {
-        checkType(value, type, name);
-        Definition mapping = namespace.get(name);
-        if (mapping == null) {
-            namespace.put(name, new Definition(type, value));
-        } else if (mapping.type == type) {
-            mapping.value = value;
+        if (type == DynamicType.UNTYPED) {
+            assign(name, value);
         } else {
-            throw new RuntimeException("Variable '" + name + "' already exists");
+            checkType(value, type, name);
+            Definition mapping = namespace.get(name);
+            if (mapping == null) {
+                namespace.put(name, new Definition(type, value));
+            } else if (mapping.type == type) {
+                mapping.value = value;
+            } else {
+                throw new RuntimeException("Variable '" + name + "' already exists");
+            }
         }
     }
 
