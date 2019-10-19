@@ -4,7 +4,7 @@ import legend.compiletime.Parser;
 import legend.compiletime.TokenLine;
 import legend.compiletime.error.ErrorLog;
 import legend.compiletime.expression.value.TypeValue;
-import legend.runtime.type.DynamicType;
+import legend.runtime.type.NoType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public final class Declaration {
     }
 
     private Declaration(String name) {
-        this(name, new TypeValue(DynamicType.UNTYPED));
+        this(name, new TypeValue(NoType.NO_TYPE));
     }
 
     public String toString() {

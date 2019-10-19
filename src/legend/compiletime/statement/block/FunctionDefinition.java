@@ -14,7 +14,7 @@ import legend.runtime.instruction.DefineFunctionInstruction;
 import legend.runtime.instruction.Instruction;
 import legend.runtime.instruction.JumpInstruction;
 import legend.runtime.instruction.ReturnInstruction;
-import legend.runtime.type.DynamicType;
+import legend.runtime.type.NoType;
 
 import java.util.List;
 
@@ -50,8 +50,8 @@ public class FunctionDefinition implements BlockStatement {
         String name = tokens.get(1).VALUE;
         ParameterList params = new ParameterList(name, Declaration.parse(tokens.get(2).CHILDREN, parser));
         Expression returnType = tokens.size() > 3
-                ? parser.parseFrom(tokens, 4)           // explicit return type
-                : new TypeValue(DynamicType.UNTYPED);   // no return type
+                ? parser.parseFrom(tokens, 4)      // explicit return type
+                : new TypeValue(NoType.NO_TYPE);   // no return type
 
         return new FunctionDefinition(name, params, returnType);
     }

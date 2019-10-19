@@ -30,11 +30,6 @@ public class Scope {
      * @param name the name of the variable
      * @param value the value to store
      */
-    public void setVariable(String name, Value value) {
-        Scope scope = getDefiningScope(name).orElse(this);
-        scope.setLocalVariable(name, value);
-    }
-
     public void setVariable(String name, Type type, Value value) {
         Scope scope = getDefiningScope(name).orElse(this);
         scope.setLocalVariable(name, type, value);
@@ -45,10 +40,6 @@ public class Scope {
      * @param name the name of the variable
      * @param value the value to store
      */
-    public void setLocalVariable(String name, Value value) {
-        namespace.assign(name, value);
-    }
-
     public void setLocalVariable(String name, Type type, Value value) {
         namespace.assign(name, type, value);
     }

@@ -2,7 +2,7 @@ package legend.runtime;
 
 import legend.Interpreter;
 import legend.compiletime.expression.value.Value;
-import legend.runtime.type.DynamicType;
+import legend.runtime.type.NoType;
 import legend.runtime.type.Type;
 
 import java.util.HashMap;
@@ -24,32 +24,13 @@ public class Namespace {
         return namespace.get(name).value;
     }
 
-    public void assign(String name, Value value) {
-        Definition mapping = namespace.get(name);
-        if (mapping != null) {
-            checkType(value, mapping.type, name);
-            mapping.value = value;
-        } else {
-            if (Interpreter.strictTyping) {
-                throw new RuntimeException("Expected type definition for variable '" + name + "'");
-            }
-            namespace.put(name, new Definition(DynamicType.UNTYPED, value));
-        }
-    }
-
     public void assign(String name, Type type, Value value) {
-        if (type == DynamicType.UNTYPED) {
-            assign(name, value);
+        checkType(value, type, name);
+        Definition mapping = namespace.get(name);
+        if (mapping == null) {
+            define(name, type, value);
         } else {
-            checkType(value, type, name);
-            Definition mapping = namespace.get(name);
-            if (mapping == null) {
-                namespace.put(name, new Definition(type, value));
-            } else if (mapping.type == type) {
-                mapping.value = value;
-            } else {
-                throw new RuntimeException("Variable '" + name + "' already exists");
-            }
+            reassign(name, type, value, mapping);
         }
     }
 
@@ -58,6 +39,22 @@ public class Namespace {
             throw new RuntimeException(String.format("Cannot assign %s value '%s' to %s variable '%s'",
                     value.type().getName(), value.asString(), type.getName(), name));
         }
+    }
+
+    private void define(String name, Type type, Value value) {
+        if (Interpreter.strictTyping && type == NoType.NO_TYPE) {
+            throw new RuntimeException("Expected type definition for variable '" + name + "'");
+        }
+        namespace.put(name, new Definition(type, value));
+    }
+
+    private static void reassign(String name, Type newType, Value newValue, Definition current) {
+        if (newType == NoType.NO_TYPE) {
+            checkType(newValue, current.type, name);
+        } else if (newType != current.type) {
+            throw new RuntimeException("Variable '" + name + "' already exists");
+        }
+        current.value = newValue;
     }
 
     private static class Definition {

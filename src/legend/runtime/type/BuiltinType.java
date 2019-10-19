@@ -28,12 +28,13 @@ public enum BuiltinType implements TypeReference {
     }
 
     public static void addAllToScope(Scope scope) {
+        Type metaType = Interpreter.strictTyping ? TYPE.get() : NoType.NO_TYPE;
         for (BuiltinType ref : values()) {
             RuntimeType type = ref.get();
             if (Interpreter.strictTyping) {
                 scope.setLocalVariable(type.getName(), TYPE.get(), new TypeValue(type));
             } else {
-                scope.setLocalVariable(type.getName(), new TypeValue(type));
+                scope.setLocalVariable(type.getName(), metaType, new TypeValue(type));
             }
         }
     }

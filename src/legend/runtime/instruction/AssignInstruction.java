@@ -3,13 +3,13 @@ package legend.runtime.instruction;
 import legend.compiletime.expression.Expression;
 import legend.runtime.Scope;
 
-public class AssignTypedInstruction implements Instruction {
+public class AssignInstruction implements Instruction {
 
     private String target;
     private Expression type;
     private Expression value;
 
-    public AssignTypedInstruction(String target, Expression type, Expression value) {
+    public AssignInstruction(String target, Expression type, Expression value) {
         this.target = target;
         this.type = type;
         this.value = value;
@@ -22,7 +22,7 @@ public class AssignTypedInstruction implements Instruction {
 
     @Override
     public String toString() {
-        return String.format("ast %s %s", target, value);
+        return String.format("asn %s %s %s", target, type, value);
     }
 
 }

@@ -3,9 +3,9 @@ package legend.runtime.type;
 import legend.compiletime.expression.group.ArgumentList;
 import legend.compiletime.expression.value.Value;
 
-public class DynamicType implements Type {
+public class NoType implements Type {
 
-    public static final Type UNTYPED = new DynamicType();
+    public static final Type NO_TYPE = new NoType();
 
     @Override
     public String getName() {

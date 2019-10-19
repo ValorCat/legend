@@ -63,7 +63,7 @@ public class ForLoop implements BlockStatement {
                 new PushStackInstruction(getIterator),
                 new PushStackInstruction(getNext),
                 new JumpUnlessInstruction(body.size() + 4, hasNext),
-                new AssignTypedInstruction(variable, variableType, TOP_OF_STACK),
+                new AssignInstruction(variable, variableType, TOP_OF_STACK),
                 new PopStackInstruction(),
                 body,
                 new JumpInstruction(-body.size() - 4),

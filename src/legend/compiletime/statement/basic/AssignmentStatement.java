@@ -7,8 +7,7 @@ import legend.compiletime.error.ErrorLog;
 import legend.compiletime.expression.Declaration;
 import legend.compiletime.expression.Expression;
 import legend.compiletime.statement.Statement;
-import legend.runtime.instruction.AssignTypedInstruction;
-import legend.runtime.instruction.AssignUntypedInstruction;
+import legend.runtime.instruction.AssignInstruction;
 import legend.runtime.instruction.Instruction;
 
 import java.util.List;
@@ -47,11 +46,7 @@ public class AssignmentStatement implements BasicStatement {
 
     @Override
     public List<Instruction> build() {
-         return List.of(
-                 type == null
-                         ? new AssignUntypedInstruction(target, value)
-                         : new AssignTypedInstruction(target, type, value)
-         );
+         return List.of(new AssignInstruction(target, type, value));
     }
 
     @Override

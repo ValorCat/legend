@@ -4,6 +4,7 @@ import legend.compiletime.TokenLine;
 import legend.compiletime.expression.Expression;
 import legend.compiletime.expression.value.Value;
 import legend.runtime.Scope;
+import legend.runtime.type.NoType;
 
 /**
  * @since 2/9/2019
@@ -25,7 +26,7 @@ public class InlineAssignOperation extends BinaryOperation {
     @Override
     public Value evaluate(Scope scope) {
         Value value = right.evaluate(scope);
-        scope.setVariable(left.getIdentifier(), value);
+        scope.setVariable(left.getIdentifier(), NoType.NO_TYPE, value);
         return value;
     }
 

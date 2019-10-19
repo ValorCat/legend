@@ -7,6 +7,7 @@ import legend.compiletime.expression.value.UserDefinedFunction;
 import legend.runtime.Program;
 import legend.runtime.Scope;
 import legend.runtime.type.BuiltinType;
+import legend.runtime.type.NoType;
 
 public class DefineFunctionInstruction implements Instruction {
 
@@ -29,7 +30,7 @@ public class DefineFunctionInstruction implements Instruction {
         if (Interpreter.strictTyping) {
             scope.setLocalVariable(name, BuiltinType.FUNCTION.get(), function);
         } else {
-            scope.setLocalVariable(name, function);
+            scope.setLocalVariable(name, NoType.NO_TYPE, function);
         }
     }
 
